@@ -63,7 +63,7 @@ jobs:
             
             # 依存関係インストール・ビルド
             cd /opt/omotenasuai/hotel-saas
-            npm ci
+            npm ci --legacy-peer-deps
             npm run build
             
             # 環境変数設定
@@ -128,7 +128,7 @@ jobs:
             fi
             
             # 依存関係インストール・ビルド
-            npm ci
+            npm ci --legacy-peer-deps
             npm run build
             
             # Prismaマイグレーション実行
