@@ -22,7 +22,7 @@ jobs:
   deploy-saas:
     name: hotel-saas デプロイ
     runs-on: ubuntu-latest
-    if: (contains(github.event.head_commit.modified, 'hotel-saas/') || github.event_name == 'workflow_dispatch') && (github.event.inputs.service == 'all' || github.event.inputs.service == 'hotel-saas' || github.event.inputs.service == '')
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     
     steps:
       - name: リポジトリのチェックアウト
@@ -88,7 +88,7 @@ jobs:
   deploy-common:
     name: hotel-common デプロイ
     runs-on: ubuntu-latest
-    if: (contains(github.event.head_commit.modified, 'hotel-common/') || github.event_name == 'workflow_dispatch') && (github.event.inputs.service == 'all' || github.event.inputs.service == 'hotel-common' || github.event.inputs.service == '')
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     
     steps:
       - name: リポジトリのチェックアウト
@@ -147,7 +147,7 @@ jobs:
     name: デプロイ通知
     runs-on: ubuntu-latest
     needs: [deploy-saas, deploy-common]
-    if: always()
+    if: false  # Slack通知を一時的に無効化
     
     steps:
       - name: Slack通知
