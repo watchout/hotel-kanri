@@ -22,7 +22,7 @@ jobs:
   deploy-saas:
     name: hotel-saas デプロイ
     runs-on: ubuntu-latest
-    if: false  # hotel-saasリポジトリが存在しないため一時的に無効化
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     
     steps:
       - name: リポジトリのチェックアウト
@@ -48,7 +48,7 @@ jobs:
             if [ ! -d /opt/omotenasuai/hotel-saas/.git ]; then
               echo "hotel-saasリポジトリをクローンしています..."
               rm -rf /opt/omotenasuai/hotel-saas
-              git clone https://github.com/watchout/hotel-saas.git /opt/omotenasuai/hotel-saas
+              git clone git@github.com:watchout/hotel-saas.git /opt/omotenasuai/hotel-saas
             else
               echo "hotel-saasリポジトリを更新しています..."
               cd /opt/omotenasuai/hotel-saas
@@ -114,7 +114,7 @@ jobs:
             if [ ! -d /opt/omotenasuai/hotel-common/.git ]; then
               echo "hotel-commonリポジトリをクローンしています..."
               rm -rf /opt/omotenasuai/hotel-common
-              git clone https://github.com/watchout/hotel-common.git /opt/omotenasuai/hotel-common
+              git clone git@github.com:watchout/hotel-common.git /opt/omotenasuai/hotel-common
             else
               echo "hotel-commonリポジトリを更新しています..."
               cd /opt/omotenasuai/hotel-common
