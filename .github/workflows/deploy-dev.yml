@@ -22,7 +22,7 @@ jobs:
   deploy-saas:
     name: hotel-saas デプロイ
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: false  # hotel-saasリポジトリが存在しないため一時的に無効化
     
     steps:
       - name: リポジトリのチェックアウト
