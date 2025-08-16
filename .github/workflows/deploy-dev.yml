@@ -41,7 +41,7 @@ jobs:
             echo "hotel-saasをデプロイしています..."
             
             # バージョン指定デプロイ
-            VERSION="${{ github.event.inputs.version || 'develop' }}"
+            VERSION="${{ github.event.inputs.version || 'main' }}"
             echo "デプロイバージョン: $VERSION"
             
             # リポジトリクローンまたは更新
@@ -107,7 +107,7 @@ jobs:
             echo "hotel-commonをデプロイしています..."
             
             # バージョン指定デプロイ
-            VERSION="${{ github.event.inputs.version || 'develop' }}"
+            VERSION="${{ github.event.inputs.version || 'main' }}"
             echo "デプロイバージョン: $VERSION"
             
             # リポジトリクローンまたは更新
