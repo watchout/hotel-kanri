@@ -39,18 +39,23 @@ jobs:
             
             # hotel-saasデプロイ
             echo "hotel-saasをデプロイしています..."
-            cd /opt/omotenasuai/hotel-saas
             
             # バージョン指定デプロイ
             VERSION="${{ github.event.inputs.version || 'develop' }}"
             echo "デプロイバージョン: $VERSION"
             
-            if [ ! -d /opt/omotenasuai/hotel-saas ]; then
+            # リポジトリクローンまたは更新
+            if [ ! -d /opt/omotenasuai/hotel-saas/.git ]; then
+              echo "hotel-saasリポジトリをクローンしています..."
+              rm -rf /opt/omotenasuai/hotel-saas
               git clone https://github.com/watchout/hotel-saas.git /opt/omotenasuai/hotel-saas
+            else
+              echo "hotel-saasリポジトリを更新しています..."
+              cd /opt/omotenasuai/hotel-saas
+              git fetch --all
             fi
             
             cd /opt/omotenasuai/hotel-saas
-            git fetch --all
             git checkout $VERSION
             if [[ "$VERSION" == *"develop"* ]] || [[ "$VERSION" == *"main"* ]]; then
               git pull origin $VERSION
@@ -105,12 +110,18 @@ jobs:
             VERSION="${{ github.event.inputs.version || 'develop' }}"
             echo "デプロイバージョン: $VERSION"
             
-            if [ ! -d /opt/omotenasuai/hotel-common ]; then
+            # リポジトリクローンまたは更新
+            if [ ! -d /opt/omotenasuai/hotel-common/.git ]; then
+              echo "hotel-commonリポジトリをクローンしています..."
+              rm -rf /opt/omotenasuai/hotel-common
               git clone https://github.com/watchout/hotel-common.git /opt/omotenasuai/hotel-common
+            else
+              echo "hotel-commonリポジトリを更新しています..."
+              cd /opt/omotenasuai/hotel-common
+              git fetch --all
             fi
             
             cd /opt/omotenasuai/hotel-common
-            git fetch --all
             git checkout $VERSION
             if [[ "$VERSION" == *"develop"* ]] || [[ "$VERSION" == *"main"* ]]; then
               git pull origin $VERSION
