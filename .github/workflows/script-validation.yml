@@ -1,0 +1,57 @@
+name: スクリプト検証
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'scripts/**/*.sh'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'scripts/**/*.sh'
+
+jobs:
+  shellcheck:
+    name: シェルスクリプト検証
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: ShellCheck実行
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './scripts'
+          severity: 'error'
+
+  script-test:
+    name: スクリプトテスト
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: スクリプト実行権限付与
+        run: chmod +x scripts/**/*.sh
+
+      - name: シンタックスチェック
+        run: |
+          for script in $(find scripts -name "*.sh"); do
+            echo "Checking $script"
+            bash -n "$script"
+          done
+
+  notify:
+    name: 通知
+    runs-on: ubuntu-latest
+    needs: [shellcheck, script-test]
+    if: ${{ failure() }}
+    steps:
+      - name: Slack通知
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: ${{ failure() }}

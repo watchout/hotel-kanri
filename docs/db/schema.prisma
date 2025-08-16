@@ -1,0 +1,490 @@
+// 統合データベーススキーマ定義
+// このファイルは全システム共通のデータベーススキーマを定義します
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== 共通モデル =====
+
+// テナント（ホテルグループ）
+model Tenant {
+  id                String             @id @default(uuid())
+  name              String
+  subdomain         String             @unique
+  status            TenantStatus       @default(ACTIVE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  users             User[]
+  customers         Customer[]
+  rooms             Room[]
+  roomTypes         RoomType[]
+  roomGrades        RoomGrade[]
+  reservations      Reservation[]
+  services          Service[]
+  billings          Billing[]
+  systemSettings    SystemSetting[]
+  membershipRanks   MembershipRank[]
+
+  @@map("tenants")
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+// ユーザー（スタッフ）
+model User {
+  id                String             @id @default(uuid())
+  tenantId          String
+  email             String
+  passwordHash      String
+  firstName         String
+  lastName          String
+  role              UserRole
+  permissions       Json?              // 権限設定
+  lastLoginAt       DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  createdReservations Reservation[]    @relation("CreatedBy")
+  updatedReservations Reservation[]    @relation("UpdatedBy")
+  
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+  READONLY
+}
+
+// システム設定
+model SystemSetting {
+  id                String             @id @default(uuid())
+  tenantId          String
+  category          String             // 設定カテゴリ
+  key               String             // 設定キー
+  value             Json               // 設定値
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  
+  @@unique([tenantId, category, key])
+  @@index([tenantId, category])
+  @@map("system_settings")
+}
+
+// ===== hotel-member モデル =====
+
+// 顧客
+model Customer {
+  id                String             @id @default(uuid())
+  tenantId          String
+  memberId          String?            @unique // 会員ID（非会員はnull）
+  firstName         String
+  lastName          String
+  email             String?
+  phone             String?
+  address           Json?              // 住所情報
+  birthdate         DateTime?
+  gender            Gender?
+  nationality       String?
+  preferences       Json?              // 好み・要望
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  membership        Membership?
+  reservations      Reservation[]
+  points            Point[]
+  feedbacks         Feedback[]
+  
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@index([tenantId, memberId])
+  @@map("customers")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+// 会員情報
+model Membership {
+  id                String             @id @default(uuid())
+  customerId        String             @unique
+  rankId            String
+  totalPoints       Int                @default(0)
+  availablePoints   Int                @default(0)
+  registeredAt      DateTime           @default(now())
+  expiresAt         DateTime?
+  status            MembershipStatus   @default(ACTIVE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  customer          Customer           @relation(fields: [customerId], references: [id])
+  rank              MembershipRank     @relation(fields: [rankId], references: [id])
+  
+  @@map("memberships")
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+}
+
+// 会員ランク
+model MembershipRank {
+  id                String             @id @default(uuid())
+  tenantId          String
+  name              String
+  level             Int
+  pointThreshold    Int
+  benefits          Json               // 特典情報
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  memberships       Membership[]
+  
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("membership_ranks")
+}
+
+// ポイント履歴
+model Point {
+  id                String             @id @default(uuid())
+  customerId        String
+  tenantId          String
+  type              PointType
+  amount            Int
+  balance           Int
+  description       String?
+  expiresAt         DateTime?
+  relatedEntityType String?            // 関連エンティティタイプ（reservation, billing等）
+  relatedEntityId   String?            // 関連エンティティID
+  createdAt         DateTime           @default(now())
+  
+  // リレーション
+  customer          Customer           @relation(fields: [customerId], references: [id])
+  
+  @@index([customerId])
+  @@index([tenantId])
+  @@map("points")
+}
+
+enum PointType {
+  EARN
+  USE
+  BONUS
+  ADJUSTMENT
+  EXPIRED
+}
+
+// ===== hotel-pms モデル =====
+
+// 部屋タイプ
+model RoomType {
+  id                String             @id @default(uuid())
+  tenantId          String
+  name              String
+  description       String?
+  capacity          Int
+  amenities         Json?              // 設備・アメニティ
+  images            Json?              // 画像URL
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  rooms             Room[]
+  roomGrades        RoomGrade[]
+  
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("room_types")
+}
+
+// 部屋グレード
+model RoomGrade {
+  id                String             @id @default(uuid())
+  tenantId          String
+  roomTypeId        String
+  name              String
+  description       String?
+  priceMultiplier   Float              // 基本料金に対する倍率
+  benefits          Json?              // 特典情報
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  roomType          RoomType           @relation(fields: [roomTypeId], references: [id])
+  rooms             Room[]
+  
+  @@unique([tenantId, roomTypeId, name])
+  @@index([tenantId])
+  @@map("room_grades")
+}
+
+// 部屋
+model Room {
+  id                String             @id @default(uuid())
+  tenantId          String
+  roomNumber        String
+  roomTypeId        String
+  roomGradeId       String?
+  floor             Int
+  status            RoomStatus         @default(AVAILABLE)
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  roomType          RoomType           @relation(fields: [roomTypeId], references: [id])
+  roomGrade         RoomGrade?         @relation(fields: [roomGradeId], references: [id])
+  reservations      Reservation[]
+  
+  @@unique([tenantId, roomNumber])
+  @@index([tenantId])
+  @@index([roomTypeId])
+  @@map("rooms")
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  CLEANING
+  MAINTENANCE
+  OUT_OF_ORDER
+}
+
+// 予約
+model Reservation {
+  id                String             @id @default(uuid())
+  tenantId          String
+  reservationNumber String
+  customerId        String
+  roomId            String
+  checkInDate       DateTime
+  checkOutDate      DateTime
+  adults            Int                @default(1)
+  children          Int                @default(0)
+  status            ReservationStatus  @default(CONFIRMED)
+  origin            ReservationOrigin
+  specialRequests   String?
+  totalAmount       Decimal
+  createdById       String
+  updatedById       String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  customer          Customer           @relation(fields: [customerId], references: [id])
+  room              Room               @relation(fields: [roomId], references: [id])
+  createdBy         User               @relation("CreatedBy", fields: [createdById], references: [id])
+  updatedBy         User               @relation("UpdatedBy", fields: [updatedById], references: [id])
+  billings          Billing[]
+  
+  @@unique([tenantId, reservationNumber])
+  @@index([tenantId])
+  @@index([customerId])
+  @@index([roomId])
+  @@index([checkInDate, checkOutDate])
+  @@map("reservations")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELED
+  NO_SHOW
+}
+
+enum ReservationOrigin {
+  MEMBER
+  OTA
+  FRONT
+  PHONE
+  WALK_IN
+}
+
+// 請求
+model Billing {
+  id                String             @id @default(uuid())
+  tenantId          String
+  reservationId     String
+  billingNumber     String
+  status            BillingStatus      @default(PENDING)
+  totalAmount       Decimal
+  paidAmount        Decimal            @default(0)
+  dueDate           DateTime?
+  paymentMethod     PaymentMethod?
+  paymentDate       DateTime?
+  items             Json               // 請求項目
+  notes             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  reservation       Reservation        @relation(fields: [reservationId], references: [id])
+  
+  @@unique([tenantId, billingNumber])
+  @@index([tenantId])
+  @@index([reservationId])
+  @@map("billings")
+}
+
+enum BillingStatus {
+  PENDING
+  PARTIAL
+  PAID
+  OVERDUE
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  BANK_TRANSFER
+  POINTS
+  OTHER
+}
+
+// ===== hotel-saas モデル =====
+
+// サービス
+model Service {
+  id                String             @id @default(uuid())
+  tenantId          String
+  name              String
+  description       String?
+  category          ServiceCategory
+  price             Decimal
+  taxRate           Float              @default(0.1)
+  images            Json?              // 画像URL
+  availability      Json?              // 利用可能時間等
+  status            ServiceStatus      @default(ACTIVE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  orders            ServiceOrder[]
+  
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@index([category])
+  @@map("services")
+}
+
+enum ServiceCategory {
+  FOOD
+  BEVERAGE
+  AMENITY
+  SPA
+  CLEANING
+  TRANSPORT
+  OTHER
+}
+
+enum ServiceStatus {
+  ACTIVE
+  INACTIVE
+  SEASONAL
+}
+
+// サービス注文
+model ServiceOrder {
+  id                String             @id @default(uuid())
+  serviceId         String
+  roomId            String?
+  customerId        String?
+  quantity          Int                @default(1)
+  status            OrderStatus        @default(PENDING)
+  requestedAt       DateTime           @default(now())
+  completedAt       DateTime?
+  amount            Decimal
+  notes             String?
+  
+  // リレーション
+  service           Service            @relation(fields: [serviceId], references: [id])
+  
+  @@index([serviceId])
+  @@index([roomId])
+  @@index([customerId])
+  @@map("service_orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELED
+}
+
+// フィードバック
+model Feedback {
+  id                String             @id @default(uuid())
+  customerId        String
+  entityType        String             // reservation, service等
+  entityId          String
+  rating            Int                // 1-5
+  comment           String?
+  createdAt         DateTime           @default(now())
+  
+  // リレーション
+  customer          Customer           @relation(fields: [customerId], references: [id])
+  
+  @@index([customerId])
+  @@index([entityType, entityId])
+  @@map("feedbacks")
+}
+
+// ===== システムイベント =====
+
+// イベントログ
+model SystemEvent {
+  id                String             @id @default(uuid())
+  eventType         String
+  entityType        String?
+  entityId          String?
+  data              Json
+  createdAt         DateTime           @default(now())
+  
+  @@index([eventType])
+  @@index([entityType, entityId])
+  @@map("system_events")
+}

@@ -1,0 +1,44 @@
+{
+  "environment": "development",
+  "last_updated": "2024-01-20T10:00:00Z",
+  "applications": {
+    "hotel-saas": {
+      "version": "develop",
+      "repository": "https://github.com/watchout/hotel-saas.git",
+      "branch": "develop",
+      "port": 3100,
+      "health_endpoint": "/health",
+      "dependencies": ["hotel-common"]
+    },
+    "hotel-common": {
+      "version": "develop", 
+      "repository": "https://github.com/watchout/hotel-common.git",
+      "branch": "develop",
+      "port": 3400,
+      "health_endpoint": "/health",
+      "dependencies": []
+    },
+    "hotel-pms": {
+      "version": "develop",
+      "repository": "https://github.com/watchout/hotel-pms.git", 
+      "branch": "develop",
+      "port": 3300,
+      "health_endpoint": "/health",
+      "dependencies": ["hotel-common"]
+    },
+    "hotel-member": {
+      "version": "develop",
+      "repository": "https://github.com/watchout/hotel-member.git",
+      "branch": "develop", 
+      "port": 3200,
+      "health_endpoint": "/health",
+      "dependencies": ["hotel-common"]
+    }
+  },
+  "deployment_order": [
+    "hotel-common",
+    "hotel-saas", 
+    "hotel-pms",
+    "hotel-member"
+  ]
+}

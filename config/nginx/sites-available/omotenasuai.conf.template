@@ -1,0 +1,155 @@
+# 開発環境設定
+server {
+    listen 80;
+    server_name dev.omotenasuai.com;
+    
+    # HTTP -> HTTPS リダイレクト
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name dev.omotenasuai.com;
+    
+    ssl_certificate     /etc/letsencrypt/live/dev.omotenasuai.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dev.omotenasuai.com/privkey.pem;
+    
+    # 共通基盤
+    location / {
+        proxy_pass http://localhost:3400;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # SaaS
+    location /saas/ {
+        proxy_pass http://localhost:3100;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # PMS
+    location /pms/ {
+        proxy_pass http://localhost:3300;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # 会員システム
+    location /member/ {
+        proxy_pass http://localhost:3200;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # API
+    location /api/ {
+        proxy_pass http://localhost:3400/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # API レート制限
+        limit_req zone=api burst=20 nodelay;
+    }
+    
+    # 静的ファイル
+    location /static/ {
+        alias /var/www/omotenasuai/static/;
+        expires 7d;
+        add_header Cache-Control "public, max-age=604800";
+    }
+    
+    # ヘルスチェック
+    location /health {
+        access_log off;
+        return 200 "OK";
+    }
+    
+    # エラーページ
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+    location = /404.html {
+        root /var/www/omotenasuai/error;
+    }
+    location = /50x.html {
+        root /var/www/omotenasuai/error;
+    }
+}
+
+# サブドメイン設定
+server {
+    listen 443 ssl http2;
+    server_name saas.dev.omotenasuai.com;
+    
+    ssl_certificate     /etc/letsencrypt/live/dev.omotenasuai.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dev.omotenasuai.com/privkey.pem;
+    
+    location / {
+        proxy_pass http://localhost:3100;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    server_name pms.dev.omotenasuai.com;
+    
+    ssl_certificate     /etc/letsencrypt/live/dev.omotenasuai.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dev.omotenasuai.com/privkey.pem;
+    
+    location / {
+        proxy_pass http://localhost:3300;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    server_name member.dev.omotenasuai.com;
+    
+    ssl_certificate     /etc/letsencrypt/live/dev.omotenasuai.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dev.omotenasuai.com/privkey.pem;
+    
+    location / {
+        proxy_pass http://localhost:3200;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 443 ssl http2;
+    server_name api.dev.omotenasuai.com;
+    
+    ssl_certificate     /etc/letsencrypt/live/dev.omotenasuai.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/dev.omotenasuai.com/privkey.pem;
+    
+    location / {
+        proxy_pass http://localhost:3400/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # API レート制限
+        limit_req zone=api burst=20 nodelay;
+    }
+}

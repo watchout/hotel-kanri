@@ -1,0 +1,40 @@
+name: Dependabot自動マージ
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+
+jobs:
+  auto-merge:
+    name: Dependabotの自動マージ
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' || contains(github.event.pull_request.labels.*.name, 'dependencies')
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: CIの完了を待機
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: 'document-validation'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
+      - name: PRの自動承認
+        uses: hmarr/auto-approve-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ github.event.pull_request.number }}
+
+      - name: PRの自動マージ
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: squash
+          MERGE_LABELS: dependencies
+          MERGE_DELETE_BRANCH: true

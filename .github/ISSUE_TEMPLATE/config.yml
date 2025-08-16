@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 質問・サポート
+    url: https://example.com/support
+    about: 質問やサポートが必要な場合はこちらを利用してください
+  - name: セキュリティ脆弱性報告
+    url: https://example.com/security
+    about: セキュリティ脆弱性を発見した場合はこちらから報告してください

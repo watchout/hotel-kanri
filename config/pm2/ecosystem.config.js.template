@@ -1,0 +1,109 @@
+module.exports = {
+  apps: [
+    // 共通基盤
+    {
+      name: 'hotel-common',
+      script: '/opt/omotenasuai/hotel-common/dist/main.js',
+      instances: 'max',
+      exec_mode: 'cluster',
+      watch: false,
+      max_memory_restart: '1G',
+      env: {
+        NODE_ENV: 'development',
+        PORT: 3400
+      },
+      env_production: {
+        NODE_ENV: 'production',
+        PORT: 3400
+      }
+    },
+    
+    // AIコンシェルジュ
+    {
+      name: 'hotel-saas',
+      script: '/opt/omotenasuai/hotel-saas/dist/main.js',
+      instances: 'max',
+      exec_mode: 'cluster',
+      watch: false,
+      max_memory_restart: '1G',
+      env: {
+        NODE_ENV: 'development',
+        PORT: 3100
+      },
+      env_production: {
+        NODE_ENV: 'production',
+        PORT: 3100
+      }
+    },
+    
+    // ホテルマネジメントシステム
+    {
+      name: 'hotel-pms',
+      script: '/opt/omotenasuai/hotel-pms/dist/main.js',
+      instances: 'max',
+      exec_mode: 'cluster',
+      watch: false,
+      max_memory_restart: '1G',
+      env: {
+        NODE_ENV: 'development',
+        PORT: 3300
+      },
+      env_production: {
+        NODE_ENV: 'production',
+        PORT: 3300
+      }
+    },
+    
+    // 会員管理システム
+    {
+      name: 'hotel-member',
+      script: '/opt/omotenasuai/hotel-member/dist/main.js',
+      instances: 'max',
+      exec_mode: 'cluster',
+      watch: false,
+      max_memory_restart: '1G',
+      env: {
+        NODE_ENV: 'development',
+        PORT: 3200
+      },
+      env_production: {
+        NODE_ENV: 'production',
+        PORT: 3200
+      }
+    }
+  ],
+  
+  // デプロイ設定
+  deploy: {
+    // 開発環境
+    development: {
+      user: 'deploy',
+      host: 'dev.omotenasuai.com',
+      ref: 'origin/develop',
+      repo: 'git@github.com:example/hotel-common.git',
+      path: '/opt/omotenasuai',
+      'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env development'
+    },
+    
+    // テスト環境
+    test: {
+      user: 'deploy',
+      host: 'test.omotenasuai.com',
+      ref: 'origin/release',
+      repo: 'git@github.com:example/hotel-common.git',
+      path: '/opt/omotenasuai',
+      'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env test'
+    },
+    
+    // 本番環境
+    production: {
+      user: 'deploy',
+      host: 'www.omotenasuai.com',
+      ref: 'origin/main',
+      repo: 'git@github.com:example/hotel-common.git',
+      path: '/opt/omotenasuai',
+      'post-deploy': 'npm install && npm run build && pm2 reload ecosystem.config.js --env production',
+      'pre-setup': ''
+    }
+  }
+};

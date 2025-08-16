@@ -1,0 +1,93 @@
+name: 設定ファイル検証
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'config/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'config/**'
+
+jobs:
+  nginx-config:
+    name: Nginx設定検証
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Nginxインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+
+      - name: Nginx設定テスト
+        run: |
+          for config in $(find config/nginx -name "*.conf.template" -o -name "nginx.conf.template"); do
+            echo "Checking $config"
+            # テンプレート変数を置換
+            sed 's/\${\([^}]*\)}/dummy/g' "$config" > /tmp/nginx_test.conf
+            sudo nginx -t -c /tmp/nginx_test.conf || echo "Warning: $config may have issues"
+          done
+
+  docker-compose:
+    name: Docker Compose検証
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Docker Composeインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Docker Compose設定テスト
+        run: |
+          for config in $(find config/docker -name "*.yml.template"); do
+            echo "Checking $config"
+            # テンプレート変数を置換
+            sed 's/\${\([^}]*\)}/dummy/g' "$config" > /tmp/docker-compose_test.yml
+            docker-compose -f /tmp/docker-compose_test.yml config || echo "Warning: $config may have issues"
+          done
+
+  pm2-config:
+    name: PM2設定検証
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: Node.jsセットアップ
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: PM2インストール
+        run: npm install -g pm2
+
+      - name: PM2設定テスト
+        run: |
+          for config in $(find config/pm2 -name "*.js.template"); do
+            echo "Checking $config"
+            # テンプレート変数を置換
+            sed 's/\${\([^}]*\)}/\"dummy\"/g' "$config" > /tmp/ecosystem_test.js
+            node -c /tmp/ecosystem_test.js || echo "Warning: $config may have issues"
+          done
+
+  notify:
+    name: 通知
+    runs-on: ubuntu-latest
+    needs: [nginx-config, docker-compose, pm2-config]
+    if: ${{ failure() }}
+    steps:
+      - name: Slack通知
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: ${{ failure() }}

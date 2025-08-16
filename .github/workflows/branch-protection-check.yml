@@ -1,0 +1,39 @@
+name: ブランチ保護設定確認
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 毎週月曜日の午前0時に実行
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  check-branch-protection:
+    name: ブランチ保護設定の確認
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+
+      - name: ブランチ保護設定の確認
+        uses: benjefferies/branch-protection-bot@master
+        with:
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          branches: 'main,develop'
+          enforce_admins: 'true'
+          required_status_checks: 'true'
+          required_pull_request_reviews: 'true'
+          required_approving_review_count: '1'
+          dismiss_stale_reviews: 'true'
+          require_code_owner_reviews: 'false'
+          required_linear_history: 'true'
+
+      - name: 結果の通知
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: "ブランチ保護設定が変更されています。確認してください。"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

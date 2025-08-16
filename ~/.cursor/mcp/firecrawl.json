@@ -1,0 +1,7 @@
+{
+  "name": "firecrawl",
+  "command": "firecrawl-mcp",
+  "env": {
+    "FIRECRAWL_API_KEY": "fc-e59fe17d49e34b1cb3e274ecfc5dcae6"
+  }
+}
