@@ -4,8 +4,8 @@
 
 # 変数設定
 SERVER_IP="163.44.117.60"
-DEPLOY_USER="deploy"
-SSH_KEY="$HOME/.ssh/id_rsa"  # 適切なSSH鍵のパスに変更してください
+DEPLOY_USER="admin"
+SSH_KEY="/Users/kaneko/.ssh/id_ed25519"  # 実際に使用しているSSH鍵のパス
 
 # 色の設定
 RED='\033[0;31m'
