@@ -11,12 +11,18 @@ on:
     inputs:
       service:
         description: 'デプロイするサービス (all, hotel-saas, hotel-common)'
-        required: false
+        required: true
         default: 'all'
+        type: choice
+        options:
+          - all
+          - hotel-saas
+          - hotel-common
       version:
         description: 'デプロイするバージョン (タグ名またはブランチ名)'
-        required: false
-        default: 'develop'
+        required: true
+        default: 'main'
+        type: string
 
 env:
   DOCKER_REGISTRY: ghcr.io/watchout
