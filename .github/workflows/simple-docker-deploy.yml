@@ -1,0 +1,49 @@
+name: Simple Docker Build and Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'デプロイするサービス'
+        required: true
+        default: 'hotel-saas'
+        type: choice
+        options:
+          - hotel-saas
+          - hotel-common
+      version:
+        description: 'デプロイするバージョン'
+        required: true
+        default: 'develop'
+        type: string
+
+env:
+  DOCKER_REGISTRY: ghcr.io/watchout
+
+jobs:
+  build-and-push:
+    name: Dockerイメージのビルドとプッシュ
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: Dockerログイン
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Docker Buildx設定
+        uses: docker/setup-buildx-action@v2
+        
+      - name: ビルドとプッシュ
+        uses: docker/build-push-action@v4
+        with:
+          context: ./${{ github.event.inputs.service }}
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ github.event.inputs.service }}:${{ github.event.inputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
