@@ -4,113 +4,163 @@
 **作成者**: hotel-kanri
 **バージョン**: 1.0
 
+このドキュメントでは、hotel-saasとhotel-commonのDocker化に関する次のステップをまとめます。
+
 ## 1. 現在の状況
 
-hotel-saasとhotel-commonのDocker化に向けて、以下の作業が完了しています：
+hotel-saasとhotel-commonのDocker化に向けて、以下の作業を実施しました：
 
-1. **Docker化アーキテクチャ設計**:
-   - Docker化アーキテクチャ設計書の作成
-   - Docker移行チェックリストの作成
-   - Docker環境セットアップ手順書の作成
-   - ロールバック手順書とスクリプトの作成
+- Docker化アーキテクチャ設計
+- Dockerfileの作成（hotel-saas, hotel-common）
+- Docker Compose設定ファイルの作成
+- サーバー環境のDocker設定
+- GitHubコンテナレジストリの認証設定
+- 手動デプロイスクリプトの作成
+- 各種手順書の作成
 
-2. **Dockerファイル作成**:
-   - hotel-saas用のDockerfile作成
-   - hotel-common用のDockerfile作成（Node.js v18からv20に更新）
-   - docker-compose.yml（本番環境用）の更新
-   - docker-compose.yml（開発環境用）の作成
+現在、以下の課題が残っています：
 
-3. **CI/CD設定**:
-   - GitHub Actions用のDocker Deployワークフローの作成
-   - workflow_dispatchトリガーの設定修正
+- ローカル環境のDocker設定
+- Dockerイメージのビルドとプッシュ
+- 環境変数ファイルの読み込み問題
+- GitHub Actionsによる自動デプロイの設定
 
-4. **サーバー環境確認・設定スクリプト**:
-   - サーバー上のDocker環境確認スクリプトの作成
-   - サーバー上のDocker環境セットアップスクリプトの作成
+## 2. 短期的なアクション（1-2日）
 
-5. **手動デプロイ手順書**:
-   - GitHub Actionsワークフローが正常に動作するまでの間の手動デプロイ手順書の作成
+### 2.1. ローカル環境のDocker設定
 
-## 2. 課題と障害
+1. **Dockerのインストール**
+   - ローカル開発環境にDockerをインストールする
+   - Docker Desktopを使用する場合は、[Docker Desktop](https://www.docker.com/products/docker-desktop)からダウンロードしてインストール
+   - Linuxの場合は、適切なパッケージマネージャーを使用してインストール
 
-1. **GitHub Actionsワークフローの問題**:
-   - workflow_dispatchトリガーの設定を修正したが、まだ手動実行時に「Workflow does not have 'workflow_dispatch' trigger」エラーが発生
-   - GitHub側の反映に時間がかかっている可能性あり
+2. **GitHubコンテナレジストリの認証設定**
+   - GitHubトークンを作成し、`read:packages`と`write:packages`の権限を付与
+   - `docker login ghcr.io`コマンドでログイン
 
-2. **サーバー環境の確認不足**:
-   - サーバー上でのDockerの可用性が未確認
-   - デプロイユーザーの権限とDocker実行権限の確認が必要
+### 2.2. Dockerイメージのビルドとプッシュ
 
-3. **ローカル環境のDocker不足**:
-   - 開発マシンにDockerがインストールされていないため、ローカルでのテストが実施できていない
+1. **hotel-saasのDockerイメージをビルドしてプッシュ**
+   - `cd /Users/kaneko/hotel-saas`
+   - `docker build -t ghcr.io/watchout/hotel-saas:develop .`
+   - `docker push ghcr.io/watchout/hotel-saas:develop`
 
-## 3. 次のステップ
+2. **hotel-commonのDockerイメージをビルドしてプッシュ**
+   - `cd /Users/kaneko/hotel-common`
+   - `docker build -t ghcr.io/watchout/hotel-common:develop .`
+   - `docker push ghcr.io/watchout/hotel-common:develop`
 
-### 3.1. 短期的なアクション（1-2日）
+### 2.3. 環境変数ファイルの設定
 
-1. **サーバー環境の確認と設定**:
-   - `scripts/deploy/check-server-docker.sh`を実行してサーバー上のDocker環境を確認
-   - 必要に応じて`scripts/deploy/setup-server-docker.sh`を実行してDocker環境をセットアップ
-   - デプロイユーザーにDocker実行権限があるか確認
+1. **環境変数ファイルの確認**
+   - サーバー上の`.env`ファイルの内容を確認
+   - 必要な環境変数が設定されていることを確認
 
-2. **手動デプロイテスト**:
-   - `docs/procedures/manual-docker-deployment.md`の手順に従って手動デプロイを実施
-   - デプロイ結果の確認と問題の特定
+2. **Docker Compose実行時に環境変数ファイルを明示的に指定**
+   - `--env-file`オプションを使用
+   - `docker-compose -f config/docker/docker-compose.yml --env-file .env up -d`
 
-3. **GitHub Actionsワークフローの再確認**:
-   - 新しいワークフローファイルを作成し、別名で保存して手動実行をテスト
-   - GitHub Actionsの設定を確認し、必要に応じて調整
+### 2.4. 手動デプロイの実行
 
-### 3.2. 中期的なアクション（1-2週間）
+1. **修正した手動デプロイスクリプトの実行**
+   - `./scripts/deploy/manual-docker-deploy.sh`
+   - デプロイ結果の確認
 
-1. **Nginx設定のDocker対応**:
-   - Nginx設定ファイルをDocker環境に適合するよう更新
-   - リバースプロキシ設定の最適化
+## 3. 中期的なアクション（1-2週間）
 
-2. **モニタリング設定**:
-   - Docker環境のモニタリング設定
-   - ログ収集とアラート設定
+### 3.1. GitHub Actionsによる自動デプロイの設定
 
-3. **CI/CDパイプラインの完成**:
-   - GitHub Actionsワークフローの問題を解決
-   - 自動デプロイフローの確立と検証
+1. **GitHub Actionsワークフローの修正**
+   - workflow_dispatchトリガーの問題を解決
+   - 環境変数の設定を確認
 
-4. **開発環境のDocker化**:
-   - 開発マシンへのDockerインストール
-   - ローカル開発環境のDocker対応
+2. **GitHub Actionsワークフローのテスト**
+   - 手動でワークフローをトリガー
+   - デプロイ結果の確認
 
-### 3.3. 長期的なアクション（1-3ヶ月）
+### 3.2. Nginx設定のDocker対応
 
-1. **他サービスのDocker化**:
-   - hotel-pmsとhotel-memberのDocker化
-   - 統合テストとデプロイ
+1. **Nginx設定ファイルの作成**
+   - `/opt/omotenasuai/hotel-kanri/config/nginx/default.conf`を作成
+   - リバースプロキシ設定の追加
 
-2. **スケーリング戦略の実装**:
-   - 水平スケーリングの設定
-   - ロードバランシングの最適化
+2. **Nginx設定のテスト**
+   - `docker-compose -f config/docker/docker-compose.yml --env-file .env restart nginx`
+   - Nginxログの確認
 
-3. **バックアップ・復元戦略の確立**:
-   - データボリュームのバックアップ自動化
-   - 障害時の復元手順の確立と検証
+### 3.3. モニタリング設定
 
-4. **セキュリティ強化**:
-   - コンテナセキュリティの強化
-   - シークレット管理の改善
+1. **ログ収集の設定**
+   - Docker Composeファイルにログドライバーの設定を追加
+   - ログローテーションの設定
 
-## 4. 推奨アクション
+2. **コンテナヘルスチェックの設定**
+   - Dockerfileにヘルスチェックの設定を追加
+   - Docker Composeファイルにヘルスチェックの設定を追加
 
-現時点では、以下のアクションを優先的に実施することを推奨します：
+## 4. 長期的なアクション（1ヶ月以上）
 
-1. **サーバー環境の確認と設定**:
-   ```bash
-   ./scripts/deploy/check-server-docker.sh
-   ./scripts/deploy/setup-server-docker.sh
-   ```
+### 4.1. CI/CDパイプラインの完成
 
-2. **手動デプロイテスト**:
-   - `docs/procedures/manual-docker-deployment.md`の手順に従って手動デプロイを実施
+1. **テスト自動化の追加**
+   - GitHub Actionsワークフローにテストステップを追加
+   - テスト結果の通知設定
 
-3. **GitHub Actionsワークフローの問題解決**:
-   - 新しいワークフローファイルを作成し、別名で保存して手動実行をテスト
+2. **デプロイ自動化の完成**
+   - 本番環境へのデプロイフローの設定
+   - ロールバック手順の自動化
 
-これらのアクションを実施することで、Docker化デプロイの基盤を確立し、次のステップに進むことができます。
+### 4.2. Docker Swarmの検討
+
+1. **Docker Swarmの設定**
+   - 複数ノードでのクラスター構成
+   - サービスのレプリケーション設定
+
+2. **ロードバランシングの設定**
+   - サービスディスカバリーの設定
+   - ロードバランサーの設定
+
+### 4.3. Kubernetesへの移行検討
+
+1. **Kubernetes環境の構築**
+   - マネージドKubernetesサービスの検討（EKS, GKE, AKSなど）
+   - Kubernetesマニフェストの作成
+
+2. **Kubernetesデプロイフローの設定**
+   - CI/CDパイプラインの更新
+   - Helmチャートの作成
+
+## 5. 次のステップの優先順位
+
+1. **ローカル環境のDocker設定**（高優先度）
+   - Dockerのインストールと設定
+   - GitHubコンテナレジストリの認証設定
+
+2. **Dockerイメージのビルドとプッシュ**（高優先度）
+   - hotel-saasとhotel-commonのDockerイメージをビルドしてプッシュ
+
+3. **環境変数ファイルの設定**（高優先度）
+   - 環境変数ファイルの確認と修正
+   - Docker Compose実行時の環境変数ファイル指定
+
+4. **手動デプロイの実行**（高優先度）
+   - 修正した手動デプロイスクリプトの実行
+   - デプロイ結果の確認
+
+5. **GitHub Actionsによる自動デプロイの設定**（中優先度）
+   - GitHub Actionsワークフローの修正
+   - GitHub Actionsワークフローのテスト
+
+6. **Nginx設定のDocker対応**（中優先度）
+   - Nginx設定ファイルの作成
+   - Nginx設定のテスト
+
+7. **モニタリング設定**（低優先度）
+   - ログ収集の設定
+   - コンテナヘルスチェックの設定
+
+## 6. 結論
+
+hotel-saasとhotel-commonのDocker化の基本的な準備は整いましたが、実際のデプロイを成功させるためには、いくつかの課題を解決する必要があります。特に、ローカル環境のDocker設定、Dockerイメージのビルドとプッシュ、環境変数ファイルの設定が優先度の高い課題です。
+
+これらの課題を解決することで、Docker化によって環境の一貫性、デプロイの信頼性、スケーラビリティが向上し、開発からテスト、本番までのフローが効率化されることが期待されます。
