@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# Prismaスキーマと型定義の整合性をチェックするGit pre-commitフック
+# 
+# このスクリプトは以下を検証します：
+# 1. Prismaスキーマが有効であるか
+# 2. スキーマと生成される型定義が整合しているか
+# 3. アダプターパターンが適切に使用されているか
+#
+# インストール方法:
+# chmod +x scripts/git-hooks/prisma-check
+# ln -sf ../../scripts/git-hooks/prisma-check .git/hooks/pre-commit
+
+# 色の定義
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+echo -e "${YELLOW}Prismaスキーマと型定義の整合性をチェックしています...${NC}"
+
+# 現在のディレクトリを保存
+CURRENT_DIR=$(pwd)
+
+# リポジトリのルートディレクトリに移動
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Prismaスキーマファイルの変更を検出
+SCHEMA_CHANGED=$(git diff --cached --name-only | grep -E "prisma/schema.prisma$")
+
+# Prismaスキーマが変更された場合のみチェック
+if [ -n "$SCHEMA_CHANGED" ]; then
+  echo "Prismaスキーマが変更されました。整合性チェックを実行します..."
+  
+  # 1. スキーマの検証
+  echo "1. Prismaスキーマを検証しています..."
+  npx prisma validate
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}❌ Prismaスキーマの検証に失敗しました。エラーを修正してください。${NC}"
+    cd "$CURRENT_DIR" || exit 1
+    exit 1
+  fi
+  echo -e "${GREEN}✅ Prismaスキーマは有効です。${NC}"
+  
+  # 2. 型定義の生成
+  echo "2. 型定義を生成しています..."
+  npx prisma generate
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}❌ 型定義の生成に失敗しました。エラーを修正してください。${NC}"
+    cd "$CURRENT_DIR" || exit 1
+    exit 1
+  fi
+  echo -e "${GREEN}✅ 型定義が正常に生成されました。${NC}"
+  
+  # 生成されたファイルをステージングに追加
+  git add node_modules/.prisma/client
+  echo "生成された型定義ファイルをステージングに追加しました。"
+  
+  # 3. アダプターの不足チェック
+  echo "3. アダプターの不足をチェックしています..."
+  node scripts/detect-prisma-adapter-mismatch.js
+  if [ $? -ne 0 ]; then
+    echo -e "${YELLOW}⚠️ アダプターの不足が検出されました。警告を確認してください。${NC}"
+    # 警告のみの場合はコミットを許可
+  else
+    echo -e "${GREEN}✅ アダプターチェックに合格しました。${NC}"
+  fi
+else
+  # TypeScriptファイルの変更を検出
+  TS_CHANGED=$(git diff --cached --name-only | grep -E "\.ts$")
+  
+  if [ -n "$TS_CHANGED" ]; then
+    # アダプターの不足チェックのみ実行
+    echo "TypeScriptファイルが変更されました。アダプターの不足をチェックしています..."
+    node scripts/detect-prisma-adapter-mismatch.js
+    if [ $? -ne 0 ]; then
+      echo -e "${YELLOW}⚠️ アダプターの不足が検出されました。警告を確認してください。${NC}"
+      # 警告のみの場合はコミットを許可
+    else
+      echo -e "${GREEN}✅ アダプターチェックに合格しました。${NC}"
+    fi
+  else
+    echo "PrismaスキーマまたはTypeScriptファイルの変更はありません。チェックをスキップします。"
+  fi
+fi
+
+# 元のディレクトリに戻る
+cd "$CURRENT_DIR" || exit 1
+
+echo -e "${GREEN}Prismaチェックが完了しました。${NC}"
+exit 0
+
+
+

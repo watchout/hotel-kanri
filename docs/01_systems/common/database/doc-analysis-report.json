@@ -1,0 +1,62 @@
+{
+  "current_valid": [
+    "CURRENT_DATABASE_STATE_MASTER.md",
+    "DATABASE_CONNECTION_GUIDE.md",
+    "DATABASE_SAFETY_RULES.md",
+    "DATABASE_SCHEMA_CONSISTENCY_REPORT.md",
+    "database-schema-audit-report.json"
+  ],
+  "to_consolidate": [
+    "DATABASE_SCHEMA_DOCUMENTATION.md",
+    "SYSTEM_PLAN_MANAGEMENT_SUMMARY.md",
+    "database-management-summary.md",
+    "prisma-adapter-implementation-summary.md",
+    "prisma-migration-implementation-report.md",
+    "prisma-migration-progress-summary.md",
+    "project-summary.md"
+  ],
+  "to_delete": [
+    "SCHEMA_UPDATE_2025_08_15.md",
+    "database-migration-guidelines.md",
+    "database-schema-drift-analysis.md",
+    "hotel-saas-connection-fix.md",
+    "hotel-saas-device-room-analysis.md",
+    "hotel-saas-implementation-notification.md",
+    "hotel-saas-unified-client-issue.md",
+    "migration-issue-analysis.md",
+    "naming-convention-and-mapping-analysis.md",
+    "naming-convention-migration-risk-assessment.md",
+    "order-table-missing-analysis.md",
+    "prisma-adapter-migration-guide.md",
+    "prisma-adapter-next-steps.md",
+    "prisma-migration-implementation-report-update.md",
+    "prisma-migration-test-plan.md",
+    "prisma-naming-convention-guide.md",
+    "prisma-naming-conventions.md",
+    "prisma-note-select-scopes.md",
+    "prisma-schema-sync-best-practices.md",
+    "schema-database-inconsistency-report.md",
+    "schema-database-synchronization-plan.md",
+    "schema-sync-analysis.md",
+    "staff-auth-integration-plan.md",
+    "staff-users-discrepancy-analysis.md",
+    "team-communication-template.md"
+  ],
+  "to_update": [
+    "README.md",
+    "SOFT_DELETE_IMPLEMENTATION_GUIDE.md",
+    "SOFT_DELETE_STATUS_REPORT.md",
+    "SQL_DIRECT_OPERATION_PREVENTION.md",
+    "TEST_DATA_SETUP.md",
+    "device-room-operations-guide.md",
+    "device-room-table-creation.md",
+    "implementation-checklist.md",
+    "prisma-adapter-usage-guide.md",
+    "prisma-development-rules.md"
+  ],
+  "directories": [
+    "change-requests",
+    "design",
+    "migrations"
+  ]
+}

@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: Hotel PMS API
+  description: ホテル管理システムAPI - 運用効率特化
+  version: 1.0.0
+
+servers:
+  - url: https://pms.hotel-common.jp/api/v1
+    description: Production server
+  - url: http://localhost:3300/api/v1
+    description: Local development server
+
+paths:
+  /rooms:
+    get:
+      summary: 客室一覧取得
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 客室一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+    
+    post:
+      summary: 新規客室登録
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoomRequest'
+      responses:
+        '201':
+          description: 客室登録成功
+
+  /housekeeping:
+    get:
+      summary: 清掃状況取得
+      tags: [Housekeeping]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 清掃状況一覧
+
+  /maintenance:
+    get:
+      summary: 保守点検一覧
+      tags: [Maintenance]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 保守点検一覧
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+        number:
+          type: string
+        type:
+          type: string
+          enum: [standard, deluxe, suite]
+        status:
+          type: string
+          enum: [available, occupied, maintenance, cleaning]
+        floor:
+          type: integer
+        capacity:
+          type: integer
+        tenantId:
+          type: string
+
+    CreateRoomRequest:
+      type: object
+      required: [number, type, floor, capacity]
+      properties:
+        number:
+          type: string
+        type:
+          type: string
+          enum: [standard, deluxe, suite]
+        floor:
+          type: integer
+        capacity:
+          type: integer

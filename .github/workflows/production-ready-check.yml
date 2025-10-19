@@ -1,0 +1,138 @@
+name: 本番同等開発ルールチェック (Dokku デプロイ前の品質検証)
+
+# このワークフローはDokkuデプロイとは独立したコード品質検証を行います
+# PRのマージ前に実行され、本番同等開発ルールへの準拠を確認します
+# 実際のデプロイは別のワークフロー（deploy-dev.yml等）で行われます
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'hotel-saas/**'
+      - 'hotel-pms/**'
+      - 'hotel-member/**'
+      - 'hotel-common/**'
+  workflow_dispatch:
+    inputs:
+      system:
+        description: 'チェック対象システム (saas, pms, member, common, all)'
+        required: true
+        default: 'all'
+
+jobs:
+  check-saas:
+    name: hotel-saas チェック
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.system == 'saas' || github.event.inputs.system == 'all' }}
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: 本番同等開発ルールチェック (Dokku デプロイ前の品質検証)実行
+        run: |
+          chmod +x ./scripts/unify-dev/check-production-ready.sh
+          ./scripts/unify-dev/check-production-ready.sh saas
+        
+      - name: テストカバレッジチェック
+        working-directory: ./hotel-saas
+        run: |
+          npm ci
+          npm run test:coverage
+          
+          # カバレッジが80%未満の場合はエラー
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "::error::テストカバレッジが基準を満たしていません: $COVERAGE% (必要: 80%以上)"
+            exit 1
+          else
+            echo "テストカバレッジ: $COVERAGE% ✓"
+          fi
+
+  check-pms:
+    name: hotel-pms チェック
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.system == 'pms' || github.event.inputs.system == 'all' }}
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: 本番同等開発ルールチェック (Dokku デプロイ前の品質検証)実行
+        run: |
+          chmod +x ./scripts/unify-dev/check-production-ready.sh
+          ./scripts/unify-dev/check-production-ready.sh pms
+        
+      - name: テストカバレッジチェック
+        working-directory: ./hotel-pms
+        run: |
+          pnpm install
+          pnpm run test:coverage
+          
+          # カバレッジが90%未満の場合はエラー
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "::error::テストカバレッジが基準を満たしていません: $COVERAGE% (必要: 90%以上)"
+            exit 1
+          else
+            echo "テストカバレッジ: $COVERAGE% ✓"
+          fi
+
+  check-member:
+    name: hotel-member チェック
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.system == 'member' || github.event.inputs.system == 'all' }}
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: 本番同等開発ルールチェック (Dokku デプロイ前の品質検証)実行
+        run: |
+          chmod +x ./scripts/unify-dev/check-production-ready.sh
+          ./scripts/unify-dev/check-production-ready.sh member
+        
+      - name: Pythonセットアップ
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: テストカバレッジチェック
+        working-directory: ./hotel-member/fastapi-backend
+        run: |
+          pip install -r requirements-dev.txt
+          pytest --cov=app --cov-report=json
+          
+          # カバレッジが90%未満の場合はエラー
+          COVERAGE=$(cat coverage.json | jq -r '.totals.percent_covered')
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "::error::テストカバレッジが基準を満たしていません: $COVERAGE% (必要: 90%以上)"
+            exit 1
+          else
+            echo "テストカバレッジ: $COVERAGE% ✓"
+          fi
+
+  check-common:
+    name: hotel-common チェック
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.system == 'common' || github.event.inputs.system == 'all' }}
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: 本番同等開発ルールチェック (Dokku デプロイ前の品質検証)実行
+        run: |
+          chmod +x ./scripts/unify-dev/check-production-ready.sh
+          ./scripts/unify-dev/check-production-ready.sh common
+        
+      - name: テストカバレッジチェック
+        working-directory: ./hotel-common
+        run: |
+          npm ci
+          npm run test:coverage
+          
+          # カバレッジが90%未満の場合はエラー
+          COVERAGE=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          if (( $(echo "$COVERAGE < 90" | bc -l) )); then
+            echo "::error::テストカバレッジが基準を満たしていません: $COVERAGE% (必要: 90%以上)"
+            exit 1
+          else
+            echo "テストカバレッジ: $COVERAGE% ✓"
+          fi

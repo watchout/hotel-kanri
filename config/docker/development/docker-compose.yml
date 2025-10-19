@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - データベース
+  postgres:
+    image: postgres:14-alpine
+    container_name: dev-postgres
+    environment:
+      POSTGRES_USER: hotel_app
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hotel_unified_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotel_app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ - メッセージブローカー
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: dev-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: hotel_app
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis - キャッシュ
+  redis:
+    image: redis:alpine
+    container_name: dev-redis
+    command: redis-server --requirepass password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - dev-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  dev-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
+  redis-data:

@@ -1,0 +1,152 @@
+name: Docker Build and Deploy
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'hotel-saas/**'
+      - 'hotel-common/**'
+      - '.github/workflows/docker-deploy.yml'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'デプロイするサービス (all, hotel-saas, hotel-common)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - hotel-saas
+          - hotel-common
+      version:
+        description: 'デプロイするバージョン (タグ名またはブランチ名)'
+        required: true
+        default: 'main'
+        type: string
+
+env:
+  DOCKER_REGISTRY: ghcr.io/watchout
+  SERVER_IP: 163.44.117.60
+  DEPLOY_USER: deploy
+
+jobs:
+  build-and-push:
+    name: Dockerイメージのビルドとプッシュ
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [hotel-saas, hotel-common]
+    if: github.event.inputs.service == 'all' || github.event.inputs.service == matrix.service || github.event_name == 'push'
+    
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: Dockerログイン
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Docker Buildx設定
+        uses: docker/setup-buildx-action@v2
+        
+      - name: バージョン決定
+        id: version
+        run: |
+          VERSION="${{ github.event.inputs.version || github.ref_name }}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
+      - name: ビルドとプッシュ
+        uses: docker/build-push-action@v4
+        with:
+          context: ./${{ matrix.service }}
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/${{ matrix.service }}:${{ steps.version.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: サーバーへのデプロイ
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v3
+        
+      - name: SSH経由でデプロイ実行
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ env.SERVER_IP }}
+          username: ${{ env.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            
+            # hotel-kanriリポジトリのクローンまたは更新
+            if [ ! -d /opt/omotenasuai/hotel-kanri/.git ]; then
+              echo "hotel-kanriリポジトリをクローンしています..."
+              mkdir -p /opt/omotenasuai
+              git clone git@github.com:watchout/hotel-kanri.git /opt/omotenasuai/hotel-kanri
+            else
+              echo "hotel-kanriリポジトリを更新しています..."
+              cd /opt/omotenasuai/hotel-kanri
+              git fetch --all
+              git checkout ${{ github.ref_name }}
+              git pull origin ${{ github.ref_name }}
+            fi
+            
+            # 環境変数ファイルの準備
+            cd /opt/omotenasuai/hotel-kanri
+            if [ ! -f .env ]; then
+              cp templates/env/.env.template .env
+              # 必要な環境変数を設定
+              echo "DB_USER=hotel_app" >> .env
+              echo "DB_PASSWORD=xwJM6BoQPtiSSNVU7cgzI6L6qg6ncyJ9" >> .env
+              echo "DB_NAME=hotel_unified_db" >> .env
+              echo "REDIS_PASSWORD=r3d1sP@ssw0rd" >> .env
+              echo "RABBITMQ_USER=hotel_app" >> .env
+              echo "RABBITMQ_PASSWORD=r@bb1tMQP@ss" >> .env
+              echo "JWT_SECRET=OSQAiP2pbm3kwyKBNnP7ZkoKOgg0P/aGb7sU8c9XSHMMIZaTcBriWxexQA2gweMDgFLFoRs5+caCLbT0jnxW7g==" >> .env
+              echo "NODE_ENV=production" >> .env
+              echo "BASE_URL=https://dev-app.omotenasuai.com" >> .env
+            fi
+            
+            # バージョン設定
+            echo "DOCKER_REGISTRY=${{ env.DOCKER_REGISTRY }}" >> .env
+            echo "SAAS_VERSION=${{ github.event.inputs.version || github.ref_name }}" >> .env
+            echo "COMMON_VERSION=${{ github.event.inputs.version || github.ref_name }}" >> .env
+            
+            # Dockerイメージのプルと起動
+            cd /opt/omotenasuai/hotel-kanri
+            docker-compose -f config/docker/docker-compose.yml pull
+            docker-compose -f config/docker/docker-compose.yml up -d
+            
+            # ヘルスチェック
+            sleep 10
+            curl -f http://localhost:3100/health || echo "Warning: hotel-saas health check failed"
+            curl -f http://localhost:3400/health || echo "Warning: hotel-common health check failed"
+            
+            echo "デプロイ完了"
+
+  notify:
+    name: デプロイ通知
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: always()
+    
+    steps:
+      - name: Slack通知
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: |
+            Docker デプロイが${{ job.status == 'success' && '成功' || '失敗' }}しました
+            - サービス: ${{ github.event.inputs.service || 'all' }}
+            - バージョン: ${{ github.event.inputs.version || github.ref_name }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

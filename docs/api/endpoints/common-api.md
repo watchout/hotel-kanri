@@ -94,133 +94,215 @@ POST /auth/logout
 }
 ```
 
-## ユーザー管理API
+## スタッフ管理API
 
-### ユーザー作成
+### スタッフ作成（管理者用）
 
 ```
-POST /users
+POST /admin/staff
 ```
+
+#### 権限要件
+- 管理者権限（baseLevel 4以上）が必要
 
 #### リクエストボディ
 ```json
 {
-  "email": "new.user@example.com",
+  "email": "new.staff@example.com",
   "password": "password123",
   "firstName": "花子",
   "lastName": "鈴木",
-  "role": "STAFF",
-  "permissions": ["read:customers"]
+  "displayName": "鈴木 花子",
+  "staffCode": "S003",
+  "staffNumber": "003",
+  "departmentCode": "FRONT",
+  "positionTitle": "フロントスタッフ",
+  "baseLevel": 2,
+  "employmentType": "full_time"
 }
 ```
 
 #### レスポンス
 ```json
 {
-  "id": "user_456",
-  "email": "new.user@example.com",
+  "id": "staff_456",
+  "email": "new.staff@example.com",
   "firstName": "花子",
   "lastName": "鈴木",
-  "role": "STAFF",
-  "permissions": ["read:customers"],
+  "displayName": "鈴木 花子",
+  "staffCode": "S003",
+  "departmentCode": "FRONT",
+  "positionTitle": "フロントスタッフ",
+  "baseLevel": 2,
+  "employmentStatus": "active",
   "createdAt": "2023-01-01T10:00:00Z"
 }
 ```
 
-### ユーザー一覧取得
+### スタッフ一覧取得（管理者用）
 
 ```
-GET /users
+GET /admin/staff
 ```
+
+#### 権限要件
+- 管理者権限（baseLevel 3以上）が必要
 
 #### クエリパラメータ
-- `role`: ロールでフィルタリング（任意）
+- `departmentCode`: 部門コードでフィルタリング（任意）
+- `employmentStatus`: 雇用ステータスでフィルタリング（任意）
+- `baseLevel`: 権限レベルでフィルタリング（任意）
+- `search`: 名前、メールアドレス、スタッフコードで検索（任意）
 - `page`: ページ番号（デフォルト: 1）
-- `limit`: 1ページあたりの件数（デフォルト: 20）
+- `pageSize`: 1ページあたりの件数（デフォルト: 20）
 
 #### レスポンス
 ```json
 {
   "data": [
     {
-      "id": "user_123",
-      "email": "user@example.com",
-      "firstName": "太郎",
-      "lastName": "山田",
-      "role": "MANAGER",
+      "id": "staff_123",
+      "staffCode": "S001",
+      "displayName": "山田 太郎",
+      "email": "yamada@example.com",
+      "departmentCode": "FRONT",
+      "positionTitle": "フロント主任",
+      "baseLevel": 3,
+      "employmentStatus": "active",
+      "lastLoginAt": "2023-01-05T09:30:00Z",
       "createdAt": "2022-12-01T10:00:00Z"
     },
     {
-      "id": "user_456",
-      "email": "new.user@example.com",
-      "firstName": "花子",
-      "lastName": "鈴木",
-      "role": "STAFF",
+      "id": "staff_456",
+      "staffCode": "S003",
+      "displayName": "鈴木 花子",
+      "email": "suzuki@example.com",
+      "departmentCode": "FRONT",
+      "positionTitle": "フロントスタッフ",
+      "baseLevel": 2,
+      "employmentStatus": "active",
+      "lastLoginAt": "2023-01-04T14:20:00Z",
       "createdAt": "2023-01-01T10:00:00Z"
     }
   ],
   "pagination": {
     "total": 25,
     "page": 1,
-    "limit": 20,
-    "pages": 2
+    "pageSize": 20,
+    "totalPages": 2
+  },
+  "summary": {
+    "totalStaff": 25,
+    "activeStaff": 23,
+    "inactiveStaff": 2,
+    "departmentCounts": {
+      "FRONT": 8,
+      "HOUSEKEEPING": 12,
+      "RESTAURANT": 5
+    }
   }
 }
 ```
 
-### ユーザー詳細取得
+### スタッフ詳細取得（管理者用）
 
 ```
-GET /users/:id
+GET /admin/staff/:id
 ```
+
+#### 権限要件
+- 管理者権限（baseLevel 3以上）が必要
 
 #### パスパラメータ
-- `id`: ユーザーID
+- `id`: スタッフID
 
 #### レスポンス
 ```json
 {
-  "id": "user_123",
-  "email": "user@example.com",
-  "firstName": "太郎",
+  "id": "staff_123",
+  "tenantId": "tenant_001",
+  "staffCode": "S001",
+  "staffNumber": "001",
   "lastName": "山田",
-  "role": "MANAGER",
-  "permissions": ["read:customers", "write:reservations"],
+  "firstName": "太郎",
+  "displayName": "山田 太郎",
+  "email": "yamada@example.com",
+  "departmentCode": "FRONT",
+  "positionTitle": "フロント主任",
+  "baseLevel": 3,
+  "employmentType": "full_time",
+  "employmentStatus": "active",
+  "hireDate": "2022-12-01",
   "lastLoginAt": "2023-01-05T09:30:00Z",
   "createdAt": "2022-12-01T10:00:00Z",
   "updatedAt": "2023-01-02T14:20:00Z"
 }
 ```
 
-### ユーザー更新
+### スタッフ更新（管理者用）
 
 ```
-PATCH /users/:id
+PATCH /admin/staff/:id
 ```
+
+#### 権限要件
+- 管理者権限（baseLevel 3以上）が必要
+- 自分より上位レベルのスタッフは更新不可
 
 #### パスパラメータ
-- `id`: ユーザーID
+- `id`: スタッフID
 
 #### リクエストボディ
 ```json
 {
   "firstName": "太郎",
   "lastName": "田中",
-  "role": "ADMIN",
-  "permissions": ["read:customers", "write:reservations", "read:billing"]
+  "displayName": "田中 太郎",
+  "departmentCode": "MANAGEMENT",
+  "positionTitle": "副支配人",
+  "baseLevel": 4,
+  "employmentStatus": "active"
 }
 ```
 
 #### レスポンス
 ```json
 {
-  "id": "user_123",
-  "email": "user@example.com",
+  "id": "staff_123",
+  "email": "yamada@example.com",
   "firstName": "太郎",
   "lastName": "田中",
-  "role": "ADMIN",
-  "permissions": ["read:customers", "write:reservations", "read:billing"],
+  "displayName": "田中 太郎",
+  "departmentCode": "MANAGEMENT",
+  "positionTitle": "副支配人",
+  "baseLevel": 4,
+  "employmentStatus": "active",
   "updatedAt": "2023-01-06T11:15:00Z"
+}
+```
+
+### スタッフ削除（管理者用）
+
+```
+DELETE /admin/staff/:id
+```
+
+#### 権限要件
+- 管理者権限（baseLevel 4以上）が必要
+- システムユーザーは削除不可
+
+#### パスパラメータ
+- `id`: スタッフID
+
+#### クエリパラメータ
+- `soft`: ソフト削除フラグ（デフォルト: true）
+
+#### レスポンス
+```json
+{
+  "success": true,
+  "message": "スタッフを削除しました",
+  "deletedAt": "2023-03-01T15:00:00Z"
 }
 ```
 
