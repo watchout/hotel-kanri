@@ -86,10 +86,10 @@ git clone https://github.com/watchout/hotel-kanri.git
 cd hotel-kanri
 
 # hotel-saasリポジトリのクローン
-git clone https://github.com/watchout/hotel-saas.git ../hotel-saas
+git clone https://github.com/watchout/hotel-saas.git /Users/kaneko/hotel-saas
 
 # hotel-commonリポジトリのクローン
-git clone https://github.com/watchout/hotel-common.git ../hotel-common
+git clone https://github.com/watchout/hotel-common.git /Users/kaneko/hotel-common
 ```
 
 ### 3.3. 開発環境の起動
@@ -121,7 +121,7 @@ docker-compose -f config/docker/development/docker-compose.yml ps
 
 ```bash
 # hotel-saasディレクトリに移動
-cd ../hotel-saas
+cd /Users/kaneko/hotel-saas
 
 # 環境変数ファイルの作成
 cp .env.example .env

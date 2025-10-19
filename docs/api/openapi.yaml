@@ -709,6 +709,337 @@ components:
           maximum: 5
         comment:
           type: string
+    
+    # スタッフ関連
+    Staff:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+        staffCode:
+          type: string
+        staffNumber:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        lastNameKana:
+          type: string
+          nullable: true
+        firstNameKana:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+        employeeId:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        emailVerifiedAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastLoginAt:
+          type: string
+          format: date-time
+          nullable: true
+        failedLoginCount:
+          type: integer
+          default: 0
+        lockedUntil:
+          type: string
+          format: date-time
+          nullable: true
+        defaultRoleId:
+          type: string
+          format: uuid
+          nullable: true
+        baseLevel:
+          type: integer
+          default: 1
+        departmentCode:
+          type: string
+          nullable: true
+        positionTitle:
+          type: string
+          nullable: true
+        hireDate:
+          type: string
+          format: date
+          nullable: true
+        employmentType:
+          type: string
+          enum: [full_time, part_time, contract, temporary]
+          default: full_time
+        employmentStatus:
+          type: string
+          enum: [active, inactive, suspended, terminated]
+          default: active
+        terminationDate:
+          type: string
+          format: date
+          nullable: true
+        terminationReason:
+          type: string
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        emergencyContact:
+          type: object
+          nullable: true
+        address:
+          type: object
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        bio:
+          type: string
+          nullable: true
+        skills:
+          type: object
+          nullable: true
+        shiftPattern:
+          type: string
+          nullable: true
+        hourlyRate:
+          type: number
+          nullable: true
+        salary:
+          type: number
+          nullable: true
+        supervisorId:
+          type: string
+          format: uuid
+          nullable: true
+        accessRestrictions:
+          type: object
+          default: {}
+        notificationSettings:
+          type: object
+          default: {}
+        uiPreferences:
+          type: object
+          default: {}
+        securityClearance:
+          type: string
+          nullable: true
+        accessCardId:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+          default: true
+        isSystemUser:
+          type: boolean
+          default: false
+        notes:
+          type: string
+          nullable: true
+        hotelCommonUserId:
+          type: string
+          format: uuid
+          nullable: true
+        legacyUserData:
+          type: object
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+          format: uuid
+          nullable: true
+        updatedBy:
+          type: string
+          format: uuid
+          nullable: true
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+    
+    StaffSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        staffCode:
+          type: string
+        staffNumber:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+          format: email
+          nullable: true
+        departmentCode:
+          type: string
+          nullable: true
+        positionTitle:
+          type: string
+          nullable: true
+        baseLevel:
+          type: integer
+        employmentStatus:
+          type: string
+          enum: [active, inactive, suspended, terminated]
+        lastLoginAt:
+          type: string
+          format: date-time
+          nullable: true
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    
+    StaffCreate:
+      type: object
+      required:
+        - lastName
+        - firstName
+        - displayName
+        - staffCode
+        - staffNumber
+      properties:
+        lastName:
+          type: string
+        firstName:
+          type: string
+        lastNameKana:
+          type: string
+        firstNameKana:
+          type: string
+        displayName:
+          type: string
+        staffCode:
+          type: string
+        staffNumber:
+          type: string
+        employeeId:
+          type: string
+        email:
+          type: string
+          format: email
+        departmentCode:
+          type: string
+        positionTitle:
+          type: string
+        baseLevel:
+          type: integer
+          minimum: 1
+          maximum: 5
+        employmentType:
+          type: string
+          enum: [full_time, part_time, contract, temporary]
+        hireDate:
+          type: string
+          format: date
+        phoneNumber:
+          type: string
+        emergencyContact:
+          type: object
+        address:
+          type: object
+        bio:
+          type: string
+        skills:
+          type: object
+        shiftPattern:
+          type: string
+        hourlyRate:
+          type: number
+        salary:
+          type: number
+        supervisorId:
+          type: string
+          format: uuid
+        notes:
+          type: string
+    
+    StaffUpdate:
+      type: object
+      properties:
+        lastName:
+          type: string
+        firstName:
+          type: string
+        lastNameKana:
+          type: string
+        firstNameKana:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+          format: email
+        departmentCode:
+          type: string
+        positionTitle:
+          type: string
+        baseLevel:
+          type: integer
+          minimum: 1
+          maximum: 5
+        employmentType:
+          type: string
+          enum: [full_time, part_time, contract, temporary]
+        employmentStatus:
+          type: string
+          enum: [active, inactive, suspended, terminated]
+        terminationDate:
+          type: string
+          format: date
+        terminationReason:
+          type: string
+        phoneNumber:
+          type: string
+        emergencyContact:
+          type: object
+        address:
+          type: object
+        bio:
+          type: string
+        skills:
+          type: object
+        shiftPattern:
+          type: string
+        hourlyRate:
+          type: number
+        salary:
+          type: number
+        supervisorId:
+          type: string
+          format: uuid
+        accessRestrictions:
+          type: object
+        notificationSettings:
+          type: object
+        uiPreferences:
+          type: object
+        securityClearance:
+          type: string
+        accessCardId:
+          type: string
+        isActive:
+          type: boolean
+        notes:
+          type: string
 
 # パス定義
 paths:
@@ -1134,6 +1465,354 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: 顧客が見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # スタッフ管理API（hotel-common）
+  /admin/staff:
+    get:
+      summary: スタッフ一覧取得（管理者用）
+      operationId: getAdminStaffList
+      tags:
+        - admin
+        - staff
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: search
+          in: query
+          description: 名前、メールアドレス、スタッフコードで検索
+          schema:
+            type: string
+        - name: departmentCode
+          in: query
+          description: 部門コードでフィルタリング
+          schema:
+            type: string
+        - name: employmentStatus
+          in: query
+          description: 雇用ステータスでフィルタリング
+          schema:
+            type: string
+            enum: [active, inactive, suspended, terminated]
+        - name: baseLevel
+          in: query
+          description: 権限レベルでフィルタリング
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: sortBy
+          in: query
+          description: ソート項目
+          schema:
+            type: string
+            enum: [displayName, staffCode, departmentCode, baseLevel, lastLoginAt, createdAt]
+            default: displayName
+        - name: sortOrder
+          in: query
+          description: ソート順序
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: スタッフ一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StaffSummary'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+                  summary:
+                    type: object
+                    properties:
+                      totalStaff:
+                        type: integer
+                      activeStaff:
+                        type: integer
+                      inactiveStaff:
+                        type: integer
+                      departmentCounts:
+                        type: object
+                        additionalProperties:
+                          type: integer
+        '400':
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: 権限不足（管理者権限が必要）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      summary: スタッフ作成（管理者用）
+      operationId: createAdminStaff
+      tags:
+        - admin
+        - staff
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffCreate'
+      responses:
+        '201':
+          description: スタッフ作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: 重複エラー（スタッフコード、メールアドレス等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: 権限不足（管理者権限が必要）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /admin/staff/{id}:
+    get:
+      summary: スタッフ詳細取得（管理者用）
+      operationId: getAdminStaff
+      tags:
+        - admin
+        - staff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: スタッフ詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '404':
+          description: スタッフが見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: 権限不足（管理者権限が必要）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    patch:
+      summary: スタッフ情報更新（管理者用）
+      operationId: updateAdminStaff
+      tags:
+        - admin
+        - staff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffUpdate'
+      responses:
+        '200':
+          description: スタッフ更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: スタッフが見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: 重複エラー（メールアドレス等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: 権限不足（管理者権限が必要）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    delete:
+      summary: スタッフ削除（管理者用）
+      operationId: deleteAdminStaff
+      tags:
+        - admin
+        - staff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: soft
+          in: query
+          description: ソフト削除フラグ（デフォルト：true）
+          schema:
+            type: boolean
+            default: true
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: スタッフ削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  deletedAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+        '404':
+          description: スタッフが見つかりません
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: 削除不可（システムユーザー等）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: 権限不足（管理者権限が必要）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # 既存のスタッフAPI（個別取得用）
+  /staff/{id}:
+    get:
+      summary: スタッフ詳細取得
+      operationId: getStaff
+      tags:
+        - staff
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: スタッフ詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '404':
+          description: スタッフが見つかりません
           content:
             application/json:
               schema:

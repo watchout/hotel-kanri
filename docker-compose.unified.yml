@@ -1,0 +1,262 @@
+# 🐳 統合Docker Compose設定
+# UNIFY-DEV統合システム - 4システム完全統合
+# 作成者: Iza（統合管理者）
+# 日付: 2025年1月18日
+
+services:
+  # ☀️ hotel-saas（Sun担当）- AIコンシェルジュシステム
+  saas:
+    build:
+      context: ../hotel-saas
+      dockerfile: Dockerfile
+      target: build
+    container_name: hotel-saas-unified
+    working_dir: /app
+    volumes:
+      - ../hotel-saas:/app
+      - saas_node_modules:/app/node_modules
+      - saas_cache:/app/cache
+    command: sh -c "npm install && npx tsc -p tsconfig.dev.json --watch"
+    environment:
+      - NODE_ENV=development
+      - NUXT_PORT=3100
+      - NUXT_HOST=0.0.0.0
+      - DATABASE_URL=postgresql://hotel_app:password@db:5432/hotel_unified_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - JWT_SECRET=hotel-saas-integration-secret-key-2025
+      - OFFLINE_MODE_ENABLED=false
+      - MOCK_API=false
+    ports:
+      - "3100:3100"
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+      - common
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 🌙 hotel-pms（Luna担当）- フロント業務システム
+  pms:
+    build:
+      context: ../hotel-pms
+      dockerfile: Dockerfile
+    container_name: hotel-pms-unified
+    working_dir: /app
+    volumes:
+      - ../hotel-pms:/app
+      - pms_node_modules:/app/node_modules
+      - pms_cache:/app/cache
+    command: sh -c "pnpm install && concurrently \"pnpm run dev:vite-only --port 3300 --host 0.0.0.0\" \"node dev-api-server.js\""
+    environment:
+      - NODE_ENV=development
+      - PORT=3300
+      - API_PORT=3301
+      - UNIFY_ENV=docker
+      - DATABASE_URL=postgresql://hotel_app:password@db:5432/hotel_unified_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - TENANT_ID=default
+      - OFFLINE_FIRST=false
+      - SYNC_INTERVAL=300000
+      - HOST=0.0.0.0
+      - MOCK_API=false
+    ports:
+      - "3300:3300"  # ブラウザ版
+      - "3301:3301"  # API/Electron版
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+      - common
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3300/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ⚡ hotel-member（Suno担当）- 会員管理システム
+  member:
+    build:
+      context: ../hotel-member
+      dockerfile: Dockerfile
+    container_name: hotel-member-unified
+    working_dir: /app
+    volumes:
+      - ../hotel-member:/app
+      - member_node_modules:/app/node_modules
+      - member_cache:/app/cache
+    command: sh -c "pnpm install && pnpm run dev --port 8080 --host 0.0.0.0"
+    environment:
+      - NODE_ENV=development
+      - UI_PORT=8080
+      - API_PORT=3200
+      - UNIFY_ENV=docker
+      - DATABASE_URL=postgresql://hotel_app:password@db:5432/hotel_unified_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - TENANT_ID=default
+      - JWT_SECRET=hotel-member-integration-secret-key-2025
+      - JWT_EXPIRES_IN=24h
+      - GDPR_COMPLIANCE=true
+      - DATA_RETENTION_DAYS=2555
+      - HOST=0.0.0.0
+      - MOCK_API=false
+    ports:
+      - "8080:8080"  # Nuxt UI
+      - "3200:3200"  # FastAPI
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+      - common
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 🌊 hotel-common（Iza担当）- 共通基盤システム
+  common:
+    build:
+      context: ../hotel-common
+      dockerfile: Dockerfile
+    container_name: hotel-common-unified
+    working_dir: /app
+    volumes:
+      - ../hotel-common:/app
+      - common_node_modules:/app/node_modules
+    command: sh -c "npm install && ./start-dev-server.sh"
+    environment:
+      - NODE_ENV=development
+      - PORT=3400
+      - DATABASE_URL=postgresql://hotel_app:password@db:5432/hotel_unified_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - JWT_SECRET=hotel-common-integration-secret-key-2025
+      - MOCK_API=false
+    ports:
+      - "3400:3400"
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3400/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 💾 PostgreSQL統一データベース（hotel-common統一スキーマ）
+  db:
+    image: postgres:16
+    container_name: hotel-unified-db
+    environment:
+      - POSTGRES_USER=hotel_app
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=hotel_unified_db
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotel_app -d hotel_unified_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 🔴 Redis キャッシュ
+  redis:
+    image: redis:8.2.0
+    container_name: hotel-unified-redis
+    command: redis-server --requirepass password --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # 🐰 RabbitMQ メッセージブローカー
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: hotel-unified-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=hotel_app
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_VHOST=/
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# 📦 Docker Volumes
+volumes:
+  # データベース永続化
+  pgdata:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  
+  # Node.js依存関係（システム別分離）
+  saas_node_modules:
+    driver: local
+  pms_node_modules:
+    driver: local
+  member_node_modules:
+    driver: local
+  common_node_modules:
+    driver: local
+  
+  # オフライン用キャッシュ
+  saas_cache:
+    driver: local
+  pms_cache:
+    driver: local
+  member_cache:
+    driver: local
+
+# 🌐 Docker Networks
+networks:
+  default:
+    name: hotel-unified-network
+    driver: bridge

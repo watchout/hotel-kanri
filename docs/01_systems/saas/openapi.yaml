@@ -1,0 +1,167 @@
+openapi: "3.1.0"
+info:
+  title: Guest-Facing Hotel API
+  version: "0.1.0"
+  description: >
+    Minimal set of endpoints for MVP (客室オーダー UI / AI 館内情報 / 内線 VoIP).
+servers:
+  - url: https://api.example.com
+paths:
+  /guest/menu:
+    get:
+      summary: Get active menu items
+      tags: [Menu]
+      responses:
+        "200":
+          description: Active menu
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuList"
+
+  /guest/orders:
+    post:
+      summary: Create a new room-service order
+      tags: [Order]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreate"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /guest/orders/{orderId}:
+    get:
+      summary: Get status of a specific order
+      tags: [Order]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /guest/ai-messages:
+    post:
+      summary: Send a message to AI concierge
+      tags: [AI]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIMessage"
+      responses:
+        "200":
+          description: AI reply
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIMessageResponse"
+
+  /guest/voip/call:
+    post:
+      summary: Initiate a VoIP call to the front desk
+      tags: [VoIP]
+      requestBody:
+        required: false
+      responses:
+        "201":
+          description: Call initiated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CallSession"
+
+components:
+  schemas:
+    ## Menu
+    MenuItem:
+      type: object
+      properties:
+        id: { type: integer, example: 101 }
+        name: { type: string, example: "Margherita Pizza" }
+        description: { type: string }
+        price: { type: number, format: float, example: 14.5 }
+        imageUrl: { type: string, format: uri }
+      required: [id, name, price]
+
+    MenuList:
+      type: array
+      items: { $ref: "#/components/schemas/MenuItem" }
+
+    ## Orders
+    OrderItemInput:
+      type: object
+      properties:
+        menuItemId: { type: integer, example: 101 }
+        quantity:   { type: integer, example: 2 }
+      required: [menuItemId, quantity]
+
+    OrderCreate:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OrderItemInput" }
+      required: [items]
+
+    OrderItem:
+      type: object
+      properties:
+        menuItemId: { type: integer }
+        name:       { type: string }
+        quantity:   { type: integer }
+        price:      { type: number, format: float }
+      required: [menuItemId, name, quantity, price]
+
+    Order:
+      type: object
+      properties:
+        id:           { type: integer }
+        status:       { type: string, enum: [pending, preparing, delivering, completed, cancelled] }
+        totalAmount:  { type: number, format: float }
+        orderedAt:    { type: string, format: date-time }
+        completedAt:  { type: string, format: date-time, nullable: true }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OrderItem" }
+      required: [id, status, totalAmount, orderedAt, items]
+
+    ## AI Concierge
+    AIMessage:
+      type: object
+      properties:
+        message: { type: string, example: "チェックアウトを延長したいのですが…" }
+        language: { type: string, example: "ja" }
+      required: [message]
+
+    AIMessageResponse:
+      type: object
+      properties:
+        reply: { type: string }
+        escalated: { type: boolean, description: "true if forwarded to human staff" }
+      required: [reply, escalated]
+
+    ## VoIP
+    CallSession:
+      type: object
+      properties:
+        callId:   { type: string, example: "voip_abc123" }
+        status:   { type: string, enum: [ringing, in_progress, ended] }
+        startedAt: { type: string, format: date-time }
+      required: [callId, status, startedAt]

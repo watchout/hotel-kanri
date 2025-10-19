@@ -1,0 +1,479 @@
+[
+  {
+    "category": "00_foundation",
+    "number": 1,
+    "name": "SSOT_SAAS_AUTHENTICATION.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "Session認証完成"
+  },
+  {
+    "category": "00_foundation",
+    "number": 2,
+    "name": "SSOT_SAAS_ADMIN_AUTHENTICATION.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "管理画面認証完成"
+  },
+  {
+    "category": "00_foundation",
+    "number": 3,
+    "name": "SSOT_SAAS_DEVICE_AUTHENTICATION.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "客室端末認証完成"
+  },
+  {
+    "category": "00_foundation",
+    "number": 4,
+    "name": "SSOT_DATABASE_MIGRATION_OPERATION.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "マイグレーション運用"
+  },
+  {
+    "category": "00_foundation",
+    "number": 5,
+    "name": "SSOT_SAAS_MULTITENANT.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "マルチテナント基盤"
+  },
+  {
+    "category": "00_foundation",
+    "number": 6,
+    "name": "SSOT_SAAS_DATABASE_SCHEMA.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "completed",
+    "remark": "DBスキーマ v2.0完了"
+  },
+  {
+    "category": "00_foundation",
+    "number": 7,
+    "name": "SSOT_MULTILINGUAL_SYSTEM.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "多言語化（未実装）"
+  },
+  {
+    "category": "00_foundation",
+    "number": 8,
+    "name": "SSOT_MULTICULTURAL_AI.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "多文化AI（未実装）"
+  },
+  {
+    "category": "00_foundation",
+    "number": 9,
+    "name": "**SSOT_SAAS_STAFF_MANAGEMENT.md**",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "**🚨重大な抜け**"
+  },
+  {
+    "category": "00_foundation",
+    "number": 10,
+    "name": "SSOT_SAAS_MEDIA_MANAGEMENT.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "メディア管理 v1.0.0"
+  },
+  {
+    "category": "00_foundation",
+    "number": 11,
+    "name": "SSOT_SAAS_EMAIL_SYSTEM.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "メール送信 v1.0.0"
+  },
+  {
+    "category": "00_foundation",
+    "number": 12,
+    "name": "SSOT_SAAS_PAYMENT_INTEGRATION.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "決済連携"
+  },
+  {
+    "category": "00_foundation",
+    "number": 13,
+    "name": "SSOT_SAAS_SYSTEM_INTEGRATION.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "システム間連携"
+  },
+  {
+    "category": "00_foundation",
+    "number": 14,
+    "name": "SSOT_PRODUCTION_PARITY_RULES.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "na",
+    "commonImplementation": "na",
+    "remark": "本番同等ルール"
+  },
+  {
+    "category": "00_foundation",
+    "number": 15,
+    "name": "SSOT_TEST_ENVIRONMENT.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "na",
+    "commonImplementation": "na",
+    "remark": "テスト環境"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 1,
+    "name": "SSOT_SAAS_DASHBOARD.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "ダッシュボード"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 2,
+    "name": "SSOT_ADMIN_AI_CONCIERGE.md",
+    "ssotCreation": "in_progress",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "**作成中**"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 3,
+    "name": "SSOT_SAAS_ORDER_MANAGEMENT.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "注文管理"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 4,
+    "name": "SSOT_SAAS_MENU_MANAGEMENT.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "completed",
+    "remark": "メニュー管理"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 5,
+    "name": "SSOT_SAAS_ROOM_MANAGEMENT.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "completed",
+    "remark": "客室管理 v3.0.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 6,
+    "name": "SSOT_SAAS_FRONT_DESK_OPERATIONS.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "フロント業務"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 7,
+    "name": "SSOT_ADMIN_BASIC_SETTINGS.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "基本設定"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 8,
+    "name": "SSOT_ADMIN_UI_DESIGN.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "UI設計 v1.2.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 9,
+    "name": "SSOT_ADMIN_STATISTICS_CORE.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "統計分析 v1.1.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 10,
+    "name": "SSOT_ADMIN_STATISTICS_AI.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "AI分析 v1.1.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 11,
+    "name": "SSOT_ADMIN_STATISTICS_DELIVERY.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "配信分析 v1.1.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 12,
+    "name": "SSOT_SAAS_SUPER_ADMIN.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "スーパーアドミン v2.0.1"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 13,
+    "name": "SSOT_SAAS_PERMISSION_SYSTEM.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "権限管理 v1.3.1"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 14,
+    "name": "SSOT_ADMIN_SYSTEM_LOGS.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "システムログ v1.1.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 15,
+    "name": "SSOT_ADMIN_BILLING.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "請求管理 v1.0.0"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 16,
+    "name": "SSOT_ADMIN_CONTENT_APPS.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "アプリ管理"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 17,
+    "name": "SSOT_ADMIN_CAMPAIGNS.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "キャンペーン"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 18,
+    "name": "SSOT_ADMIN_FACILITY_RESERVATION.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "館内施設予約"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 19,
+    "name": "SSOT_ADMIN_BUSINESS_MANAGEMENT.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "ビジネス管理"
+  },
+  {
+    "category": "01_admin_features",
+    "number": 20,
+    "name": "SSOT_ADMIN_AI_SETTINGS.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "todo",
+    "remark": "AI設定 v1.0.0"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 1,
+    "name": "SSOT_GUEST_ROOM_SERVICE_UI.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "completed",
+    "commonImplementation": "na",
+    "remark": "客室UI完成"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 28,
+    "name": "SSOT_GUEST_ORDER_FLOW.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "na",
+    "remark": "注文フロー v1.0.0"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 29,
+    "name": "SSOT_GUEST_MENU_VIEW.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "na",
+    "remark": "メニュー閲覧 v1.0.0"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 30,
+    "name": "SSOT_GUEST_DEVICE_APP.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "na",
+    "remark": "WebViewアプリ v1.0.0"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 5,
+    "name": "SSOT_GUEST_CAMPAIGN_VIEW.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "na",
+    "remark": "キャンペーン表示"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 6,
+    "name": "SSOT_GUEST_INFO_PORTAL.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "na",
+    "remark": "情報ポータル"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 7,
+    "name": "SSOT_GUEST_AI_CHAT.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "na",
+    "remark": "AIチャット"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 8,
+    "name": "SSOT_GUEST_APP_LAUNCHER.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "na",
+    "remark": "アプリ起動"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 9,
+    "name": "SSOT_GUEST_PAGE_ROUTING.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "na",
+    "remark": "ページ遷移"
+  },
+  {
+    "category": "02_guest_features",
+    "number": 10,
+    "name": "SSOT_GUEST_DEVICE_RESET.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "na",
+    "remark": "端末リセット"
+  },
+  {
+    "category": "03_business_features",
+    "number": 1,
+    "name": "SSOT_SAAS_AI_CONCIERGE_GUEST.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "客室AIチャット"
+  },
+  {
+    "category": "03_business_features",
+    "number": 2,
+    "name": "SSOT_SAAS_AI_CONCIERGE_SETTINGS.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "AI基本設定"
+  },
+  {
+    "category": "03_business_features",
+    "number": 3,
+    "name": "SSOT_SAAS_AI_KNOWLEDGE_BASE.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "AIナレッジベース"
+  },
+  {
+    "category": "03_business_features",
+    "number": 4,
+    "name": "SSOT_SAAS_SYSTEM_BASIC.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "システム基本設定"
+  },
+  {
+    "category": "04_monitoring",
+    "number": 1,
+    "name": "SSOT_OPERATIONAL_LOG_ARCHITECTURE.md",
+    "ssotCreation": "completed",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "運用ログ（既存）"
+  },
+  {
+    "category": "04_monitoring",
+    "number": 2,
+    "name": "SSOT_SAAS_AUDIT_LOG.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "todo",
+    "commonImplementation": "todo",
+    "remark": "監査ログ"
+  },
+  {
+    "category": "04_monitoring",
+    "number": 3,
+    "name": "SSOT_SAAS_ERROR_HANDLING.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "エラーハンドリング"
+  },
+  {
+    "category": "04_monitoring",
+    "number": 4,
+    "name": "SSOT_SAAS_LOG_SYSTEM.md",
+    "ssotCreation": "todo",
+    "saasImplementation": "in_progress",
+    "commonImplementation": "in_progress",
+    "remark": "ログシステム統合"
+  }
+]

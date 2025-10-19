@@ -1,0 +1,88 @@
+// レスポンスツリーセッション管理のためのスキーマ提案
+// 既存のResponseTree, ResponseNode, ResponseNodeTranslation, ResponseTreeVersionモデルに加えて
+// 以下のモデルを追加することを提案します
+
+// セッション管理モデル
+model ResponseTreeSession {
+  id            String    @id @default(cuid())
+  sessionId     String    @unique // 外部システムとの連携用ID
+  deviceId      Int?
+  roomId        String?
+  startedAt     DateTime  @default(now())
+  endedAt       DateTime?
+  lastActivityAt DateTime  @default(now())
+  language      String    @default("ja")
+  interfaceType String    @default("tv") // "tv" または "mobile"
+  currentNodeId String?
+  
+  // 関連
+  device        DeviceRoom? @relation(fields: [deviceId], references: [id])
+  currentNode   ResponseNode? @relation("CurrentNode", fields: [currentNodeId], references: [id])
+  history       ResponseTreeHistory[]
+  mobileLinks   ResponseTreeMobileLink[]
+  
+  @@index([deviceId])
+  @@index([roomId])
+  @@index([language])
+  @@index([interfaceType])
+  @@index([currentNodeId])
+}
+
+// セッション履歴モデル
+model ResponseTreeHistory {
+  id         String   @id @default(cuid())
+  sessionId  String
+  nodeId     String
+  timestamp  DateTime @default(now())
+  action     String   // "view", "select", "back" など
+  
+  // 関連
+  session    ResponseTreeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  node       ResponseNode @relation(fields: [nodeId], references: [id])
+  
+  @@index([sessionId])
+  @@index([nodeId])
+  @@index([timestamp])
+}
+
+// モバイル連携モデル
+model ResponseTreeMobileLink {
+  id          String   @id @default(cuid())
+  sessionId   String
+  linkCode    String   @unique
+  deviceId    Int?
+  roomId      String?
+  userId      String?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+  isValid     Boolean  @default(true)
+  connectionId String?
+  status      String   @default("pending") // "pending", "connected", "expired"
+  connectedAt DateTime?
+  deviceInfo  Json?
+  
+  // 関連
+  session     ResponseTreeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  device      DeviceRoom? @relation(fields: [deviceId], references: [id])
+  
+  @@index([sessionId])
+  @@index([linkCode])
+  @@index([deviceId])
+  @@index([roomId])
+  @@index([userId])
+  @@index([status])
+}
+
+// 既存のResponseNodeモデルへの追加リレーション
+// model ResponseNode {
+//   ...
+//   currentSessions ResponseTreeSession[] @relation("CurrentNode")
+//   history         ResponseTreeHistory[]
+// }
+
+// 既存のDeviceRoomモデルへの追加リレーション
+// model DeviceRoom {
+//   ...
+//   responseSessions    ResponseTreeSession[]
+//   responseMobileLinks ResponseTreeMobileLink[]
+// }

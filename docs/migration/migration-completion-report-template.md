@@ -5,7 +5,7 @@
 **プロジェクト**: omotenasuai.com
 **移行元**: hotel-common
 **移行先**: hotel-kanri
-**完了日**: YYYY-MM-DD
+**完了日**: 2025-09-12
 **実施者**: 担当者名
 
 ## 移行したドキュメント一覧

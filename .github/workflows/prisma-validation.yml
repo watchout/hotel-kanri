@@ -1,0 +1,74 @@
+name: Prisma Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'prisma/schema.prisma'
+      - 'src/**/*.ts'
+      - 'src/**/*.js'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'prisma/schema.prisma'
+      - 'src/**/*.ts'
+      - 'src/**/*.js'
+
+jobs:
+  validate:
+    name: Validate Prisma Schema and Adapters
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate Prisma schema
+        run: npx prisma validate
+      
+      - name: Generate Prisma client
+        run: npx prisma generate
+      
+      - name: Install ESLint dependencies
+        run: |
+          npm install --no-save eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+      
+      - name: Check for direct PrismaClient usage
+        run: |
+          node_modules/.bin/eslint --no-eslintrc --parser @typescript-eslint/parser \
+          --plugin @typescript-eslint --rule "prisma-adapter-rule: 2" \
+          --rulesdir scripts/eslint-rules src/**/*.{ts,js} -f json > eslint-results.json || true
+          
+          # エラーの数をカウント
+          ERROR_COUNT=$(cat eslint-results.json | grep -c "\"ruleId\":\"prisma-adapter-rule\"" || echo 0)
+          
+          if [ $ERROR_COUNT -gt 0 ]; then
+            echo "::error::$ERROR_COUNT instances of direct PrismaClient usage detected"
+            cat eslint-results.json
+            exit 1
+          else
+            echo "No direct PrismaClient usage detected"
+          fi
+      
+      - name: Check for adapter mismatches
+        run: node scripts/detect-prisma-adapter-mismatch.js || true
+      
+      - name: Upload ESLint results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: eslint-results
+          path: eslint-results.json
+          if-no-files-found: ignore
+
+
+
