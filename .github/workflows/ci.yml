@@ -65,10 +65,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci || echo "⚠️ npm install failed, continuing..."
+        run: npm install || echo "⚠️ npm install failed, continuing..."
         
       - name: Run ESLint
         run: npm run lint || echo "⚠️ ESLint not configured yet"
@@ -91,10 +90,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci || echo "⚠️ npm install failed, continuing..."
+        run: npm install || echo "⚠️ npm install failed, continuing..."
         
       - name: Run unit tests
         run: npm run test:unit || echo "⚠️ Unit tests not configured yet"
@@ -182,10 +180,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci || echo "⚠️ npm install failed, continuing..."
+        run: npm install || echo "⚠️ npm install failed, continuing..."
         
       - name: Build project
         run: npm run build || echo "⚠️ Build script not configured yet"
