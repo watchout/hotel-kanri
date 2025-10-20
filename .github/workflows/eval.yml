@@ -39,7 +39,7 @@ jobs:
         id: eval
         run: |
           echo "🤖 AI応答品質評価を実行します..."
-          node scripts/quality/evaluate-ai-responses.js
+          node scripts/quality/evaluate-ai-responses.cjs
         continue-on-error: true
         
       - name: Check evaluation results
