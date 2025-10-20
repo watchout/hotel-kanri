@@ -1,6 +1,6 @@
 # 📘 Single Source of Truth (SSOT) マスター管理表
 
-**最終更新**: 2025年10月10日（ロードマップ統合版完成）  
+**最終更新**: 2025年10月20日（権限階層構造実装完了）  
 **管理者**: 統合管理
 
 このドキュメントは、hotel-kanriプロジェクト全体の**唯一の正式仕様書**を管理します。
@@ -123,7 +123,7 @@
 | 6 | SSOT_SAAS_MULTITENANT.md | マルチテナント基盤 | ✅ | 🔴 | ✅ | ✅ | ⭕ | ⭕ |
 | 7 | SSOT_SAAS_DATABASE_SCHEMA.md | DBスキーマ統一 | ✅ | 🔴 | 🟢 | ✅ | ⭕ | ⭕ |
 | 8 | SSOT_SAAS_SUPER_ADMIN.md | スーパーアドミン設計 | ⏳ | 🟡 | - | - | - | - |
-| 9 | SSOT_SAAS_PERMISSION_SYSTEM.md | 権限管理（RBAC） | ⏳ | 🟡 | ❌ | ❌ | ❌ | ❌ |
+| 9 | SSOT_SAAS_PERMISSION_SYSTEM.md | 権限管理（RBAC）<br>★v2.2.0：階層構造 | ✅ v2.2.0 | 🔴 | 🟢 | ✅ | ❌ | ❌ |
 | 10 | SSOT_SAAS_MEDIA_MANAGEMENT.md | メディア管理 | ⏳ | 🟡 | ⭕ | ⭕ | - | - |
 | 11 | SSOT_SAAS_EMAIL_SYSTEM.md | メール送信システム | ⏳ | 🟡 | ❌ | ❌ | ❌ | ❌ |
 | 12 | SSOT_SAAS_PAYMENT_INTEGRATION.md | 決済連携基盤 | ⏳ | 🟡 | ❌ | ❌ | ⭕ | - |

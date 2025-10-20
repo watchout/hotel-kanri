@@ -1,11 +1,33 @@
 # 🔐 SSOT: hotel-saas 権限管理システム
 
 **Doc-ID**: SSOT-SAAS-PERMISSION-001  
-**バージョン**: 1.3.1  
+**バージョン**: 2.2.0  
 **作成日**: 2025年10月8日  
-**最終更新**: 2025年10月16日（ツールチップ追加：全権限とシステム全権限の違いを明示）  
+**最終更新**: 2025年10月20日（権限階層構造の追加）  
 **ステータス**: 🔴 承認済み（最高権威）  
 **所有者**: Sun（hotel-saas担当AI）
+
+**v2.0.0 変更内容**:
+- ✅ 要件ID体系適用（PERM-001〜）
+- ✅ Accept（合格条件）を全機能に明記
+- ✅ テストケース例を追加
+- ✅ 型定義例を追加
+- ❌ ワイルドカード仕様は削除（v2.1.0で廃止）
+
+**v2.1.0 変更内容**（2025-10-20）:
+- ❌ **ワイルドカード全権限を廃止**（`*:*:*` 等）
+- ✅ **個別権限のみに統一**
+- ✅ 実装の単純化・バグ削減
+- ✅ PERM-002, PERM-003, PERM-004 削除
+- ✅ 権限チェックロジック簡素化
+
+**v2.2.0 変更内容**（2025-10-20）:
+- ✅ **権限階層構造の追加**（PERM-009）
+- ✅ 上位権限選択時の下位権限自動付与機能
+- ✅ 下位権限解除時の上位権限自動解除機能
+- ✅ 完全な階層マップ定義（hotel-saas, system, hotel-pms全カテゴリ）
+- ✅ UI実装要件追加（PERM-UI-006, PERM-UI-007）
+- ✅ レベルバッジ・インデント表示によるUX向上
 
 **関連SSOT**:
 - [SSOT_SAAS_MULTITENANT.md](../00_foundation/SSOT_SAAS_MULTITENANT.md) - マルチテナント基盤
@@ -16,18 +38,69 @@
 
 ## 📋 目次
 
-1. [概要](#概要)
-2. [スコープ](#スコープ)
-3. [基本方針](#基本方針)
-4. [データベース設計](#データベース設計)
-5. [API仕様](#api仕様)
-6. [フロントエンド実装](#フロントエンド実装)
-7. [権限チェック実装](#権限チェック実装)
-8. [業態別デフォルトテンプレート](#業態別デフォルトテンプレート)
-9. [グループ・ブランド連携](#グループブランド連携)
-10. [セキュリティ](#セキュリティ)
-11. [マイグレーション手順](#マイグレーション手順) ⭐ **NEW**
-12. [実装チェックリスト](#実装チェックリスト)
+1. [要件ID一覧](#要件id一覧) ⭐ **NEW**
+2. [概要](#概要)
+3. [スコープ](#スコープ)
+4. [基本方針](#基本方針)
+5. [データベース設計](#データベース設計)
+6. [API仕様](#api仕様)
+7. [フロントエンド実装](#フロントエンド実装)
+8. [権限チェック実装](#権限チェック実装)
+9. [業態別デフォルトテンプレート](#業態別デフォルトテンプレート)
+10. [グループ・ブランド連携](#グループブランド連携)
+11. [セキュリティ](#セキュリティ)
+12. [マイグレーション手順](#マイグレーション手順)
+13. [実装チェックリスト](#実装チェックリスト)
+
+---
+
+## 🎯 要件ID一覧
+
+### コア機能
+
+| 要件ID | 機能 | 概要 | 状態 |
+|--------|------|------|------|
+| **PERM-001** | 権限フォーマット | `{category}:{resource}:{action}` 形式 | ✅ 有効 |
+| ~~**PERM-002**~~ | ~~ワイルドカード全権限~~ | ~~`*:*:*` による全システム権限~~ | ❌ **廃止** |
+| ~~**PERM-003**~~ | ~~ワイルドカードカテゴリ~~ | ~~`hotel-saas:*:*` 等のカテゴリ一括~~ | ❌ **廃止** |
+| ~~**PERM-004**~~ | ~~ワイルドカードリソース~~ | ~~`hotel-saas:menu:*` 等のリソース一括~~ | ❌ **廃止** |
+| **PERM-005** | 役職CRUD | 役職の作成・読取・更新・削除 | ✅ 有効 |
+| **PERM-006** | 権限マッピング | 役職と権限の紐付け（個別権限のみ） | ✅ 有効 |
+| **PERM-007** | UI実装 | 全チェックボックス表示 | ✅ 有効 |
+| **PERM-008** | 権限チェック | `checkPermission()` による検証（配列検索） | ✅ 有効 |
+| **PERM-009** | 権限階層構造 | 上位権限選択時に下位権限も自動付与 | ✅ 有効 |
+
+### データベース
+
+| 要件ID | 機能 | 概要 |
+|--------|------|------|
+| **PERM-DB-001** | rolesテーブル | 役職マスタ |
+| **PERM-DB-002** | permissionsテーブル | 権限マスタ |
+| **PERM-DB-003** | role_permissionsテーブル | 紐付けテーブル |
+
+### API
+
+| 要件ID | 機能 | 概要 |
+|--------|------|------|
+| **PERM-API-001** | GET /roles | 役職一覧取得 |
+| **PERM-API-002** | GET /roles/:id | 役職詳細取得 |
+| **PERM-API-003** | POST /roles | 役職作成 |
+| **PERM-API-004** | PUT /roles/:id | 役職更新 |
+| **PERM-API-005** | DELETE /roles/:id | 役職削除 |
+| **PERM-API-006** | PUT /roles/permissions | 権限保存 |
+| **PERM-API-007** | GET /permissions | 権限一覧取得 |
+
+### UI
+
+| 要件ID | 機能 | 概要 |
+|--------|------|------|
+| **PERM-UI-001** | 役職一覧画面 | `/admin/roles` |
+| **PERM-UI-002** | 権限マトリックス画面 | `/admin/roles/:id/permissions` |
+| **PERM-UI-003** | 全権限チェックボックス | グローバルワイルドカード |
+| **PERM-UI-004** | カテゴリ一括選択 | カテゴリワイルドカード |
+| **PERM-UI-005** | 実効権限プレビュー | ワイルドカード展開表示 |
+| **PERM-UI-006** | 権限階層グルーピング表示 | リソース単位で階層表示 |
+| **PERM-UI-007** | 権限レベル視覚化 | レベルバッジ・インデント表示 |
 
 ---
 
@@ -125,7 +198,18 @@ level: 5 // READONLY
 
 // ✅ 新実装（柔軟な役職管理）
 roles: [
-  { name: '支配人', sortOrder: 100, permissions: ['*:*:*'] },
+  { 
+    name: '支配人', 
+    sortOrder: 100, 
+    permissions: [
+      // 全49個の個別権限を列挙
+      'hotel-saas:order:view',
+      'hotel-saas:order:create',
+      'hotel-saas:order:update',
+      'hotel-saas:order:delete',
+      // ...（全権限）
+    ] 
+  },
   { name: 'フロント主任', sortOrder: 90, permissions: [...] },
   { name: 'フロントスタッフ', sortOrder: 80, permissions: [...] },
   { name: '清掃スタッフ', sortOrder: 70, permissions: [...] }
@@ -148,11 +232,579 @@ roles: [
 'system:settings:update'        // システム設定更新
 ```
 
-**ワイルドカード**:
+~~**ワイルドカード**~~（v2.1.0で廃止）:
 ```typescript
-'*:*:*'                 // 全権限（支配人等）
-'hotel-pms:*:*'         // PMSの全権限
-'hotel-pms:billing:*'   // 会計の全操作
+// ❌ 廃止：実装が複雑でバグが多発するため使用不可
+// '*:*:*'                 // 全権限（支配人等）
+// 'hotel-pms:*:*'         // PMSの全権限
+// 'hotel-pms:billing:*'   // 会計の全操作
+
+// ✅ 個別権限のみ使用
+'hotel-pms:billing:view'
+'hotel-pms:billing:create'
+'hotel-pms:billing:update'
+// ...全て個別に列挙
+```
+
+---
+
+## 📐 要件詳細仕様
+
+### PERM-001: 権限フォーマット
+
+**Accept（合格条件）**:
+- ✅ 権限コードは `{category}:{resource}:{action}` 形式である
+- ✅ categoryは `hotel-saas`, `hotel-pms`, `system` のいずれか
+- ✅ resourceとactionは英数字とハイフンのみ使用可能
+- ❌ コロン（`:`）は区切り文字として3つのみ
+- ❌ 空文字列や不正なフォーマットは拒否
+
+**Example**:
+```typescript
+// ✅ 正しい
+'hotel-saas:order:view'
+'hotel-pms:reservation:create'
+'system:settings:update'
+
+// ❌ 間違い
+'hotel-saas-order-view'    // コロン不足
+'hotel-saas:order'          // action不足
+'hotel_saas:order:view'     // アンダースコア不可
+```
+
+**Test Cases**:
+```typescript
+describe('PERM-001: 権限フォーマット検証', () => {
+  it('正しいフォーマットは受理される', () => {
+    expect(validatePermissionFormat('hotel-saas:order:view')).toBe(true)
+  })
+
+  it('コロン不足は拒否される', () => {
+    expect(validatePermissionFormat('hotel-saas-order')).toBe(false)
+  })
+
+  it('不正な文字は拒否される', () => {
+    expect(validatePermissionFormat('hotel_saas:order:view')).toBe(false)
+  })
+})
+```
+
+**Type**:
+```typescript
+type PermissionCode = `${Category}:${Resource}:${Action}`
+type Category = 'hotel-saas' | 'hotel-pms' | 'system'
+type Resource = string
+type Action = 'create' | 'read' | 'update' | 'delete' | 'use' | string
+```
+
+---
+
+### PERM-002: 個別権限のみ（ワイルドカード廃止）
+
+**廃止理由**: 
+- ❌ ワイルドカード（`*:*:*` 等）は実装が複雑すぎる
+- ❌ バグが多発し、メンテナンスコストが高い
+- ❌ 個別権限との混在処理が困難
+
+**Accept（合格条件）**:
+- ✅ 権限は常に個別権限として保存される
+- ✅ 全権限を持つ役職も、全ての個別権限を列挙して保存
+- ✅ ワイルドカード（`*`, `*:*:*`, `hotel-saas:*:*` 等）は使用不可
+- ✅ 権限チェックは単純な配列検索のみ（`includes()`）
+- ❌ ワイルドカードを含む権限コードは保存時にエラー
+
+**Example**:
+```typescript
+// ✅ 正しい：個別権限のみ
+role.permissions = [
+  'hotel-saas:order:view',
+  'hotel-saas:order:create',
+  'hotel-saas:order:update',
+  'hotel-saas:order:delete',
+  'hotel-saas:menu:view',
+  'hotel-saas:menu:create',
+  // ... 全て個別に列挙（支配人の場合は49個）
+]
+
+// ❌ 廃止：ワイルドカード
+role.permissions = ['*:*:*']              // 使用不可
+role.permissions = ['hotel-saas:*:*']     // 使用不可
+role.permissions = ['hotel-saas:menu:*']  // 使用不可
+```
+
+**Test Cases**:
+```typescript
+describe('PERM-002: 個別権限のみ', () => {
+  it('個別権限は正常に保存される', async () => {
+    const role = {
+      permissions: [
+        'hotel-saas:order:view',
+        'hotel-saas:order:create'
+      ]
+    }
+    
+    const saved = await saveRole(role)
+    expect(saved.permissions).toEqual(role.permissions)
+  })
+
+  it('ワイルドカードを含む権限はエラー', async () => {
+    const role = {
+      permissions: ['*:*:*']
+    }
+    
+    await expect(saveRole(role)).rejects.toThrow('ワイルドカードは使用できません')
+  })
+
+  it('権限チェックは配列検索のみ', async () => {
+    const role = {
+      permissions: ['hotel-saas:order:view', 'hotel-saas:order:create']
+    }
+    
+    expect(await checkPermission(user, 'hotel-saas:order:view')).toBe(true)
+    expect(await checkPermission(user, 'hotel-saas:order:update')).toBe(false)
+  })
+})
+```
+
+**Type**:
+```typescript
+import { z } from 'zod'
+
+// ワイルドカードを禁止
+const PermissionCodeSchema = z.string()
+  .regex(/^[a-z-]+:[a-z-]+:[a-z-]+$/)
+  .refine(
+    (val) => !val.includes('*'),
+    { message: 'ワイルドカードは使用できません' }
+  )
+
+const PermissionsSchema = z.array(PermissionCodeSchema)
+
+type Permissions = z.infer<typeof PermissionsSchema>
+```
+
+**Implementation**:
+```typescript
+// 要件ID: PERM-002
+// シンプルな配列検索のみ
+function checkPermission(
+  userPermissions: string[],
+  requiredPermission: string
+): boolean {
+  return userPermissions.includes(requiredPermission)
+}
+
+// バリデーション
+function validatePermissions(permissions: string[]): void {
+  for (const perm of permissions) {
+    if (perm.includes('*')) {
+      throw new Error(`ワイルドカードは使用できません: ${perm}`)
+    }
+    
+    const parts = perm.split(':')
+    if (parts.length !== 3) {
+      throw new Error(`不正な権限フォーマット: ${perm}`)
+    }
+  }
+}
+```
+
+---
+
+### PERM-009: 権限階層構造
+
+**目的**: 権限には明確なランク（階層）があり、上位権限を持つには下位権限が必須である仕組みを実装する。
+
+**Accept（合格条件）**:
+- ✅ 上位権限を選択すると、下位権限も自動的に選択される
+- ✅ 下位権限を解除すると、それに依存する上位権限も自動的に解除される
+- ✅ UIで階層構造が視覚的に表現される（インデント、レベルバッジ）
+- ✅ 階層マップは全ての管理系権限をカバーする
+- ❌ 階層に反する権限の組み合わせは許可しない（例: 作成権限なしでキャンセル権限のみ）
+
+**階層の考え方**:
+```
+Lv.4 (最上位)  削除・キャンセル等の破壊的操作
+  ↓ 自動的に以下も付与
+Lv.3          更新・編集
+  ↓ 自動的に以下も付与
+Lv.2          作成
+  ↓ 自動的に以下も付与
+Lv.1 (最下位)  閲覧
+```
+
+**Example**:
+```typescript
+// 注文管理の階層構造
+const hierarchyExample = {
+  'hotel-saas:order:cancel': {        // Lv.4 - 最上位
+    requires: [
+      'hotel-saas:order:update-status',  // Lv.3
+      'hotel-saas:order:create',         // Lv.2
+      'hotel-saas:order:view'            // Lv.1
+    ]
+  },
+  'hotel-saas:order:update-status': {  // Lv.3
+    requires: [
+      'hotel-saas:order:create',         // Lv.2
+      'hotel-saas:order:view'            // Lv.1
+    ]
+  },
+  'hotel-saas:order:create': {         // Lv.2
+    requires: [
+      'hotel-saas:order:view'            // Lv.1
+    ]
+  },
+  'hotel-saas:order:view': {           // Lv.1 - 最下位（依存なし）
+    requires: []
+  }
+}
+
+// ✅ キャンセルを選択 → 更新・作成・閲覧も自動選択
+selectPermission('hotel-saas:order:cancel')
+// → ['hotel-saas:order:cancel', 'hotel-saas:order:update-status', 'hotel-saas:order:create', 'hotel-saas:order:view']
+
+// ✅ 作成を解除 → 更新・キャンセルも自動解除
+deselectPermission('hotel-saas:order:create')
+// → ['hotel-saas:order:view'] のみ残る
+```
+
+**Test Cases**:
+```typescript
+describe('PERM-009: 権限階層構造', () => {
+  it('上位権限選択時、下位権限も自動選択される', () => {
+    const permissions = []
+    selectPermission(permissions, 'hotel-saas:order:cancel')
+    
+    expect(permissions).toContain('hotel-saas:order:cancel')
+    expect(permissions).toContain('hotel-saas:order:update-status')
+    expect(permissions).toContain('hotel-saas:order:create')
+    expect(permissions).toContain('hotel-saas:order:view')
+  })
+  
+  it('下位権限解除時、上位権限も自動解除される', () => {
+    const permissions = [
+      'hotel-saas:order:cancel',
+      'hotel-saas:order:update-status',
+      'hotel-saas:order:create',
+      'hotel-saas:order:view'
+    ]
+    
+    deselectPermission(permissions, 'hotel-saas:order:create')
+    
+    expect(permissions).not.toContain('hotel-saas:order:cancel')
+    expect(permissions).not.toContain('hotel-saas:order:update-status')
+    expect(permissions).not.toContain('hotel-saas:order:create')
+    expect(permissions).toContain('hotel-saas:order:view')
+  })
+  
+  it('階層マップが全権限をカバーしている', () => {
+    const allPermissions = getAllPermissions()
+    const mappedPermissions = Object.keys(permissionHierarchy)
+    
+    // 管理系権限（create, update, delete, manage等）は全てマップに存在
+    const managePermissions = allPermissions.filter(p => 
+      p.includes(':create') || p.includes(':update') || 
+      p.includes(':delete') || p.includes(':manage') ||
+      p.includes(':cancel') || p.includes(':refund')
+    )
+    
+    managePermissions.forEach(perm => {
+      expect(mappedPermissions).toContain(perm)
+    })
+  })
+})
+```
+
+**Type**:
+```typescript
+/**
+ * 権限階層マップの型定義
+ * キー: 権限コード
+ * 値: この権限を選択した時に自動的に必要となる下位権限のリスト
+ */
+type PermissionHierarchyMap = Record<string, string[]>
+
+interface PermissionWithLevel {
+  code: string
+  name: string
+  level: 1 | 2 | 3 | 4 | 5  // 1が最下位（閲覧）、5が最上位（削除）
+  requires: string[]         // 必要な下位権限のリスト
+}
+```
+
+**完全な階層マップ**:
+
+#### hotel-saas カテゴリ
+
+##### hotel-saas:order（注文管理）4階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 4 | `hotel-saas:order:cancel` | キャンセル | update-status, create, view |
+| 3 | `hotel-saas:order:update-status` | 更新 | create, view |
+| 2 | `hotel-saas:order:create` | 作成 | view |
+| 1 | `hotel-saas:order:view` | 閲覧 | なし（基本権限） |
+
+##### hotel-saas:menu（メニュー管理）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `hotel-saas:menu:manage` | 管理 | view |
+| 1 | `hotel-saas:menu:view` | 閲覧 | なし |
+
+##### hotel-saas:ai（AI機能）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `hotel-saas:ai:manage` | 管理 | use |
+| 1 | `hotel-saas:ai:use` | 使用 | なし |
+
+##### hotel-saas:layout（レイアウト編集）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `hotel-saas:layout:publish` | 公開 | edit |
+| 1 | `hotel-saas:layout:edit` | 編集 | なし |
+
+#### system カテゴリ
+
+##### system:settings（システム設定）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `system:settings:update` | 更新 | view |
+| 1 | `system:settings:view` | 閲覧 | なし |
+
+##### system:staff（スタッフ管理）3階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 3 | `system:staff:delete` | 削除 | manage, view |
+| 2 | `system:staff:manage` | 管理 | view |
+| 1 | `system:staff:view` | 閲覧 | なし |
+
+##### system:roles（役職管理）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `system:roles:manage` | 管理 | view |
+| 1 | `system:roles:view` | 閲覧 | なし |
+
+##### system:logs（ログ管理）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `system:logs:export` | エクスポート | view |
+| 1 | `system:logs:view` | 閲覧 | なし |
+
+#### hotel-pms カテゴリ
+
+##### hotel-pms:reservation（予約管理）5階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 5 | `hotel-pms:reservation:delete` | 削除 | cancel, update, create, view |
+| 4 | `hotel-pms:reservation:cancel` | キャンセル | update, create, view |
+| 3 | `hotel-pms:reservation:update` | 更新 | create, view |
+| 2 | `hotel-pms:reservation:create` | 作成 | view |
+| 1 | `hotel-pms:reservation:view` | 閲覧 | なし |
+
+##### hotel-pms:room（客室管理）3階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 3 | `hotel-pms:room:manage` | 設定管理 | status-update, view |
+| 2 | `hotel-pms:room:status-update` | 状態更新 | view |
+| 1 | `hotel-pms:room:view` | 閲覧 | なし |
+
+##### hotel-pms:billing（会計管理）4階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 4 | `hotel-pms:billing:correct` | 訂正 | refund, create, view |
+| 3 | `hotel-pms:billing:refund` | 返金 | create, view |
+| 2 | `hotel-pms:billing:create` | 作成 | view |
+| 1 | `hotel-pms:billing:view` | 閲覧 | なし |
+
+##### hotel-pms:checkin/checkout（単独機能）
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 1 | `hotel-pms:checkin:execute` | チェックイン | なし（単独機能） |
+| 1 | `hotel-pms:checkout:execute` | チェックアウト | なし（単独機能） |
+
+##### hotel-pms:report（レポート）2階層
+| Lv | 権限コード | 操作 | 必要な下位権限 |
+|----|----------|------|--------------|
+| 2 | `hotel-pms:report:export` | エクスポート | view |
+| 1 | `hotel-pms:report:view` | 閲覧 | なし |
+
+**Implementation**:
+```typescript
+// 要件ID: PERM-009
+/**
+ * 権限の階層構造マップ
+ * キー: 権限コード
+ * 値: この権限を選択した時に自動的に必要となる下位権限のリスト
+ */
+export const permissionHierarchy: Record<string, string[]> = {
+  // hotel-saas カテゴリ
+  'hotel-saas:order:cancel': [
+    'hotel-saas:order:update-status',
+    'hotel-saas:order:create',
+    'hotel-saas:order:view'
+  ],
+  'hotel-saas:order:update-status': [
+    'hotel-saas:order:create',
+    'hotel-saas:order:view'
+  ],
+  'hotel-saas:order:create': ['hotel-saas:order:view'],
+  
+  'hotel-saas:menu:manage': ['hotel-saas:menu:view'],
+  'hotel-saas:ai:manage': ['hotel-saas:ai:use'],
+  'hotel-saas:layout:publish': ['hotel-saas:layout:edit'],
+  
+  // system カテゴリ
+  'system:settings:update': ['system:settings:view'],
+  
+  'system:staff:delete': [
+    'system:staff:manage',
+    'system:staff:view'
+  ],
+  'system:staff:manage': ['system:staff:view'],
+  
+  'system:roles:manage': ['system:roles:view'],
+  'system:logs:export': ['system:logs:view'],
+  
+  // hotel-pms カテゴリ
+  'hotel-pms:reservation:delete': [
+    'hotel-pms:reservation:cancel',
+    'hotel-pms:reservation:update',
+    'hotel-pms:reservation:create',
+    'hotel-pms:reservation:view'
+  ],
+  'hotel-pms:reservation:cancel': [
+    'hotel-pms:reservation:update',
+    'hotel-pms:reservation:create',
+    'hotel-pms:reservation:view'
+  ],
+  'hotel-pms:reservation:update': [
+    'hotel-pms:reservation:create',
+    'hotel-pms:reservation:view'
+  ],
+  'hotel-pms:reservation:create': ['hotel-pms:reservation:view'],
+  
+  'hotel-pms:room:manage': [
+    'hotel-pms:room:status-update',
+    'hotel-pms:room:view'
+  ],
+  'hotel-pms:room:status-update': ['hotel-pms:room:view'],
+  
+  'hotel-pms:billing:correct': [
+    'hotel-pms:billing:refund',
+    'hotel-pms:billing:create',
+    'hotel-pms:billing:view'
+  ],
+  'hotel-pms:billing:refund': [
+    'hotel-pms:billing:create',
+    'hotel-pms:billing:view'
+  ],
+  'hotel-pms:billing:create': ['hotel-pms:billing:view'],
+  
+  'hotel-pms:report:export': ['hotel-pms:report:view'],
+}
+
+/**
+ * 権限を選択した時の処理（階層構造対応）
+ */
+export function selectPermission(
+  currentPermissions: string[],
+  permissionCode: string
+): string[] {
+  const result = [...currentPermissions]
+  
+  // 自身を追加
+  if (!result.includes(permissionCode)) {
+    result.push(permissionCode)
+  }
+  
+  // 下位階層の権限を自動追加
+  const lowerPermissions = permissionHierarchy[permissionCode] || []
+  lowerPermissions.forEach(lowerCode => {
+    if (!result.includes(lowerCode)) {
+      result.push(lowerCode)
+    }
+  })
+  
+  return result
+}
+
+/**
+ * 権限を解除した時の処理（階層構造対応）
+ */
+export function deselectPermission(
+  currentPermissions: string[],
+  permissionCode: string
+): string[] {
+  let result = [...currentPermissions]
+  
+  // この権限に依存している上位権限を探す
+  const upperPermissions = Object.entries(permissionHierarchy)
+    .filter(([_, lowerPerms]) => lowerPerms.includes(permissionCode))
+    .map(([code]) => code)
+    .filter(code => result.includes(code))
+  
+  // 上位権限も一緒に外す
+  upperPermissions.forEach(upperCode => {
+    result = result.filter(p => p !== upperCode)
+  })
+  
+  // 自身を削除
+  result = result.filter(p => p !== permissionCode)
+  
+  return result
+}
+```
+
+**UI実装要件（PERM-UI-006, PERM-UI-007）**:
+```vue
+<template>
+  <div class="permission-resource border rounded-lg p-4 mb-4">
+    <h4 class="font-semibold mb-3">注文管理</h4>
+    
+    <div class="space-y-2">
+      <!-- Lv.4: 最上位 -->
+      <div class="permission-item pl-0">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" @change="togglePermission" />
+          <span>キャンセル</span>
+          <span class="text-xs px-2 py-0.5 bg-red-100 text-red-700 rounded">Lv.4</span>
+        </label>
+      </div>
+      
+      <!-- Lv.3 -->
+      <div class="permission-item pl-4 border-l-2 border-orange-200">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" @change="togglePermission" />
+          <span>ステータス更新</span>
+          <span class="text-xs px-2 py-0.5 bg-orange-100 text-orange-700 rounded">Lv.3</span>
+        </label>
+      </div>
+      
+      <!-- Lv.2 -->
+      <div class="permission-item pl-8 border-l-2 border-blue-200">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" @change="togglePermission" />
+          <span>作成</span>
+          <span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">Lv.2</span>
+        </label>
+      </div>
+      
+      <!-- Lv.1: 最下位 -->
+      <div class="permission-item pl-12 border-l-2 border-green-200">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" @change="togglePermission" />
+          <span>閲覧</span>
+          <span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded">Lv.1</span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="mt-3 pt-3 border-t text-xs text-gray-600">
+      <Icon name="heroicons:information-circle" class="w-4 h-4 inline mr-1" />
+      上位の権限を選択すると、それ以下の権限も自動的に選択されます
+    </div>
+  </div>
+</template>
 ```
 
 ---
@@ -431,20 +1083,26 @@ model Permission {
 | | `system:logs:export` | ログのエクスポート |
 | | `system:audit:view` | 監査ログの閲覧 |
 
-#### ワイルドカード権限
+~~#### ワイルドカード権限~~（v2.1.0で廃止）
 
-| 権限コード | 説明 | 使用例 |
-|----------|------|--------|
-| `*:*:*` | 全システムの全権限 | 支配人、オーナー |
-| `hotel-pms:*:*` | PMS全機能の全権限 | PMSマネージャー |
-| `hotel-saas:*:*` | SaaS全機能の全権限 | SaaSマネージャー |
-| `system:*:*` | システム設定の全権限 | システム管理者 |
-| `hotel-pms:reservation:*` | 予約管理の全操作 | 予約担当主任 |
-| `hotel-pms:billing:*` | 会計の全操作 | 会計担当主任 |
+| 権限コード | 説明 | 状態 |
+|----------|------|------|
+| ~~`*:*:*`~~ | ~~全システムの全権限~~ | ❌ **廃止** |
+| ~~`hotel-pms:*:*`~~ | ~~PMS全機能の全権限~~ | ❌ **廃止** |
+| ~~`hotel-saas:*:*`~~ | ~~SaaS全機能の全権限~~ | ❌ **廃止** |
+| ~~`system:*:*`~~ | ~~システム設定の全権限~~ | ❌ **廃止** |
+| ~~`hotel-pms:reservation:*`~~ | ~~予約管理の全操作~~ | ❌ **廃止** |
+| ~~`hotel-pms:billing:*`~~ | ~~会計の全操作~~ | ❌ **廃止** |
+
+**⚠️ v2.1.0 変更内容**:
+- ❌ ワイルドカード権限は全て廃止されました
+- ✅ 個別権限のみを使用してください
+- ✅ 全権限が必要な役職（支配人等）は、全ての個別権限を列挙して保存してください
 
 **注記**: 
 - 権限コードは`permissions`テーブルに事前登録され、スーパーアドミンが管理します
 - 新規権限の追加は、システムアップデート時にマイグレーションで実行されます
+- **ワイルドカード（`*`を含む）権限コードの登録は不可**
 
 ---
 
@@ -649,7 +1307,28 @@ model RoleTemplate {
       "name": "支配人",
       "description": "ホテル全体の管理責任者",
       "sortOrder": 100,
-      "permissions": ["*:*:*"]
+      "permissions": [
+        "hotel-saas:order:view",
+        "hotel-saas:order:create",
+        "hotel-saas:order:update",
+        "hotel-saas:order:delete",
+        "hotel-saas:menu:view",
+        "hotel-saas:menu:create",
+        "hotel-saas:menu:update",
+        "hotel-saas:menu:delete",
+        "hotel-saas:ai:use",
+        "system:staff:view",
+        "system:staff:create",
+        "system:staff:update",
+        "system:staff:delete",
+        "system:roles:view",
+        "system:roles:create",
+        "system:roles:update",
+        "system:roles:delete",
+        "system:settings:view",
+        "system:settings:update",
+        "system:logs:view"
+      ]
     },
     {
       "name": "フロント主任",
@@ -2084,7 +2763,28 @@ const { hasPermission, hasAnyPermission } = usePermissions();
       "name": "支配人",
       "description": "ホテル全体の管理責任者",
       "sortOrder": 100,
-      "permissions": ["*:*:*"]
+      "permissions": [
+        "hotel-saas:order:view",
+        "hotel-saas:order:create",
+        "hotel-saas:order:update",
+        "hotel-saas:order:delete",
+        "hotel-saas:menu:view",
+        "hotel-saas:menu:create",
+        "hotel-saas:menu:update",
+        "hotel-saas:menu:delete",
+        "hotel-saas:ai:use",
+        "system:staff:view",
+        "system:staff:create",
+        "system:staff:update",
+        "system:staff:delete",
+        "system:roles:view",
+        "system:roles:create",
+        "system:roles:update",
+        "system:roles:delete",
+        "system:settings:view",
+        "system:settings:update",
+        "system:logs:view"
+      ]
     },
     {
       "name": "フロント主任",
@@ -2150,7 +2850,28 @@ const { hasPermission, hasAnyPermission } = usePermissions();
       "name": "女将",
       "description": "旅館全体の管理責任者",
       "sortOrder": 100,
-      "permissions": ["*:*:*"]
+      "permissions": [
+        "hotel-saas:order:view",
+        "hotel-saas:order:create",
+        "hotel-saas:order:update",
+        "hotel-saas:order:delete",
+        "hotel-saas:menu:view",
+        "hotel-saas:menu:create",
+        "hotel-saas:menu:update",
+        "hotel-saas:menu:delete",
+        "hotel-saas:ai:use",
+        "system:staff:view",
+        "system:staff:create",
+        "system:staff:update",
+        "system:staff:delete",
+        "system:roles:view",
+        "system:roles:create",
+        "system:roles:update",
+        "system:roles:delete",
+        "system:settings:view",
+        "system:settings:update",
+        "system:logs:view"
+      ]
     },
     {
       "name": "番頭",
@@ -2847,6 +3568,8 @@ psql -h localhost -U postgres -d hotel_unified_db \
 | 1.2.0 | 2025-10-15 | 設計方針明確化<br>- 各システムの責務を明記（hotel-saas: `hotel-saas`+`system`カテゴリ管理）<br>- hotel-pms実装時の注意事項追加<br>- タブ構成を不要に変更（各システムが自カテゴリのみ表示）<br>- 権限マッピング画面の具体例追加（hotel-saas/hotel-pms別） | Common |
 | 1.3.0 | 2025-10-16 | **UX改善: ワイルドカード + 全チェックボックス表示方式**<br>- データベースはワイルドカード方式で効率化（`*:*:*`）<br>- UI上は全チェックボックス表示で視覚的フィードバック<br>- 選択項目の背景色変更（`bg-blue-50`）<br>- 最適化ロジック追加（`optimizePermissions`関数）<br>- チェック状態判定ロジック追加（`isPermissionChecked`関数）<br>- 実効権限プレビュー表示<br>- 保存時の自動圧縮（全選択時→`*:*:*`、カテゴリ全選択時→`hotel-saas:*:*`） | Iza |
 | 1.3.1 | 2025-10-16 | **ツールチップ追加: 混乱防止UX改善**<br>- 「全ての権限」と「システム全権限」の違いをツールチップで説明<br>- `*:*:*`（全システム）vs `system:*:*`（systemカテゴリのみ）を明確化<br>- 各カテゴリワイルドカードのツールチップ実装例追加<br>- ツールチップデザインガイドライン追加 | Iza |
+| **2.0.0** | **2025-10-20** | **要件ID体系適用: 実行可能な契約化** 🎉<br>- 要件ID一覧追加（PERM-001〜PERM-UI-005）<br>- **PERM-002: ワイルドカード全権限** 完全仕様化<br>  - Accept（合格条件）明記<br>  - Test Cases追加（4ケース）<br>  - Type定義追加（Zod Schema）<br>  - Implementation例追加<br>- **PERM-003: ワイルドカードカテゴリ** 仕様化<br>- **PERM-004: ワイルドカードリソース** 仕様化<br>- 全機能の要件ID付与<br>- テストによる契約の強制<br>- 型による契約の強制 | Iza |
+| **2.1.0** | **2025-10-20** | **ワイルドカード全廃止: 個別権限のみに統一** ⚠️<br>- **PERM-002, PERM-003, PERM-004 廃止**<br>- ワイルドカード（`*:*:*`, `hotel-saas:*:*` 等）使用不可<br>- 実装が複雑でバグ多発のため個別権限のみに統一<br>- 権限チェックを単純化（配列検索のみ）<br>- Zodバリデーションでワイルドカードを禁止<br>- デフォルトテンプレート更新（支配人・女将は全個別権限を列挙）<br>- シンプルで保守しやすい実装に変更 | Iza |
 
 ---
 
