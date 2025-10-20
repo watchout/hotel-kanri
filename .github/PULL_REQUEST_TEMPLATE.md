@@ -1,5 +1,13 @@
 # Pull Request
 
+## 🔗 Linear Issue（必須）
+
+**Closes LIN-XXX**
+
+> ⚠️ **必須**: `Closes LIN-XXX` 形式で記載してください（PRマージ時に自動クローズ）
+
+---
+
 ## 📋 SSOT参照（必須）
 
 - [ ] **読了したSSO**: `docs/03_ssot/.../SSOT_XXX.md` @ `<commit-hash>`
@@ -14,10 +22,6 @@
 
 ### Summary（概要）
 <!-- 何を実装したか、1-2文で簡潔に -->
-
-### 対応Issue
-<!-- Linear Issue URL -->
-- Linear: https://linear.app/omotenasu-ai/issue/XXX-XXX
 
 ### 主な変更点
 <!-- 主要な変更ファイルと変更内容 -->
