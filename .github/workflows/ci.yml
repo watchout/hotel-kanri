@@ -60,26 +60,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          cache: 'npm'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile || echo "⚠️ pnpm install failed, continuing..."
+        run: npm ci || echo "⚠️ npm install failed, continuing..."
         
       - name: Run ESLint
-        run: pnpm run lint || echo "⚠️ ESLint not configured yet"
+        run: npm run lint || echo "⚠️ ESLint not configured yet"
         
       - name: Run TypeScript typecheck
-        run: pnpm run typecheck || echo "⚠️ TypeScript check not configured yet"
+        run: npm run typecheck || echo "⚠️ TypeScript check not configured yet"
 
   # ==========================================
   # Job 3: Unit Tests
@@ -91,23 +86,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          cache: 'npm'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile || echo "⚠️ pnpm install failed, continuing..."
+        run: npm ci || echo "⚠️ npm install failed, continuing..."
         
       - name: Run unit tests
-        run: pnpm run test:unit || echo "⚠️ Unit tests not configured yet"
+        run: npm run test:unit || echo "⚠️ Unit tests not configured yet"
         
       - name: Check coverage
         run: |
@@ -187,23 +177,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
           
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+          cache: 'npm'
           
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile || echo "⚠️ pnpm install failed, continuing..."
+        run: npm ci || echo "⚠️ npm install failed, continuing..."
         
       - name: Build project
-        run: pnpm run build || echo "⚠️ Build script not configured yet"
+        run: npm run build || echo "⚠️ Build script not configured yet"
 
   # ==========================================
   # Job 6: Security Scan
