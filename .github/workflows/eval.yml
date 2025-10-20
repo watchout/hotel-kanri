@@ -1,0 +1,146 @@
+name: LLM/RAG Evaluation Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - '**.md'
+      - 'docs/03_ssot/**'
+      - '.cursor/prompts/**'
+      - 'scripts/quality/**'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md'
+      - 'docs/03_ssot/**'
+      - '.cursor/prompts/**'
+
+jobs:
+  # ==========================================
+  # AI応答品質評価
+  # ==========================================
+  ai-quality-evaluation:
+    name: AI Quality Evaluation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Run AI Response Evaluation
+        id: eval
+        run: |
+          echo "🤖 AI応答品質評価を実行します..."
+          node scripts/quality/evaluate-ai-responses.js
+        continue-on-error: true
+        
+      - name: Check evaluation results
+        run: |
+          if [ -f .github/workflows/eval-results.json ]; then
+            echo "📊 評価結果:"
+            cat .github/workflows/eval-results.json | jq '.summary'
+            
+            PASS_RATE=$(cat .github/workflows/eval-results.json | jq -r '.summary.passRate')
+            echo "合格率: ${PASS_RATE}%"
+            
+            if (( $(echo "$PASS_RATE < 100" | bc -l) )); then
+              echo "❌ エラー: AI品質評価が不合格です（合格率: ${PASS_RATE}%）"
+              echo "📋 詳細:"
+              cat .github/workflows/eval-results.json | jq '.results[] | select(.passed == false)'
+              exit 1
+            else
+              echo "✅ AI品質評価: 合格"
+            fi
+          else
+            echo "⚠️ 警告: 評価結果ファイルが見つかりません"
+            exit 1
+          fi
+          
+      - name: Upload evaluation results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-evaluation-results
+          path: .github/workflows/eval-results.json
+          retention-days: 30
+          
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const resultsPath = '.github/workflows/eval-results.json';
+            
+            if (!fs.existsSync(resultsPath)) {
+              console.log('評価結果ファイルが見つかりません');
+              return;
+            }
+            
+            const results = JSON.parse(fs.readFileSync(resultsPath, 'utf-8'));
+            const { summary, results: testResults } = results;
+            
+            const failedTests = testResults.filter(r => !r.passed);
+            
+            let comment = '## 🤖 AI品質評価結果\n\n';
+            comment += '### 📊 サマリー\n\n';
+            comment += `- **合計テスト数**: ${summary.total}\n`;
+            comment += `- **合格**: ${summary.passed} ✅\n`;
+            comment += `- **不合格**: ${summary.failed} ❌\n`;
+            comment += `- **合格率**: ${summary.passRate.toFixed(1)}%\n\n`;
+            
+            if (summary.passRate >= 100) {
+              comment += '### ✅ 全てのテストに合格しました！\n\n';
+              comment += 'AI応答品質が基準を満たしています。\n';
+            } else {
+              comment += '### ❌ 不合格のテストがあります\n\n';
+              
+              for (const test of failedTests) {
+                comment += `#### ${test.id}: ${test.category}\n\n`;
+                comment += `**質問**: ${test.question}\n\n`;
+                comment += `**評価結果**:\n`;
+                comment += `- Accuracy: ${test.metrics.accuracy.score.toFixed(1)}% ${test.metrics.accuracy.passed ? '✅' : '❌'}\n`;
+                comment += `- Relevance: ${test.metrics.relevance.score.toFixed(1)}% ${test.metrics.relevance.passed ? '✅' : '❌'}\n`;
+                comment += `- Coherence: ${test.metrics.coherence.score.toFixed(1)}% ${test.metrics.coherence.passed ? '✅' : '❌'}\n`;
+                comment += `- Hallucination: ${test.metrics.hallucination.score.toFixed(2)}% ${test.metrics.hallucination.passed ? '✅' : '❌'}\n\n`;
+              }
+              
+              comment += '\n---\n\n';
+              comment += '⚠️ **AI応答品質を改善してください**\n\n';
+              comment += '不合格のテストケースを確認し、以下を修正してください：\n';
+              comment += '- SSOTの記述を明確にする\n';
+              comment += '- 矛盾する表現を削除する\n';
+              comment += '- 禁止キーワードを使用しない\n';
+              comment += '- プレースホルダーを実際の値に置き換える\n';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  # ==========================================
+  # 最終ゲート: 全評価合格確認
+  # ==========================================
+  evaluation-gate:
+    name: Evaluation Gate - All Checks Passed
+    runs-on: ubuntu-latest
+    needs:
+      - ai-quality-evaluation
+    
+    steps:
+      - name: All evaluations passed
+        run: |
+          echo "✅ 全てのAI品質評価が合格しました！"
+          echo "🎉 マージ可能な状態です"
+
