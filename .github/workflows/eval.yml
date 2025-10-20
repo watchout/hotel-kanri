@@ -10,6 +10,7 @@ on:
       - 'docs/03_ssot/**'
       - '.cursor/prompts/**'
       - 'scripts/quality/**'
+      - '.github/workflows/eval.yml'
   push:
     branches:
       - main
@@ -17,6 +18,9 @@ on:
       - '**.md'
       - 'docs/03_ssot/**'
       - '.cursor/prompts/**'
+      - 'scripts/quality/**'
+      - '.github/workflows/eval.yml'
+  workflow_dispatch:
 
 jobs:
   # ==========================================
