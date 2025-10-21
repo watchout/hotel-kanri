@@ -11,7 +11,7 @@
 # ===========================================
 progress:
   # ツール選択: plane | linear | file
-  tool: plane
+  tool: linear
   
   # カノニカル（唯一の真実）として扱う
   canonical: true
