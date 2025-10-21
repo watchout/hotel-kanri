@@ -2,17 +2,38 @@
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["@modelcontextprotocol/server-filesystem"],
-      "disabledTools": ["writeFile", "rm", "mkdir"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {
+        "ALLOWED_DIRECTORIES": "/Users/kaneko/hotel-kanri"
+      }
     },
     "ripgrep": {
       "command": "npx",
-      "args": ["@modelcontextprotocol/server-ripgrep"]
+      "args": ["-y", "@modelcontextprotocol/server-ripgrep"],
+      "env": {
+        "RIPGREP_ROOT": "/Users/kaneko/hotel-kanri"
+      }
     },
     "git": {
       "command": "npx",
-      "args": ["@modelcontextprotocol/server-git"],
-      "allowedTools": ["diff", "blame", "show", "status"]
+      "args": ["-y", "@modelcontextprotocol/server-git"],
+      "env": {
+        "GIT_ROOT": "/Users/kaneko/hotel-kanri"
+      }
+    },
+    "linear": {
+      "command": "npx",
+      "args": ["-y", "@linear/mcp-server-linear"],
+      "env": {
+        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
     }
   }
 }
