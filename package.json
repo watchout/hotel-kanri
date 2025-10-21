@@ -64,7 +64,10 @@
     "quality:enterprise": "npm run validate:schema && npm run validate:guardrails && echo '✅ エンタープライズ品質基準達成'",
     "verify:implementation": "node scripts/verify-implementation-claims.cjs",
     "fact-check": "echo '🔍 事実確認開始' && npm run verify:implementation",
-    "anti-hallucination": "npm run fact-check && echo '⚠️ 実装報告前に必ず実行してください'"
+    "anti-hallucination": "npm run fact-check && echo '⚠️ 実装報告前に必ず実行してください'",
+    "ops:apply": "node ops/scripts/opsctl",
+    "ops:lint": "node ops/scripts/validate-policy.js",
+    "ops:export-progress": "node ops/scripts/export-progress.js"
   },
   "dependencies": {
     "@blocknote/core": "^0.12.1",

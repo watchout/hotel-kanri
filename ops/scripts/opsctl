@@ -1,0 +1,210 @@
+#!/usr/bin/env node
+
+/**
+ * opsctl - OPS v1 自動整備スクリプト
+ * 
+ * 目的:
+ * - ops/policy.yml に従ってテンプレートを自動生成
+ * - OPS:BEGIN ... OPS:END ブロックを置換
+ * - 矛盾を防止
+ * 
+ * 使用:
+ * npm run ops:apply
+ */
+
+import fs from 'fs';
+import path from 'path';
+import yaml from 'yaml';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// ===========================================
+// 設定
+// ===========================================
+
+const PROJECT_ROOT = path.resolve(__dirname, '../..');
+const POLICY_FILE = path.join(PROJECT_ROOT, 'ops/policy.yml');
+const CURSORRULES_FILE = path.join(PROJECT_ROOT, '.cursorrules');
+
+// ===========================================
+// ポリシー読み込み
+// ===========================================
+
+function loadPolicy() {
+  console.log('📖 ops/policy.yml を読み込み中...\n');
+  
+  if (!fs.existsSync(POLICY_FILE)) {
+    console.error('❌ エラー: ops/policy.yml が見つかりません');
+    process.exit(1);
+  }
+  
+  const content = fs.readFileSync(POLICY_FILE, 'utf8');
+  const policy = yaml.parse(content);
+  
+  console.log(`✅ ポリシー読み込み完了`);
+  console.log(`   進捗管理ツール: ${policy.progress.tool}`);
+  console.log(`   カノニカル: ${policy.progress.canonical}`);
+  console.log(`   週次エクスポート: ${policy.progress.weekly_export.enabled}\n`);
+  
+  return policy;
+}
+
+// ===========================================
+// テンプレート生成
+// ===========================================
+
+function generateProgressBlock(policy) {
+  const tool = policy.progress.tool;
+  const toolName = tool.charAt(0).toUpperCase() + tool.slice(1);
+  
+  let block = `<!-- OPS:BEGIN progress (auto-generated) -->\n`;
+  block += `## 📊 【進捗運用ルール】唯一の真実（canonical）\n\n`;
+  block += `**制定日**: 2025年10月21日  \n`;
+  block += `**ポリシー**: OPS-101 進捗管理ポリシー  \n`;
+  block += `**設定**: ops/policy.yml  \n\n`;
+  block += `### 🎯 基本原則\n\n`;
+  block += `**${toolName} が唯一の進捗管理ツール**\n\n`;
+  block += `✅ **${toolName}でやること**:\n`;
+  block += `- タスクの作成・更新\n`;
+  block += `- ステータス管理（Backlog → In Progress → Done）\n`;
+  block += `- 工数記録（見積もり + 実績）\n`;
+  block += `- 依存関係管理・ブロッカー管理\n`;
+  block += `- ラベル管理（SSOT作成/実装/バージョンアップ）\n`;
+  block += `- 担当者アサイン（Sun/Luna/Suno/Iza）\n\n`;
+  
+  if (tool === 'file') {
+    block += `❌ **やらないこと**:\n`;
+    block += `- 他のファイルでの進捗管理\n`;
+    block += `- ツール（Plane/Linear）との併用\n\n`;
+    block += `📊 **進捗ファイル**: \`${policy.progress.file.path}\`\n\n`;
+  } else {
+    block += `❌ **やらないこと**:\n`;
+    block += `- SSOT_PROGRESS_MASTER.md の手動更新\n`;
+    block += `- Markdownファイルでの進捗管理\n`;
+    block += `- 他ツールとの併用\n\n`;
+    
+    if (policy.progress.weekly_export.enabled) {
+      block += `### 📊 週次エクスポート（参照用）\n\n`;
+      block += `**エクスポート先**: \`${policy.progress.weekly_export.to_file}\`  \n`;
+      block += `**スケジュール**: ${policy.progress.weekly_export.schedule}  \n`;
+      block += `**用途**: 参照のみ（手動更新禁止）\n\n`;
+    }
+  }
+  
+  block += `### 🎯 タスク選択ルール（★★★AI必読）\n\n`;
+  block += `**絶対ルール**: タスクを開始する前に、以下の順序で選択する\n\n`;
+  block += `\`\`\`markdown\n`;
+  block += `【タスク選択の優先順位】\n\n`;
+  block += `Priority 1（最優先）: \n`;
+  block += `  1. Status = "Backlog" または "Spec Ready"\n`;
+  block += `  2. Priority = 1（最高優先度）\n`;
+  block += `  3. 依存関係 = ブロックされていない（Blocked byなし）\n`;
+  block += `  4. Assignee = 自分（Sun/Luna/Suno/Iza）\n`;
+  block += `  \n`;
+  block += `Priority 2（高優先）:\n`;
+  block += `  1. Status = "Backlog" または "Spec Ready"\n`;
+  block += `  2. Priority = 2\n`;
+  block += `  3. 依存関係 = ブロックされていない\n`;
+  block += `  \n`;
+  block += `Priority 3（通常）:\n`;
+  block += `  1. Status = "Backlog"\n`;
+  block += `  2. Priority = 3\n`;
+  block += `  3. 依存関係 = ブロックされていない\n\n`;
+  block += `【タスク選択の禁止事項】\n\n`;
+  block += `❌ 絶対禁止:\n`;
+  block += `- 依存関係を無視してタスクを開始する\n`;
+  block += `- 「Blocked by」が設定されているタスクを開始する\n`;
+  block += `- 自分（Assignee）以外のタスクを開始する\n`;
+  block += `- Priorityを無視してタスクを選択する\n\n`;
+  block += `✅ 正しい対応:\n`;
+  block += `1. ${toolName}で次のタスクを検索\n`;
+  block += `2. 依存関係を確認\n`;
+  block += `3. ブロックされていないタスクを選択\n`;
+  block += `4. ユーザーに「次のタスク: XXX-123」を報告\n`;
+  block += `5. ユーザーの承認を得てから開始\n`;
+  block += `\`\`\`\n\n`;
+  block += `**詳細**: ops/OPS-101-Progress.md\n\n`;
+  block += `<!-- OPS:END progress -->`;
+  
+  return block;
+}
+
+// ===========================================
+// .cursorrules 更新
+// ===========================================
+
+function updateCursorrules(policy) {
+  console.log('📝 .cursorrules を更新中...\n');
+  
+  if (!fs.existsSync(CURSORRULES_FILE)) {
+    console.error('❌ エラー: .cursorrules が見つかりません');
+    process.exit(1);
+  }
+  
+  let content = fs.readFileSync(CURSORRULES_FILE, 'utf8');
+  
+  // OPS:BEGIN progress ブロックを置換
+  const progressBlock = generateProgressBlock(policy);
+  const progressRegex = /<!-- OPS:BEGIN progress[\s\S]*?OPS:END progress -->/;
+  
+  if (progressRegex.test(content)) {
+    // 既存ブロックを置換
+    content = content.replace(progressRegex, progressBlock);
+    console.log('✅ OPS:BEGIN progress ブロックを更新しました');
+  } else {
+    // ブロックが存在しない場合は追加
+    // Linear運用ルールの直後に挿入
+    const linearSectionRegex = /## 📊 \【Linear運用ルール\】進捗管理の唯一の真実[\s\S]*?(?=\n##\s|\n---\n|$)/;
+    
+    if (linearSectionRegex.test(content)) {
+      content = content.replace(linearSectionRegex, (match) => {
+        return `${progressBlock}\n\n${match}`;
+      });
+      console.log('✅ OPS:BEGIN progress ブロックを追加しました（Linear運用ルールの前）');
+    } else {
+      // デフォルト：ファイル末尾に追加
+      content += `\n\n${progressBlock}\n`;
+      console.log('✅ OPS:BEGIN progress ブロックを追加しました（ファイル末尾）');
+    }
+  }
+  
+  // ファイルに書き込み
+  fs.writeFileSync(CURSORRULES_FILE, content, 'utf8');
+  console.log('✅ .cursorrules を保存しました\n');
+}
+
+// ===========================================
+// メイン処理
+// ===========================================
+
+function main() {
+  console.log('🚀 opsctl - OPS v1 自動整備スクリプト\n');
+  console.log('=' .repeat(50) + '\n');
+  
+  try {
+    // ポリシー読み込み
+    const policy = loadPolicy();
+    
+    // .cursorrules 更新
+    updateCursorrules(policy);
+    
+    console.log('=' .repeat(50));
+    console.log('✅ 完了！\n');
+    console.log('次のステップ:');
+    console.log('1. git diff .cursorrules で変更を確認');
+    console.log('2. npm run ops:lint で矛盾チェック');
+    console.log('3. git add / git commit / git push\n');
+    
+  } catch (error) {
+    console.error('\n❌ エラーが発生しました:\n');
+    console.error(error.message);
+    console.error(error.stack);
+    process.exit(1);
+  }
+}
+
+main();
+

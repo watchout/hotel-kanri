@@ -268,6 +268,79 @@ Step 2: コンテキスト判定
 
 ---
 
+<!-- OPS:BEGIN progress (auto-generated) -->
+## 📊 【進捗運用ルール】唯一の真実（canonical）
+
+**制定日**: 2025年10月21日  
+**ポリシー**: OPS-101 進捗管理ポリシー  
+**設定**: ops/policy.yml  
+
+### 🎯 基本原則
+
+**Plane が唯一の進捗管理ツール**
+
+✅ **Planeでやること**:
+- タスクの作成・更新
+- ステータス管理（Backlog → In Progress → Done）
+- 工数記録（見積もり + 実績）
+- 依存関係管理・ブロッカー管理
+- ラベル管理（SSOT作成/実装/バージョンアップ）
+- 担当者アサイン（Sun/Luna/Suno/Iza）
+
+❌ **やらないこと**:
+- SSOT_PROGRESS_MASTER.md の手動更新
+- Markdownファイルでの進捗管理
+- 他ツールとの併用
+
+### 📊 週次エクスポート（参照用）
+
+**エクスポート先**: `docs/03_ssot/SSOT_PROGRESS_MASTER.md`  
+**スケジュール**: 0 8 * * MON  
+**用途**: 参照のみ（手動更新禁止）
+
+### 🎯 タスク選択ルール（★★★AI必読）
+
+**絶対ルール**: タスクを開始する前に、以下の順序で選択する
+
+```markdown
+【タスク選択の優先順位】
+
+Priority 1（最優先）: 
+  1. Status = "Backlog" または "Spec Ready"
+  2. Priority = 1（最高優先度）
+  3. 依存関係 = ブロックされていない（Blocked byなし）
+  4. Assignee = 自分（Sun/Luna/Suno/Iza）
+  
+Priority 2（高優先）:
+  1. Status = "Backlog" または "Spec Ready"
+  2. Priority = 2
+  3. 依存関係 = ブロックされていない
+  
+Priority 3（通常）:
+  1. Status = "Backlog"
+  2. Priority = 3
+  3. 依存関係 = ブロックされていない
+
+【タスク選択の禁止事項】
+
+❌ 絶対禁止:
+- 依存関係を無視してタスクを開始する
+- 「Blocked by」が設定されているタスクを開始する
+- 自分（Assignee）以外のタスクを開始する
+- Priorityを無視してタスクを選択する
+
+✅ 正しい対応:
+1. Planeで次のタスクを検索
+2. 依存関係を確認
+3. ブロックされていないタスクを選択
+4. ユーザーに「次のタスク: XXX-123」を報告
+5. ユーザーの承認を得てから開始
+```
+
+**詳細**: ops/OPS-101-Progress.md
+
+<!-- OPS:END progress -->
+
 ## 📊 【Linear運用ルール】進捗管理の唯一の真実
 
 **導入日**: 2025年10月18日  

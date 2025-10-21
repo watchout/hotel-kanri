@@ -1,0 +1,220 @@
+# OPS v1 運用ポリシー設定
+# 制定日: 2025-10-21
+# バージョン: 1.0.0
+# 所有者: Eng Lead
+# 参照: ops/OPS-000-Charter.md
+
+---
+
+# ===========================================
+# 進捗管理のカノニカル（唯一の真実）
+# ===========================================
+progress:
+  # ツール選択: plane | linear | file
+  tool: plane
+  
+  # カノニカル（唯一の真実）として扱う
+  canonical: true
+  
+  # 週次エクスポート設定
+  weekly_export:
+    enabled: true
+    to_file: docs/03_ssot/SSOT_PROGRESS_MASTER.md
+    schedule: '0 8 * * MON'  # 月曜8時（cron）
+    format: markdown
+    
+  # ツール別設定
+  plane:
+    workspace_url: https://app.plane.so/hotel-kanri
+    api_endpoint: https://api.plane.so/api/v1
+    
+  linear:
+    workspace_url: https://linear.app/hotel-kanri
+    api_endpoint: https://api.linear.app/graphql
+    
+  file:
+    path: docs/03_ssot/SSOT_PROGRESS_MASTER.md
+    format: markdown
+
+# ===========================================
+# 設計・仕様・手順の基準
+# ===========================================
+design:
+  # システム要求仕様書（SRS）
+  srs: docs/requirements/SRS.md
+  
+  # アーキテクチャドキュメント（arc42）
+  arc42: docs/architecture/ARCH-arc42.md
+  
+  # C4モデル
+  c4:
+    context: docs/architecture/C4-context.dsl
+    container: docs/architecture/C4-container.dsl
+    component: docs/architecture/C4-component.dsl
+    
+  # 品質属性シナリオ（QAS / ISO 25010）
+  qas: docs/03_ssot/00_foundation/NFR-QAS.md
+  
+  # アーキテクチャ決定記録（ADR）
+  adr_dir: docs/adr
+  
+  # SSOT（Single Source of Truth）
+  ssot_dir: docs/03_ssot
+  
+  # トレーサビリティマトリクス
+  traceability: docs/traceability-matrix.md
+
+# ===========================================
+# セキュリティ基準
+# ===========================================
+security:
+  # OWASP ASVS レベル
+  asvs_level: 2
+  asvs_checklist: docs/security/OWASP-ASVS-L2-CHECKLIST.md
+  
+  # 静的解析（SAST）
+  sast_required: true
+  sast_tools:
+    - eslint
+    - semgrep
+    
+  # 依存関係スキャン
+  dependency_scan: true
+  dependency_tools:
+    - npm audit
+    - snyk
+    
+  # シークレット検出
+  secret_scan: true
+  secret_tools:
+    - gitleaks
+
+# ===========================================
+# コンプライアンス（矛盾の検出）
+# ===========================================
+compliance:
+  # Plane運用時の禁止パターン
+  forbid_when_plane:
+    - pattern: '唯一の進捗管理ファイル:.*SSOT_PROGRESS_MASTER\.md'
+      files: 
+        - .cursorrules
+        - docs/**/*.md
+      message: "Plane運用時はSSOT_PROGRESS_MASTER.mdを唯一の進捗管理としない"
+      
+    - pattern: 'SSOT_PROGRESS_MASTER\.md.*手動更新.*必須'
+      files:
+        - .cursorrules
+        - docs/**/*.md
+      message: "Plane運用時はSSOT_PROGRESS_MASTER.mdの手動更新を禁止"
+  
+  # Linear運用時の禁止パターン
+  forbid_when_linear:
+    - pattern: 'Linearが唯一.*禁止.*SSOT_.*手動更新'
+      files:
+        - .cursorrules
+      message: "Linear運用時はLinearが唯一の真実"
+      
+  # File運用時の禁止パターン
+  forbid_when_file:
+    - pattern: 'Linear.*唯一の進捗管理'
+      files:
+        - .cursorrules
+        - docs/**/*.md
+      message: "File運用時はMarkdownファイルが唯一の真実"
+      
+    - pattern: 'Plane.*唯一の進捗管理'
+      files:
+        - .cursorrules
+        - docs/**/*.md
+      message: "File運用時はMarkdownファイルが唯一の真実"
+
+# ===========================================
+# 品質保証（QA）
+# ===========================================
+qa:
+  # テスト戦略
+  test_strategy:
+    unit_test_required: true
+    integration_test_required: true
+    e2e_test_required: false  # 将来実装
+    
+  # カバレッジ目標
+  coverage:
+    target: 80
+    minimum: 70
+    
+  # コード品質
+  code_quality:
+    eslint_required: true
+    prettier_required: true
+    typescript_strict: true
+
+# ===========================================
+# CI/CD設定
+# ===========================================
+ci_cd:
+  # CI必須チェック
+  required_checks:
+    - ops-policy-lint
+    - ssot-compliance
+    - typescript-check
+    - eslint
+    - unit-tests
+    
+  # 自動デプロイ
+  auto_deploy:
+    enabled: false  # 手動デプロイのみ
+    
+  # ブランチ保護
+  branch_protection:
+    main:
+      required_reviews: 1
+      required_checks: all
+      allow_force_push: false
+
+# ===========================================
+# ドキュメント生成
+# ===========================================
+documentation:
+  # 自動生成対象
+  auto_generate:
+    - traceability-matrix
+    - api-documentation
+    - database-schema-doc
+    
+  # 週次レポート
+  weekly_reports:
+    enabled: true
+    schedule: '0 9 * * MON'
+    output_dir: docs/reports/weekly
+
+# ===========================================
+# 通知設定
+# ===========================================
+notifications:
+  # OPS変更時の通知
+  ops_changes:
+    enabled: true
+    channels:
+      - slack: '#dev-ops'
+      - email: dev-team@example.com
+      
+  # CI失敗時の通知
+  ci_failures:
+    enabled: true
+    channels:
+      - slack: '#dev-alerts'
+
+# ===========================================
+# メタデータ
+# ===========================================
+metadata:
+  version: 1.0.0
+  last_updated: 2025-10-21
+  owner: Eng Lead
+  reviewers:
+    - CTO
+    - PM
+    - Security Lead
+  next_review: 2025-11-21
+

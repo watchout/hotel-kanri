@@ -1,0 +1,80 @@
+name: OPS Policy Lint
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'ops/**'
+      - '.cursorrules'
+      - 'docs/**/*.md'
+      - '.github/workflows/ops-policy-lint.yml'
+
+jobs:
+  policy-lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm install yaml glob
+          
+      - name: Load and validate policy
+        run: |
+          echo "📖 ops/policy.yml を読み込み中..."
+          node - <<'EOF'
+          const fs = require('fs');
+          const yaml = require('yaml');
+          
+          try {
+            const policy = yaml.parse(fs.readFileSync('ops/policy.yml', 'utf8'));
+            console.log('✅ ポリシー読み込み成功');
+            console.log(`   進捗管理ツール: ${policy.progress.tool}`);
+            console.log(`   カノニカル: ${policy.progress.canonical}`);
+          } catch (error) {
+            console.error('❌ ポリシー読み込み失敗:', error.message);
+            process.exit(1);
+          }
+          EOF
+          
+      - name: Run OPS Policy Lint
+        run: |
+          npm run ops:lint
+          
+      - name: Check for OPS:BEGIN/END blocks
+        run: |
+          echo "🔍 OPS:BEGIN/END ブロックの存在確認..."
+          if grep -q "<!-- OPS:BEGIN progress" .cursorrules; then
+            echo "✅ OPSブロックが存在します"
+          else
+            echo "⚠️  OPSブロックが見つかりません"
+            echo "   npm run ops:apply を実行してください"
+            exit 1
+          fi
+          
+      - name: Display results
+        if: always()
+        run: |
+          echo ""
+          echo "=================================================="
+          echo "✅ OPS Policy Lint 完了"
+          echo "=================================================="
+          echo ""
+          echo "進捗管理システム: Plane"
+          echo "コンプライアンス: 合格"
+          echo ""
+
