@@ -384,47 +384,129 @@ Step 5: ドキュメント記録（Git）
 
 ## 🎯 基本原則（最優先）
 
+### 0. QOS v1（Quality Operating System）準拠 ★★★NEW
+
+**hotel-kanriは QOS v1 準拠の開発体制を採用しています**
+
+#### **QOS v1 の3つの柱**
+
+1. **Docs-as-Code**: 全ての設計・仕様を文書化（SSOT/ADR/QAS）
+2. **トレーサビリティ**: 要求 → 設計 → 実装 → テストの追跡
+3. **品質の定量化**: 自動チェック + スコア算出
+
+#### **必須参照ドキュメント**
+
+**設計・意思決定**:
+- `/Users/kaneko/hotel-kanri/docs/adr/README.md` - ADR（Architecture Decision Records）
+- `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/NFR-QAS.md` - QAS（Quality Attribute Scenarios / ISO 25010）
+
+**セキュリティ**:
+- `/Users/kaneko/hotel-kanri/docs/security/OWASP-ASVS-L2-CHECKLIST.md` - OWASP ASVS Level 2準拠
+
+**トレーサビリティ**:
+- `/Users/kaneko/hotel-kanri/docs/traceability-matrix.md` - 要件追跡マトリクス（自動生成）
+
+#### **自動チェックツール**
+
+```bash
+# SSOT間整合性チェック
+node scripts/quality/check-ssot-consistency.cjs
+
+# データベース命名規則チェック
+node scripts/quality/check-database-naming.cjs
+
+# トレーサビリティマトリクス生成
+node scripts/quality/generate-traceability-matrix.cjs
+```
+
+#### **新規機能開発時の必須フロー**
+
+```
+Step 1: 要求定義（SSOT + 要件ID）
+  ↓
+Step 2: 技術決定（ADR作成）← ★ 重要な決定は必ず記録
+  ↓
+Step 3: 非機能要件（QAS定義）← ★ 性能・セキュリティ等
+  ↓
+Step 4: 設計（API/DB設計）
+  ↓
+Step 5: 実装（コード内に要件IDコメント）
+  ↓
+Step 6: テスト（Accept検証）
+  ↓
+Step 7: トレーサビリティ確認（自動生成マトリクス）
+```
+
+---
+
 ### 1. 実装前の強制チェックリスト（★★★絶対遵守）
 
 **絶対ルール**: 実装を開始する前に**必ず**以下をチェックする
 
+**必須参照ドキュメント**: `/Users/kaneko/hotel-kanri/.cursor/prompts/implement_from_ssot.md` 
+
+このドキュメントは`write_new_ssot.md`と同等の品質管理を実装時に適用するためのものです。
+
 ```markdown
 【実装開始前の強制チェックリスト】
 
-✅ Step 1: 該当SSOTの読み込み（必須）
+✅ Phase 1: 該当SSOTの読み込み（必須）
   - [ ] SSOTファイルを開いた
   - [ ] SSOTを最後まで読んだ
-  - [ ] 要件IDを抽出した（XXX-nnn形式）
-  - [ ] Accept（合格条件）を理解した
+  - [ ] 「[SSOTファイル名] 読了」と表示した
+  - [ ] 要件IDを全て抽出した（XXX-nnn形式）
+  - [ ] Accept（合格条件）を全て抽出した
   
   🚨 SSOT未読の場合は実装を開始しない
   
-✅ Step 2: 既存実装の調査（必須）
+✅ Phase 2: 既存実装の100%調査（必須・15分）
   - [ ] 同じディレクトリの既存ファイル3つ以上確認
-  - [ ] 命名規則・パターンを把握
-  - [ ] 認証・エラーハンドリング方法を確認
+  - [ ] データベーステーブル確認（Prismaスキーマ）
+  - [ ] 関連SSOTの確認
+  - [ ] システム間連携の確認
+  - [ ] 命名規則・パターン・認証方式を把握
   
   🚨 既存実装未確認の場合は実装を開始しない
 
-✅ Step 3: ハルシネーション防止チェック（必須）
-  - [ ] 参照するファイルが実在することを確認した
+✅ Phase 3: ハルシネーション防止チェック（必須）
+  - [ ] 参照する全てのファイルが実在することを確認
   - [ ] プレースホルダーを使用していない
-  - [ ] 「たぶん〜だと思います」と言っていない
+  - [ ] 曖昧表現を使用していない（「たぶん」「おそらく」等）
+  - [ ] 確認済みと嘘をついていない
   
   🚨 不確実な情報で実装を開始しない
 
-✅ Step 4: 実装プランの提案（必須）
-  - [ ] 実装方針をユーザーに提案した
+✅ Phase 4: 実装プラン提案（必須）
+  - [ ] 実装対象の明確化（ファイル一覧・役割）
+  - [ ] 実装順序の提案
+  - [ ] 工数見積もり
+  - [ ] 実装方針の説明（SSOT準拠の根拠）
   - [ ] ユーザーの承認を得た
   
   🚨 承認なしで実装を開始しない
 
+✅ Phase 5: 実装時の必須ルール
+  - [ ] SSOT準拠の徹底（要件ID全実装、Accept全達成）
+  - [ ] 命名規則の厳守（DATABASE_NAMING_STANDARD, API_ROUTING_GUIDELINES）
+  - [ ] エラーハンドリングの統一
+  - [ ] 認証・セキュリティの徹底
+  - [ ] テストの実装（APIテスト、手動UIテスト）
+
+✅ Phase 6: 実装後の必須確認
+  - [ ] 要件ID完全実装チェック
+  - [ ] テスト実施・結果確認
+  - [ ] SSOT準拠チェック
+  - [ ] ドキュメント更新
+
 ❌ 絶対禁止:
-- Step 1-4を飛ばして実装を開始する
+- Phase 1-6を飛ばして実装を開始する
 - SSOTを読まずに「想像」で実装する
 - 既存実装を確認せずに実装する
 - 実在しないファイルを参照する
 - ユーザーの承認なしで実装する
+- SSOT記載外の機能を勝手に追加する
+
+📋 品質スコア目標: 90点以上 / 100点満点
 ```
 
 ### 2. 実装前の相談・合意プロセス [[memory:4821787]]
@@ -880,20 +962,18 @@ const userId = session.user.id;
 ## 📚 必須参照ドキュメント
 
 ### SSOT作成時（必読）
-1. **`/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_QUALITY_CHECKLIST.md`** - ★★★最優先
-   - SSOT作成時の品質チェックリスト
-   - 既存コード調査手順
-   - データベース命名規則チェック
-   - APIルーティングチェック
-   - システム間連携想定チェック
 
-2. **`/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_REQUIREMENT_ID_SYSTEM.md`** - ★★★最優先
-   - 要件ID体系（XXX-nnn形式）
-   - Accept（合格条件）の書き方
-   - テスト・型による契約の強制
+**★★★最優先必読ドキュメント**: `/Users/kaneko/hotel-kanri/.cursor/prompts/ssot_creation_complete_flow.md`
 
-3. `/Users/kaneko/hotel-kanri/.cursor/prompts/write_new_ssot.md` - SSOT作成ルール
-4. `/Users/kaneko/hotel-kanri/docs/03_ssot/SSOT_CREATION_RULES.md` - 詳細ルール
+このドキュメントは以下の3つを統合した完全版です：
+- Phase 1: 作成前チェック（write_new_ssot.md）
+- Phase 2: 作成中の品質基準（SSOT_QUALITY_CHECKLIST.md）
+- Phase 3: 作成後の品質検証（retest_new_ssot.md）
+
+**補足ドキュメント**:
+1. `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_QUALITY_CHECKLIST.md` - 詳細な品質基準
+2. `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_REQUIREMENT_ID_SYSTEM.md` - 要件ID体系
+3. `/Users/kaneko/hotel-kanri/docs/03_ssot/SSOT_CREATION_RULES.md` - 作成ルール詳細
 
 ### SSOT実装時（必読）
 1. **`/Users/kaneko/hotel-kanri/.cursor/prompts/implementation_guard_with_requirement_id.md`** - ★★★最優先

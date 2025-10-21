@@ -35,29 +35,29 @@ const client = new LinearClient({ apiKey: LINEAR_API_KEY });
 const DEPENDENCY_RULES = [
   // Phase 1: SSOT作成
   {
-    pattern: /SSOT作成: (.+)/,
+    pattern: /\[SSOT作成\] (.+)/,
     blockedBy: [],
     priority: 1,
   },
   
   // Phase 2: hotel-common実装
   {
-    pattern: /hotel-common実装: (.+)/,
+    pattern: /\[hotel-common実装\] (.+)/,
     blockedBy: (title) => {
       // 対応するSSOT作成タスクを検索
-      const ssotName = title.replace('hotel-common実装: ', '');
-      return [`SSOT作成: ${ssotName}`];
+      const ssotName = title.replace('[hotel-common実装] ', '');
+      return [`[SSOT作成] ${ssotName}`];
     },
     priority: 2,
   },
   
   // Phase 3: hotel-saas実装
   {
-    pattern: /hotel-saas実装: (.+)/,
+    pattern: /\[hotel-saas実装\] (.+)/,
     blockedBy: (title) => {
       // 対応するhotel-common実装タスクを検索
-      const ssotName = title.replace('hotel-saas実装: ', '');
-      return [`hotel-common実装: ${ssotName}`];
+      const ssotName = title.replace('[hotel-saas実装] ', '');
+      return [`[hotel-common実装] ${ssotName}`];
     },
     priority: 3,
   },
@@ -72,11 +72,7 @@ async function setDependencies() {
   
   // Step 1: 全Issueを取得
   console.log('Step 1: 全Issueを取得中...');
-  const issues = await client.issues({
-    filter: {
-      team: { name: { eq: 'omotenasu-ai' } },
-    },
-  });
+  const issues = await client.issues();
   
   const allIssues = [];
   for await (const issue of issues.nodes) {
@@ -121,7 +117,7 @@ async function setDependencies() {
           
           // 依存関係を作成
           try {
-            await client.issueRelationCreate({
+            await client.createIssueRelation({
               issueId: issue.id,
               relatedIssueId: blockerIssue.id,
               type: 'blocks', // blockerIssue blocks issue

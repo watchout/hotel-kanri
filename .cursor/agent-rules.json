@@ -1,0 +1,132 @@
+{
+  "name": "SSOT Quality Guard",
+  "version": "1.0.0",
+  "description": "リアルタイムSSOT品質チェックエージェント",
+  "triggers": [
+    {
+      "name": "SSOT編集時チェック",
+      "pattern": "docs/03_ssot/**/*.md",
+      "on": ["save", "edit"],
+      "checks": [
+        {
+          "id": "ssot-metadata-check",
+          "name": "SSOTメタデータ確認",
+          "description": "バージョン、作成日、ステータス等の必須メタデータ存在確認",
+          "severity": "error",
+          "pattern": "^# .+\\n\\n\\*\\*Doc-ID\\*\\*:.+\\n\\*\\*バージョン\\*\\*:.+\\n\\*\\*作成日\\*\\*:.+",
+          "message": "必須メタデータ（Doc-ID, バージョン, 作成日）が不足しています"
+        },
+        {
+          "id": "requirement-id-format",
+          "name": "要件IDフォーマット確認",
+          "description": "要件ID（XXX-nnn形式）の正しさを確認",
+          "severity": "warning",
+          "pattern": "##\\s+([A-Z]+-\\d{3})\\s+",
+          "message": "要件IDは「XXX-nnn」形式で記載してください（例: AUTH-001）"
+        },
+        {
+          "id": "accept-criteria-check",
+          "name": "Accept（合格条件）確認",
+          "description": "各要件にAccept（合格条件）が記載されているか確認",
+          "severity": "error",
+          "pattern": "\\*\\*Accept（合格条件）\\*\\*:",
+          "message": "Accept（合格条件）が記載されていません"
+        },
+        {
+          "id": "database-naming-snake-case",
+          "name": "データベース命名規則確認",
+          "description": "テーブル名・カラム名がsnake_caseか確認",
+          "severity": "error",
+          "pattern": "@@map\\(\"([a-z][a-z0-9_]*)\"\\)",
+          "message": "テーブル名・カラム名はsnake_caseで記載してください"
+        },
+        {
+          "id": "api-path-format",
+          "name": "APIパス形式確認",
+          "description": "APIパスが推奨形式か確認",
+          "severity": "warning",
+          "pattern": "\\*\\*エンドポイント\\*\\*:\\s*`(GET|POST|PUT|DELETE|PATCH)\\s+/api/v1/",
+          "message": "APIパスは /api/v1/ で始まる必要があります"
+        },
+        {
+          "id": "no-index-file",
+          "name": "index.*ファイル禁止チェック",
+          "description": "index.*ファイルの使用を警告",
+          "severity": "error",
+          "pattern": "index\\.(get|post|put|delete)\\.ts",
+          "message": "index.*ファイルは禁止です。明示的なファイル名（list.get.ts等）を使用してください"
+        },
+        {
+          "id": "deep-nested-path",
+          "name": "深いネスト禁止チェック",
+          "description": "2階層以上の動的パスを警告",
+          "severity": "error",
+          "pattern": "\\[\\w+\\]/[^/]+/\\[\\w+\\]",
+          "message": "深いネスト（2階層以上の動的パス）は禁止です。フラット構造に変更してください"
+        }
+      ]
+    },
+    {
+      "name": "Prismaスキーマ編集時チェック",
+      "pattern": "**/prisma/schema.prisma",
+      "on": ["save"],
+      "checks": [
+        {
+          "id": "model-pascal-case",
+          "name": "モデル名PascalCase確認",
+          "description": "Prismaモデル名がPascalCaseか確認",
+          "severity": "error",
+          "pattern": "model\\s+([A-Z][a-zA-Z0-9]*)\\s*\\{",
+          "message": "Prismaモデル名はPascalCaseで記載してください"
+        },
+        {
+          "id": "field-map-directive",
+          "name": "@mapディレクティブ確認",
+          "description": "全フィールドに@mapディレクティブがあるか確認",
+          "severity": "error",
+          "pattern": "\\w+\\s+\\w+\\s+@map\\(\"[a-z_]+\"\\)",
+          "message": "@mapディレクティブが必要です（例: tenantId String @map(\"tenant_id\")）"
+        },
+        {
+          "id": "table-map-directive",
+          "name": "@@mapディレクティブ確認",
+          "description": "全モデルに@@mapディレクティブがあるか確認",
+          "severity": "error",
+          "pattern": "@@map\\(\"[a-z_]+\"\\)",
+          "message": "@@mapディレクティブが必要です（例: @@map(\"table_name\")）"
+        }
+      ]
+    }
+  ],
+  "background_tasks": [
+    {
+      "id": "ssot-consistency-check",
+      "name": "SSOT間整合性チェック",
+      "description": "全SSOT間の用語・APIパスの整合性を定期チェック",
+      "schedule": "on_startup",
+      "script": "node scripts/quality/check-ssot-consistency.js",
+      "notification": {
+        "on_error": true,
+        "on_warning": true,
+        "channel": "editor"
+      }
+    },
+    {
+      "id": "quality-score-calculation",
+      "name": "品質スコア算出",
+      "description": "編集中のSSOTの品質スコアをリアルタイム算出",
+      "schedule": "on_save",
+      "script": "node scripts/quality/calculate-quality-score.js",
+      "notification": {
+        "on_score_below": 90,
+        "message": "品質スコアが90点未満です。改善が必要です。"
+      }
+    }
+  ],
+  "settings": {
+    "auto_fix": false,
+    "show_inline_warnings": true,
+    "severity_threshold": "warning"
+  }
+}
+

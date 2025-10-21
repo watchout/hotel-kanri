@@ -1,0 +1,88 @@
+# === TaskCard (Complete) ===========================================
+id: PMS-12
+alias: r1
+slug: rbac-role-create
+project: Tsukuyomi-PMS
+type: feature
+priority: P1
+
+title: 権限管理のロール作成APIを追加
+goal:  SSOT通りにRole作成エンドポイントを実装し、仕様逸脱ゼロでテストを通す
+
+scope:
+  in:  [POST /api/roles, バリデーション, 201/400/409のハンドリング]
+  out: [UI改修, 既存認可ミドルウェアの変更, DBマイグレーション]
+non_goals:
+  - 既存のRole参照APIの仕様変更はしない
+
+targets:
+  reposcope: monorepo
+  paths: [apps/server, packages/auth]
+
+inputs:
+  ssot: ./docs/SSOT_SAAS_PERMISSION_SYSTEM.md#roles-create
+  refs:
+    - ./apps/server/src/routes/roles.ts
+    - ./apps/server/src/validators/role.ts
+  db_schema: ./prisma/schema.prisma
+  envs: [local, dev]
+assumptions:
+  - Role名はユニーク制約
+
+artifacts:
+  code:
+    - apps/server/src/routes/roles.ts
+  docs:
+    - docs/api/roles.md
+  tests:
+    - apps/server/test/roles.create.spec.ts
+
+acceptance_tests:
+  - name: create role returns 201
+    steps:
+      - call POST /api/roles { "name": "manager" }
+    expects:
+      - status: 201
+      - body.name: manager
+  - name: duplicate role returns 409
+    steps:
+      - call POST /api/roles { "name": "manager" }
+      - call POST /api/roles { "name": "manager" }
+    expects:
+      - status: 409
+
+definition_of_done:
+  - CI成功（追加テスト含む）
+  - PRにSSOT/既存実装の**引用（パス＋行番号）**を記載
+  - 破壊的変更なし（スキーマ不変）
+
+constraints:
+  - スキーマ変更禁止
+  - 出力は基本 Diff only
+risks:
+  - ユニーク制約の解釈ズレ
+mitigations:
+  - schema.prisma の Role 定義を引用し整合確認
+
+epa:
+  evidence_requirements:
+    - SSOT #roles-create の要約3点＋引用
+    - 既存routesの構造（関数/型）引用
+    - schema.prisma の Role ユニーク定義引用
+  plan_steps:
+    - 既存ルート/バリデータの把握と差分設計
+    - 201/400/409の分岐実装
+    - 正常/重複のテスト追加
+    - APIドキュ更新
+    - CI
+  act_mode:
+    diff_only: true
+
+commands:
+  dev: [npm run dev -w apps/server]
+  test: [npm run test -w apps/server -- -t "roles.create"]
+  curl_examples:
+    - curl -X POST http://localhost:3100/api/roles -H 'Content-Type: application/json' -d '{"name":"manager"}'
+
+approval_points: [evidence, plan, diff, tests]
+# ===================================================================

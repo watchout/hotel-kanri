@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-filesystem"],
+      "disabledTools": ["writeFile", "rm", "mkdir"]
+    },
+    "ripgrep": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-ripgrep"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-git"],
+      "allowedTools": ["diff", "blame", "show", "status"]
+    }
+  }
+}
