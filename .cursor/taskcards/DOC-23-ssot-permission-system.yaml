@@ -1,0 +1,88 @@
+# === TaskCard (SSOT Creation) ======================================
+id: DOC-23
+alias: s1
+slug: ssot-permission-system
+project: hotel-kanri
+type: documentation
+priority: P1
+
+title: 権限管理システムのSSOT作成
+goal: 既存実装・アーカイブを完全調査し、要件ID付き高品質SSOTを作成
+
+scope:
+  in:  [既存実装調査, アーカイブ参照, 要件ID付与, Accept定義]
+  out: [実装作業, テスト作業]
+non_goals:
+  - SSOT作成のみ（実装は別タスク）
+
+targets:
+  reposcope: monorepo
+  paths: [docs/03_ssot/01_systems/saas]
+
+inputs:
+  archived_docs:
+    - docs/_archived_system_docs/hotel-saas/PERMISSION_SYSTEM.md
+  existing_code:
+    - apps/hotel-saas/server/api/permissions/
+    - apps/hotel-saas/composables/usePermissions.ts
+  db_schema: ./prisma/schema.prisma#Permission
+  reference_ssot: docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md
+
+investigation_time: 15分（既存実装の完全把握必須）
+
+artifacts:
+  docs:
+    - docs/03_ssot/01_systems/saas/SSOT_PERMISSION_SYSTEM.md
+  quality_check:
+    - docs/03_ssot/01_systems/saas/SSOT_PERMISSION_SYSTEM_QUALITY_REPORT.md
+
+acceptance_tests:
+  - name: requirement ID coverage
+    expects:
+      - 全機能に要件ID付与（PERM-nnn形式）
+  - name: Accept definition complete
+    expects:
+      - 全要件にAccept（合格条件）定義
+  - name: consistency with archived docs
+    expects:
+      - アーカイブとの差分を明記
+
+definition_of_done:
+  - 品質スコア90点以上（SSOT_QUALITY_CHECKLIST.md基準）
+  - 要件ID完全付与（漏れゼロ）
+  - Accept完全定義（曖昧ゼロ）
+  - 既存実装との整合性確認完了
+  - レビュー承認取得
+
+constraints:
+  - 必須参照: .cursor/prompts/ssot_creation_complete_flow.md
+  - 品質基準: docs/03_ssot/00_foundation/SSOT_QUALITY_CHECKLIST.md
+  - 要件ID体系: docs/03_ssot/00_foundation/SSOT_REQUIREMENT_ID_SYSTEM.md
+
+risks:
+  - 既存実装との乖離が発生
+  - アーカイブの古い情報を鵜呑み
+mitigations:
+  - 実装ソースを最優先（アーカイブは参考のみ）
+  - 差分を明記セクションで全て列挙
+
+epa:
+  evidence_requirements:
+    - アーカイブ調査結果（3要点＋引用）
+    - 既存実装調査結果（DB/API/UI構造）
+    - 他SSOT参照結果（命名規則・構成パターン）
+  plan_steps:
+    - Phase 1: 既存実装の完全調査（15分）
+    - Phase 2: アーカイブとの差分抽出
+    - Phase 3: 要件ID付与＋Accept定義
+    - Phase 4: 品質チェック実行
+    - Phase 5: レビュー提出
+  act_mode:
+    full_content: true  # SSOT本体は全文必要
+
+commands:
+  quality_check: [node scripts/quality/check-ssot-consistency.cjs docs/03_ssot/01_systems/saas/SSOT_PERMISSION_SYSTEM.md]
+  requirement_id_check: [grep -c "^### \\[PERM-" docs/03_ssot/01_systems/saas/SSOT_PERMISSION_SYSTEM.md]
+
+approval_points: [investigation_evidence, structure, requirement_ids, quality_score]
+# ===================================================================
