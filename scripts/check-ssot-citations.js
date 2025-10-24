@@ -102,3 +102,8 @@ console.log(`   🎯 要件ID: ${requirementIds.length}件`);
 console.log(`      ${requirementIds.join(', ')}`);
 console.log(`   📋 Out of scope: 記載済み\n`);
 
+
+
+
+
+

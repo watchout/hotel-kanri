@@ -700,3 +700,9 @@ SSOT作成完了報告前に以下を全て確認:
 
 ここまで読み込んだらまず「ssot_creation_complete_flow.md 読了」と表示すること
 
+
+
+
+
+
+

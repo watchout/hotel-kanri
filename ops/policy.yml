@@ -3,6 +3,11 @@
 # バージョン: 1.0.0
 # 所有者: Eng Lead
 # 参照: ops/OPS-000-Charter.md
+# 
+# 【重要】現在の状態
+# - Linear Issues が唯一の進捗管理（2025年10月18日運用開始）
+# - SSOT_PROGRESS_MASTER.md は週次エクスポート（参照用）
+# - scripts/linear/ に23個のスクリプト完備
 
 ---
 
@@ -11,12 +16,14 @@
 # ===========================================
 progress:
   # ツール選択: plane | linear | file
+  # 【現在】linear: Linear Issues が唯一の真実（2025-10-18運用開始）
   tool: linear
   
   # カノニカル（唯一の真実）として扱う
   canonical: true
   
   # 週次エクスポート設定
+  # Linear → SSOT_PROGRESS_MASTER.md（参照用）
   weekly_export:
     enabled: true
     to_file: docs/03_ssot/SSOT_PROGRESS_MASTER.md

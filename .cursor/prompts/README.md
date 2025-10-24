@@ -1,8 +1,38 @@
 # 📖 Cursor AI プロンプト・ガードレール一覧
 
-**最終更新**: 2025年10月10日  
-**バージョン**: 2.1.0  
+**最終更新**: 2025年10月22日  
+**バージョン**: 2.2.0  
 **管理者**: hotel-kanri統合管理
+
+---
+
+## 🏷️ タグ体系（v2.2.0新規）
+
+**hotel-kanriプロジェクト専用のタグ体系を採用しました。**
+
+Cursor標準のコマンド（`/edit`, `/new`, `@filename`）との衝突を避けるため、**`>>`記号**を使用します。
+
+### 利用可能なタグ
+
+| タグ | 用途 | 例 |
+|------|------|-----|
+| `>> write` | SSOT新規作成 | `>> write SSOT_SAAS_STAFF_MANAGEMENT` |
+| `>> impl` | SSOT実装 | `>> impl SSOT_SAAS_PERMISSION_SYSTEM` |
+| `>> fix` | バグ修正 | `>> fix SSOT_SAAS_ORDER_MANAGEMENT バグ内容` |
+| `>> rfv` | SSOT実装検証 | `>> rfv SSOT_SAAS_MENU_MANAGEMENT` |
+| `>> next` | 次タスク選択 | `>> next` |
+
+### 使用例
+
+```
+>> write SSOT_SAAS_STAFF_MANAGEMENT
+>> impl SSOT_SAAS_PERMISSION_SYSTEM
+>> fix SSOT_SAAS_ORDER_MANAGEMENT 削除エラー
+>> rfv SSOT_SAAS_MENU_MANAGEMENT
+>> next
+```
+
+**注意**: タグなしの通常の会話も可能です。タグは明確な指示が必要な時のみ使用してください。
 
 ---
 

@@ -1,0 +1,37 @@
+name: PR Policy
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || "";
+            const m = body.match(/Plan Issue:\s*#(\d+)/i);
+            if (!m) {
+              core.setFailed("Plan Issue がPR本文にありません（例: 'Plan Issue: #123'）");
+              return;
+            }
+            const issue_number = Number(m[1]);
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number
+            });
+            const hasApproved = issue.labels?.some(l => (typeof l === "string" ? l : l.name) === "PLAN-APPROVED");
+            if (!hasApproved) {
+              core.setFailed(`計画Issue #${issue_number} に 'PLAN-APPROVED' ラベルが必要です。`);
+              return;
+            }
+            const bodyText = issue.body || "";
+            const need = ["既存3ファイル以上を確認","Prisma","SSOT","認証方式"];
+            for (const kw of need) {
+              if (!bodyText.includes(kw)) {
+                core.setFailed(`計画Issue #${issue_number} のチェック項目が不完全です（不足: ${kw}）。`);
+                return;
+              }
+            }
+            core.info(`OK: Plan #${issue_number} 承認済み`);
+

@@ -1,0 +1,30 @@
+name: QOS Gatekeeper
+on: [pull_request]
+jobs:
+  qos-gatekeeper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PR Body (required links)
+        run: |
+          BODY="$(jq -r .pull_request.body $GITHUB_EVENT_PATH)"
+          miss=0; for r in \
+            "docs/03_ssot/00_foundation/SSOT_STANDARDS_INDEX.md" \
+            "docs/prompts/QOS_V1_PROMPT_KIT.md" \
+            "docs/03_ssot/" \
+            "docs/adr/ADR-" \
+            "Linear" \
+          ; do echo "$BODY" | grep -qi "$r" || { echo "❌ Missing: $r"; miss=1; }; done
+          [ $miss -eq 0 ] || exit 1
+      - name: Install spectral
+        run: npm i -g @stoplight/spectral-cli >/dev/null 2>&1 || true
+      - name: Lint OpenAPI (staff & generic)
+        run: |
+          spectral lint docs/03_ssot/openapi/staff-management.yaml
+          spectral lint docs/03_ssot/openapi/generic-resources.yaml
+      - name: Check SSOT requirements coverage
+        run: node scripts/check-requirement-coverage.js
+      - name: Semgrep (policy guards)
+        run: |
+          pipx install semgrep || python -m pip install semgrep || true
+          if command -v semgrep >/dev/null 2>&1; then semgrep --config .semgrep.yml; else echo "⚠ semgrep not available, skip"; fi

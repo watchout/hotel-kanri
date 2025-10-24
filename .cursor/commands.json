@@ -1,0 +1,47 @@
+{
+  "test": {
+    "description": "全システムの単体テストを実行",
+    "command": "npm run test:all"
+  },
+  "test:saas": {
+    "description": "hotel-saasのテストを実行",
+    "command": "cd /Users/kaneko/hotel-saas && npm test"
+  },
+  "test:common": {
+    "description": "hotel-commonのテストを実行",
+    "command": "cd /Users/kaneko/hotel-common && npm test"
+  },
+  "test:pms": {
+    "description": "hotel-pmsのテストを実行",
+    "command": "cd /Users/kaneko/hotel-pms && npm test"
+  },
+  "test:member": {
+    "description": "hotel-memberのテストを実行",
+    "command": "cd /Users/kaneko/hotel-member && pytest"
+  },
+  "lint-fix": {
+    "description": "全システムのLintエラーを自動修正",
+    "command": "npm run lint:fix"
+  },
+  "test-coverage": {
+    "description": "カバレッジ計測付きテスト実行",
+    "command": "npm test -- --coverage"
+  },
+  "e2e-smoke": {
+    "description": "E2Eスモークテスト（主要フローのみ）",
+    "command": "npx playwright test --grep @smoke"
+  },
+  "quality-check": {
+    "description": "品質チェック（lint + typecheck + test）",
+    "command": "npm run lint && npm run typecheck && npm test"
+  },
+  "db-migrate": {
+    "description": "データベースマイグレーション実行",
+    "command": "cd /Users/kaneko/hotel-common && npx prisma migrate deploy"
+  },
+  "db-reset-test": {
+    "description": "テスト用DB初期化",
+    "command": "cd /Users/kaneko/hotel-common && DATABASE_URL=$TEST_DATABASE_URL npx prisma migrate reset --force"
+  }
+}
+
