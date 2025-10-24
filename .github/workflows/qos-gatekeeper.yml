@@ -23,7 +23,7 @@ jobs:
           spectral lint docs/03_ssot/openapi/staff-management.yaml
           spectral lint docs/03_ssot/openapi/generic-resources.yaml
       - name: Check SSOT requirements coverage
-        run: node scripts/check-requirement-coverage.js
+        run: node scripts/check-requirement-coverage.cjs
       - name: Semgrep (policy guards)
         run: |
           pipx install semgrep || python -m pip install semgrep || true
