@@ -20,6 +20,7 @@ OpenAPI: `docs/03_ssot/openapi/staff-management.yaml`
 | STAFF-014 | ロック解除 | POST /staffs/{id}/unlock | unlockStaff | アンロック |
 | STAFF-017 | 招待キャンセル | POST /staffs/{id}/cancel-invite | cancelInvitation | キャンセル |
 | STAFF-018 | 招待再送 | POST /staffs/{id}/resend-invite | resendInvitation | 再送 |
+| STAFF-020 | 一覧拡張 | GET /staffs | listStaffs | 追加フィルタ/監査対応 |
 
 ## セキュリティ（要件ID ⇔ 検証ポイント）
 
