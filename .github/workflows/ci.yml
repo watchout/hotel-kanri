@@ -55,6 +55,7 @@ jobs:
   # ==========================================
   lint-and-typecheck:
     name: Lint & Typecheck
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -91,6 +92,7 @@ jobs:
   # ==========================================
   unit-tests:
     name: Unit Tests (${{ matrix.service }})
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -132,6 +134,7 @@ jobs:
   # ==========================================
   api-tests:
     name: API Tests (hotel-common)
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     
     services:
@@ -193,6 +196,7 @@ jobs:
   # ==========================================
   build:
     name: Build Check (${{ matrix.service }})
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:

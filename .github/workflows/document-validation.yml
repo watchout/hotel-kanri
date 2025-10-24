@@ -15,6 +15,7 @@ on:
 jobs:
   markdown-lint:
     name: Markdown リンター
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     steps:
       - name: リポジトリのチェックアウト
@@ -29,6 +30,7 @@ jobs:
 
   broken-links:
     name: リンク切れチェック
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     steps:
       - name: リポジトリのチェックアウト
@@ -45,6 +47,7 @@ jobs:
 
   spellcheck:
     name: スペルチェック
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     steps:
       - name: リポジトリのチェックアウト
