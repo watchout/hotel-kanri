@@ -1,0 +1,12 @@
+extends:
+  - spectral:oas
+
+rules:
+  info-contact: off
+  info-description: off
+  openapi-tags: off
+  operation-description: off
+  operation-operationId-valid-in-url: off
+  operation-operationId-unique: error
+  operation-tags: off
+  no--siblings: warn
