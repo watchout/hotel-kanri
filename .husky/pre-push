@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+pnpm openapi:gen || exit 1
+pnpm typecheck || exit 1
+pnpm lint || exit 1
+pnpm test || exit 1
+node scripts/guardrails/check-api-routes.mjs || exit 1
+node scripts/guardrails/check-openapi-consistency.mjs || exit 1
+

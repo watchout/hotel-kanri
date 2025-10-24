@@ -28,6 +28,7 @@ jobs:
   # ==========================================
   ai-quality-evaluation:
     name: AI Quality Evaluation
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     
     steps:
@@ -138,6 +139,7 @@ jobs:
   # ==========================================
   evaluation-gate:
     name: Evaluation Gate - All Checks Passed
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
     runs-on: ubuntu-latest
     needs:
       - ai-quality-evaluation

@@ -31,6 +31,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_PR_BODY: ${{ github.event.pull_request.body }}
         run: node scripts/check-ssot-citations.js
       
       - name: チェック成功
@@ -50,4 +51,9 @@ jobs:
           echo ""
           echo "詳細: /Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_REQUIREMENT_ID_SYSTEM.md"
           exit 1
+
+
+
+
+
 

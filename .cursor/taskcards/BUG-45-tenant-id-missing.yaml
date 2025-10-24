@@ -1,0 +1,97 @@
+# === TaskCard (Bug Fix) ============================================
+id: BUG-45
+alias: b1
+slug: tenant-id-missing-in-order-api
+project: hotel-saas
+type: bug
+priority: P0
+severity: critical
+
+title: 注文APIでテナントID欠落により他テナントデータ参照可能
+goal: テナントID必須化により、マルチテナント分離を完全に復旧する
+
+scope:
+  in:  [GET /api/orders, WHERE句にtenantId追加, 認証確認]
+  out: [他APIへの影響, UIの変更]
+non_goals:
+  - 注文API以外のバグ修正（別チケット化）
+
+targets:
+  reposcope: monorepo
+  paths: [apps/hotel-saas/server/api/orders]
+
+inputs:
+  ssot: ./docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md#tenant-isolation
+  bug_report: https://linear.app/hotel/issue/BUG-45
+  refs:
+    - ./apps/hotel-saas/server/api/orders/index.get.ts
+  db_schema: ./prisma/schema.prisma#Order
+  envs: [local, dev, staging]
+
+reproduction:
+  steps:
+    - ログイン（tenant_id=A）
+    - GET /api/orders を呼び出す
+    - 他テナント（B, C）の注文も返却される
+  expected: tenant_id=Aの注文のみ
+  actual: 全テナントの注文が返却
+
+root_cause:
+  - WHERE句にtenantIdフィルタが欠落
+  - セッションからtenantIdを取得していない
+
+artifacts:
+  code:
+    - apps/hotel-saas/server/api/orders/index.get.ts
+  tests:
+    - apps/hotel-saas/server/api/orders/index.get.spec.ts
+
+acceptance_tests:
+  - name: returns only own tenant orders
+    steps:
+      - login as tenant_id=A
+      - call GET /api/orders
+    expects:
+      - all orders have tenant_id=A
+  - name: rejects if no session
+    steps:
+      - call GET /api/orders without session
+    expects:
+      - status: 401
+
+definition_of_done:
+  - バグ再現テスト追加（失敗→修正後成功）
+  - CI成功
+  - PRにroot cause分析＋修正箇所の**引用**記載
+  - 他APIへの横展開チェック完了
+
+constraints:
+  - 既存データ構造は変更禁止
+  - 破壊的変更禁止
+
+risks:
+  - 同様のバグが他APIにも存在する可能性
+mitigations:
+  - 全API endpointsをgrepでtenantIdチェック
+
+epa:
+  evidence_requirements:
+    - SSOT #tenant-isolation のルール引用
+    - バグ該当コード（現状のWHERE句）引用
+    - セッション取得の正しい実装例引用
+  plan_steps:
+    - セッションからtenantId取得ロジック追加
+    - WHERE句にtenantIdフィルタ追加
+    - 再現テスト作成（修正前失敗確認）
+    - 修正後テスト成功確認
+    - 他API横展開チェック
+  act_mode:
+    diff_only: true
+
+commands:
+  dev: [npm run dev -w hotel-saas]
+  test: [npm run test -w hotel-saas -- orders]
+  reproduce: [curl -X GET http://localhost:3100/api/orders -H 'Cookie: hotel_session=xxx']
+
+approval_points: [evidence, plan, diff, regression_check]
+# ===================================================================

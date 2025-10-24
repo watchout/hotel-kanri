@@ -1,0 +1,92 @@
+# === TaskCard (Refactoring) ========================================
+id: REFACTOR-8
+alias: f1
+slug: dedupe-error-handler
+project: hotel-common
+type: refactoring
+priority: P2
+
+title: API全体で重複するエラーハンドリングを共通化
+goal: 100行のエラー処理コードを共通ユーティリティに集約し、保守性を向上
+
+scope:
+  in:  [共通エラーハンドラ作成, 既存20箇所を置換, 型定義統一]
+  out: [エラーメッセージ文言の変更, ログ形式の変更]
+non_goals:
+  - エラーの振る舞いは変更しない（純粋なリファクタ）
+
+targets:
+  reposcope: monorepo
+  paths: [packages/common/src/utils, apps/*/server/api]
+
+inputs:
+  refs:
+    - ./apps/hotel-saas/server/api/orders/index.get.ts#L45-L60
+    - ./apps/hotel-pms/server/api/reservations/index.get.ts#L38-L52
+    - ./packages/common/src/utils/errors.ts
+  pattern_analysis: 20箇所で同一パターン（try/catchでstatusCode判定→createError）
+
+before_state:
+  code_duplication: 100行（20箇所 × 5行）
+  maintenance_risk: high
+
+after_state:
+  shared_utility: packages/common/src/utils/handleApiError.ts
+  code_reduction: 90行削減（10行の共通関数）
+
+artifacts:
+  code:
+    - packages/common/src/utils/handleApiError.ts
+    - apps/hotel-saas/server/api/orders/index.get.ts
+    - apps/hotel-pms/server/api/reservations/index.get.ts
+  tests:
+    - packages/common/src/utils/handleApiError.spec.ts
+
+acceptance_tests:
+  - name: error behavior unchanged
+    steps:
+      - 既存APIを全て実行（正常系・異常系）
+    expects:
+      - リファクタ前後で同一レスポンス
+  - name: new utility covers all cases
+    steps:
+      - handleApiError(400/401/403/404/500)を呼び出す
+    expects:
+      - 各statusCodeで正しいエラー返却
+
+definition_of_done:
+  - 全20箇所を共通関数に置換完了
+  - 既存テスト全て成功（振る舞い不変）
+  - 新規テスト追加（共通関数の単体テスト）
+  - PRに「振る舞い不変」の証拠（テスト結果）添付
+
+constraints:
+  - **破壊的変更絶対禁止**（エラーレスポンス形式不変）
+  - 既存テストは全て成功必須
+
+risks:
+  - 微妙な振る舞いの差異が混入する可能性
+mitigations:
+  - リファクタ前後でテストを2回実行し結果を比較
+
+epa:
+  evidence_requirements:
+    - 重複コードパターンの引用（3箇所以上）
+    - 既存テストの成功結果
+    - 共通化後の差分（Diff）
+  plan_steps:
+    - 共通ユーティリティ作成＋単体テスト
+    - 既存テスト実行（Before状態）
+    - 20箇所を段階的に置換（5箇所ずつテスト）
+    - 全置換後の既存テスト実行（After状態）
+    - Before/After結果の比較確認
+  act_mode:
+    diff_only: true
+
+commands:
+  test_before: [npm run test > test-before.log]
+  test_after: [npm run test > test-after.log]
+  compare: [diff test-before.log test-after.log]
+
+approval_points: [evidence, plan, diff, test_comparison]
+# ===================================================================

@@ -24,15 +24,15 @@ const { execSync } = require('child_process');
 let prBody = '';
 
 try {
-  if (process.env.GITHUB_TOKEN && process.env.PR_NUMBER) {
-    // GitHub Actionsから実行
-    console.log('📥 GitHub APIからPR本文を取得中...');
-    const cmd = `gh pr view ${process.env.PR_NUMBER} --json body -q .body`;
-    prBody = execSync(cmd, { encoding: 'utf-8' });
-  } else if (process.env.GITHUB_PR_BODY) {
-    // 環境変数から取得
+  if (process.env.GITHUB_PR_BODY) {
+    // 環境変数から取得（優先）
     console.log('📥 環境変数からPR本文を取得中...');
     prBody = process.env.GITHUB_PR_BODY;
+  } else if (process.env.GITHUB_TOKEN && process.env.PR_NUMBER) {
+    // フォールバック: gh CLI
+    console.log('📥 gh CLIからPR本文を取得中...');
+    const cmd = `gh pr view ${process.env.PR_NUMBER} --json body -q .body`;
+    prBody = execSync(cmd, { encoding: 'utf-8' });
   } else {
     console.warn('⚠️  PR本文を取得できません（ローカル実行時はスキップ）');
     console.log('✅ ローカル実行のため、チェックをスキップします');
@@ -101,4 +101,9 @@ ssotMatches.forEach(ssot => console.log(`      - ${ssot}`));
 console.log(`   🎯 要件ID: ${requirementIds.length}件`);
 console.log(`      ${requirementIds.join(', ')}`);
 console.log(`   📋 Out of scope: 記載済み\n`);
+
+
+
+
+
 
