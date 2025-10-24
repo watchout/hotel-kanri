@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 /*
  * SSOT要件IDカバレッジチェック
- * - SSOT_SAAS_STAFF_MANAGEMENT.md（要件ID）
+ * - docs/03_ssot/requirements.md の対応表（対象のみ）
  * - docs/03_ssot/openapi/staff-management.yaml（operation description）
- * に含まれる STAFF-*** ID の対応を機械検証
+ * に含まれる STAFF-*** ID の対応を機械検証（対象範囲に限定）
  */
 
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
 
-const SSOT_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/01_admin_features/SSOT_SAAS_STAFF_MANAGEMENT.md');
+const MAP_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/requirements.md');
 const OPENAPI_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/openapi/staff-management.yaml');
 
 function readText(filePath) {
@@ -21,12 +21,13 @@ function readText(filePath) {
   return fs.readFileSync(filePath, 'utf8');
 }
 
-function extractRequirementIdsFromSSOT(text) {
+function extractRequirementIdsFromMap(text) {
   const ids = new Set();
-  const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
-  let m;
-  while ((m = re.exec(text)) !== null) {
-    ids.add(m[1]);
+  // テーブルの1列目にIDが並ぶ前提
+  const lines = text.split(/\r?\n/);
+  for (const line of lines) {
+    const m = line.match(/\|\s*(STAFF(?:-SEC|-UI)?-\d{3})\s*\|/);
+    if (m) ids.add(m[1]);
   }
   return Array.from(ids).sort();
 }
@@ -50,19 +51,19 @@ function extractRequirementIdsFromOpenAPI(openapi) {
 }
 
 function main() {
-  const ssotText = readText(SSOT_FILE);
-  const ssotIds = extractRequirementIdsFromSSOT(ssotText);
+  const mapText = readText(MAP_FILE);
+  const targetIds = extractRequirementIdsFromMap(mapText);
 
   const openapiText = readText(OPENAPI_FILE);
   const openapiDoc = yaml.load(openapiText);
   const openapiIds = extractRequirementIdsFromOpenAPI(openapiDoc);
 
-  const ssotOnly = ssotIds.filter((id) => !openapiIds.includes(id));
-  const openapiOnly = openapiIds.filter((id) => !ssotIds.includes(id));
+  const ssotOnly = targetIds.filter((id) => !openapiIds.includes(id));
+  const openapiOnly = openapiIds.filter((id) => !targetIds.includes(id));
 
   if (ssotOnly.length === 0 && openapiOnly.length === 0) {
     console.log('✅ 要件IDカバレッジ: 100%');
-    console.log(`   - 総ID数: ${ssotIds.length}`);
+    console.log(`   - 総ID数: ${targetIds.length}`);
     process.exit(0);
   }
 
