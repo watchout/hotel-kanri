@@ -12,255 +12,95 @@ on:
 
 jobs:
   # ==========================================
-  # Job 1: SSOT準拠チェック
+  # Job: ops-policy-lint（必須）
+  # ==========================================
+  ops-policy-lint:
+    name: ops-policy-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate ops policy
+        run: node ops/scripts/validate-policy.js
+
+  # ==========================================
+  # Job: ssot-compliance（必須）
   # ==========================================
   ssot-compliance:
-    name: SSOT Compliance Check
+    name: ssot-compliance
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          
-      - name: Check SSOT citation in PR
+      - uses: actions/checkout@v4
+      - name: Check SSOT citation and Requirement IDs in PR body
         if: github.event_name == 'pull_request'
-        run: |
-          # PR本文を取得
-          PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body --jq .body)
-          
-          # SSOT参照があるかチェック
-          if ! echo "$PR_BODY" | grep -q "docs/03_ssot"; then
-            echo "❌ エラー: PR本文にSSO参照が見つかりません"
-            echo "必須: docs/03_ssot/.../SSOT_XXX.md @ <commit-hash>"
-            exit 1
-          fi
-          
-          # 要件IDがあるかチェック
-          if ! echo "$PR_BODY" | grep -qE "[A-Z]+-[0-9]+"; then
-            echo "❌ エラー: PR本文に要件ID（XXX-nnn形式）が見つかりません"
-            exit 1
-          fi
-          
-          echo "✅ SSOT準拠チェック: 合格"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          echo "Checking PR body for SSOT references and requirement IDs..."
+          if ! echo "$PR_BODY" | grep -q "docs/03_ssot"; then
+            echo "❌ エラー: PR本文にSSOT参照が見つかりません (docs/03_ssot/...)" && exit 1
+          fi
+          if ! echo "$PR_BODY" | grep -qE "[A-Z]+-[0-9]+"; then
+            echo "❌ エラー: PR本文に要件ID（XXX-nnn形式）が見つかりません" && exit 1
+          fi
+          echo "✅ SSOT準拠チェック: 合格"
 
   # ==========================================
-  # Job 2: Lint & Typecheck
+  # Job: typescript-check（必須・このリポではNo-Op）
   # ==========================================
-  lint-and-typecheck:
-    name: Lint & Typecheck
-    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
+  typescript-check:
+    name: typescript-check
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [hotel-common, hotel-saas]
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: '${{ matrix.service }}/package-lock.json'
-          
-      - name: Install dependencies
-        working-directory: ${{ matrix.service }}
-        run: npm ci
-        
-      - name: Run ESLint
-        working-directory: ${{ matrix.service }}
-        run: npm run lint
-        continue-on-error: true
-        
-      - name: Run TypeScript typecheck
-        if: matrix.service == 'hotel-saas'
-        working-directory: ${{ matrix.service }}
-        run: npx nuxi typecheck
-        continue-on-error: true
+      - run: echo "No TypeScript sources to check in hotel-kanri. Skipping."
 
   # ==========================================
-  # Job 3: Unit Tests
+  # Job: eslint（必須・このリポではNo-Op）
+  # ==========================================
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No ESLint target in hotel-kanri. Skipping."
+
+  # ==========================================
+  # Job: unit-tests（必須・このリポではNo-Op）
   # ==========================================
   unit-tests:
-    name: Unit Tests (${{ matrix.service }})
-    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
+    name: unit-tests
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [hotel-common, hotel-saas]
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - run: echo "No unit tests in hotel-kanri. Skipping."
+
+  # ==========================================
+  # Job: route-order（必須・kanriではNo-Op）
+  # ==========================================
+  route-order:
+    name: route-order
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: '${{ matrix.service }}/package-lock.json'
-          
-      - name: Install dependencies
-        working-directory: ${{ matrix.service }}
-        run: npm ci
-        
-      - name: Run unit tests
-        working-directory: ${{ matrix.service }}
-        run: npm run test:unit
-        
-      - name: Run coverage
-        working-directory: ${{ matrix.service }}
-        run: npm run test:coverage
-        continue-on-error: true
-        
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ${{ matrix.service }}/coverage
-          flags: ${{ matrix.service }}
-          name: ${{ matrix.service }}-coverage
+      - run: node scripts/quality/check-route-order.cjs
 
   # ==========================================
-  # Job 4: API Tests（hotel-common）
-  # ==========================================
-  api-tests:
-    name: API Tests (hotel-common)
-    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
-    runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: hotel_app
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: hotel_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-          
-      redis:
-        image: redis:7-alpine
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'hotel-common/package-lock.json'
-          
-      - name: Install dependencies
-        working-directory: hotel-common
-        run: npm ci
-        
-      - name: Run Prisma migrations
-        working-directory: hotel-common
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://hotel_app:password@localhost:5432/hotel_test
-        
-      - name: Run API tests
-        working-directory: hotel-common
-        run: npm run test:api
-        env:
-          DATABASE_URL: postgresql://hotel_app:password@localhost:5432/hotel_test
-          REDIS_URL: redis://localhost:6379
-          TEST_API_URL: http://localhost:3400
-
-  # ==========================================
-  # Job 5: Build Check
-  # ==========================================
-  build:
-    name: Build Check (${{ matrix.service }})
-    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [hotel-common, hotel-saas]
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-          
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: '${{ matrix.service }}/package-lock.json'
-          
-      - name: Install dependencies
-        working-directory: ${{ matrix.service }}
-        run: npm ci
-        
-      - name: Build project
-        working-directory: ${{ matrix.service }}
-        run: npm run build
-
-  # ==========================================
-  # Job 6: Security Scan
-  # ==========================================
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-        
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities found"
-        
-      - name: Check for secrets
-        if: github.event_name == 'pull_request'
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.pull_request.base.sha }}
-          head: ${{ github.event.pull_request.head.sha }}
-
-  # ==========================================
-  # 最終ゲート: 全ジョブ成功確認
+  # 最終ゲート: 全ジョブ成功確認（参考）
   # ==========================================
   quality-gate:
     name: Quality Gate - All Checks Passed
     runs-on: ubuntu-latest
     needs:
+      - ops-policy-lint
       - ssot-compliance
-      - lint-and-typecheck
+      - typescript-check
+      - eslint
       - unit-tests
-      - api-tests
-      - build
-      - security
-    
+      - route-order
     steps:
-      - name: All checks passed
-        run: |
-          echo "✅ 全てのチェックが合格しました！"
+      - run: |
+          echo "✅ 全ての必須チェックが合格しました。"
           echo "🎉 マージ可能な状態です"

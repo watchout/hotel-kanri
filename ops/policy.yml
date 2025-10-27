@@ -167,6 +167,7 @@ ci_cd:
     - typescript-check
     - eslint
     - unit-tests
+    - route-order
     
   # 自動デプロイ
   auto_deploy:
