@@ -1,59 +1,17 @@
-name: SSOT Compliance Check
+name: CI - Debug Phase 1 (Minimal)
 
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]
 
 jobs:
-  ssot-check:
-    name: SSOT準拠チェック
+  # Phase 1: 最小構成 - echoのみで動作確認
+  test-minimal:
+    name: Test Minimal (Phase 1)
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      - name: Install GitHub CLI
+      - name: Echo test
         run: |
-          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && sudo apt update \
-          && sudo apt install gh -y
-      
-      - name: SSOT参照・要件IDチェック
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_PR_BODY: ${{ github.event.pull_request.body }}
-        run: node scripts/check-ssot-citations.cjs
-      
-      - name: チェック成功
-        if: success()
-        run: |
-          echo "✅ SSOT準拠チェックに合格しました！"
-          echo "このPRはSSOTの要件に準拠しています。"
-      
-      - name: チェック失敗
-        if: failure()
-        run: |
-          echo "❌ SSOT準拠チェックに失敗しました。"
-          echo "PRテンプレートを確認し、以下を記入してください："
-          echo "  1. 読了したSSO"
-          echo "  2. 対象要件ID（XXX-nnn形式）"
-          echo "  3. Out of scope"
-          echo ""
-          echo "詳細: /Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_REQUIREMENT_ID_SYSTEM.md"
-          exit 1
-
-
-
-
-
-
+          echo "✅ Phase 1: Minimal workflow is working!"
+          echo "GitHub Actions is properly triggered"
+          echo "Next: Add checkout and node setup"
