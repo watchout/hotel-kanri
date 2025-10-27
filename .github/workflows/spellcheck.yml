@@ -1,20 +1,22 @@
-matrix:
-- name: Markdown
-  aspell:
-    lang: en
-  dictionary:
-    encoding: utf-8
-    wordlists:
-    - .github/workflows/wordlist.txt
-  pipeline:
-  - pyspelling.filters.markdown:
-      markdown_extensions:
-      - pymdownx.superfences
-  - pyspelling.filters.html:
-      comments: false
-      ignores:
-      - code
-      - pre
-  sources:
-  - "**/*.md"
-  default_encoding: utf-8
+name: Spellcheck
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**.md'
+  pull_request:
+    paths:
+      - '**.md'
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Spellcheck
+        uses: rojopolis/spellcheck-github-actions@0.36.0
+        with:
+          config_path: .github/workflows/.pyspelling.yml
+          task_name: Markdown
