@@ -24,7 +24,7 @@ const { execSync } = require('child_process');
 let prBody = '';
 
 try {
-  if (process.env.GITHUB_PR_BODY) {
+  if (process.env.GITHUB_PR_BODY && process.env.GITHUB_PR_BODY.trim().length > 0) {
     // 環境変数から取得（優先）
     console.log('📥 環境変数からPR本文を取得中...');
     prBody = process.env.GITHUB_PR_BODY;
