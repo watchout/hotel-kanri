@@ -177,3 +177,4 @@ jobs:
           echo "   - typescript-check: 警告のみ"
           echo "   - eslint: 警告のみ"
 
+# Trigger CI
