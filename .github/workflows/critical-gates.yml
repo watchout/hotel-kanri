@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_PR_BODY: ${{ github.event.pull_request.body }}
-        run: node scripts/check-ssot-citations.js
+        run: node scripts/check-ssot-citations.cjs
       
       - name: SSOT整合性チェック
         run: |
