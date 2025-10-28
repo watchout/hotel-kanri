@@ -34,6 +34,9 @@ jobs:
         with:
           node-version: '20'
       
+      - name: Install dependencies
+        run: npm install
+      
       - name: Install GitHub CLI
         run: |
           type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
@@ -111,11 +114,8 @@ jobs:
       
       - name: Check database naming conventions
         run: |
-          if [ -f "scripts/quality/check-database-naming.cjs" ]; then
-            node scripts/quality/check-database-naming.cjs
-          else
-            echo "✅ データベース命名規則チェック（既存スクリプト使用）"
-          fi
+          echo "⚠️  hotel-kanriは管理リポジトリのため、DBチェックはスキップ"
+          echo "💡 各システムリポジトリ（hotel-saas, hotel-common）で実行されます"
       
       - name: Validate Prisma schemas
         run: |
