@@ -159,7 +159,7 @@
     "glob": "^11.0.0",
     "hotel-common": "file:../hotel-common",
     "lru-cache": "^10.2.0",
-    "nuxt": "3.16.2",
+    "nuxt": "3.19.3",
     "playwright": "^1.52.0",
     "postcss": "8.4.31",
     "postcss-nesting": "13.0.1",
