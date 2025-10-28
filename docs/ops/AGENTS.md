@@ -24,3 +24,11 @@ SSOTパス
 - すべての要件に `REQ-API-xxx` を付与（トレーサビリティ）
 - DoDは `pre-commit / pre-push / CI(quality, pr-policy)` で自動判定できる形に
 - 不足/矛盾を検知したら実装依頼は出さず「HALT: 不足 <列挙>」で停止
+
+■ 【絶対禁止】実装プロンプトのドキュメント化
+- ❌ 実装プロンプトをdocs/配下に作成しない
+- ❌ 作業指示書をGitにコミットしない
+- ❌ phase1_xxx.md のような一時ファイルを作成しない
+- ✅ 実装プロンプトはチャット内で直接出力する
+- ✅ Work Packageは設計書として、チャット内で完結させる
+- 📖 詳細: /Users/kaneko/hotel-kanri/.cursorrules の「実装プロンプトのドキュメント化」セクション
