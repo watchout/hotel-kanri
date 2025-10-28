@@ -68,9 +68,39 @@ async function checkSsotConsistency() {
   console.log('🔍 SSOT間整合性チェック開始\n');
   
   const ssotDir = path.join(__dirname, '../../docs/03_ssot');
-  const ssotFiles = await glob(`${ssotDir}/**/*.md`);
   
-  console.log(`📊 対象SSOT数: ${ssotFiles.length}件\n`);
+  // 現行SSOTのみをチェック対象に（参考資料・履歴は除外）
+  const SSOT_DIRECTORIES = [
+    '00_foundation',      // 基盤SSOT
+    '01_admin_features',  // 管理機能SSOT
+    '02_guest_features',  // ゲスト機能SSOT
+    '03_integration',     // 統合SSOT
+    'openapi',            // OpenAPI仕様
+  ];
+  
+  let ssotFiles = [];
+  for (const dir of SSOT_DIRECTORIES) {
+    const dirPath = path.join(ssotDir, dir);
+    try {
+      const files = await glob(`${dirPath}/**/*.{md,yaml,yml}`);
+      ssotFiles.push(...files);
+    } catch (err) {
+      // ディレクトリが存在しない場合はスキップ
+      console.log(`⚠️  ${dir} ディレクトリが存在しません（スキップ）`);
+    }
+  }
+  
+  // SSOT_PROGRESS_MASTER.md も含める（進捗管理の唯一の真実）
+  const progressMaster = path.join(ssotDir, 'SSOT_PROGRESS_MASTER.md');
+  try {
+    await fs.access(progressMaster);
+    ssotFiles.push(progressMaster);
+  } catch (err) {
+    // ファイルが存在しない場合はスキップ
+  }
+  
+  console.log(`📊 対象SSOT数: ${ssotFiles.length}件`);
+  console.log(`📁 チェック対象ディレクトリ: ${SSOT_DIRECTORIES.join(', ')}\n`);
   
   const ssots = [];
   for (const file of ssotFiles) {
@@ -207,34 +237,25 @@ async function checkSsotConsistency() {
   }
   
   // 非推奨認証方式の使用チェック
-  if (authUsage['JWT認証']) {
-    // phase0_* や _archived_ ディレクトリは除外
-    const relevantFiles = authUsage['JWT認証'].filter(file => 
-      !file.includes('phase0_') && 
-      !file.includes('_archived_') &&
-      !file.includes('JWT_DEPRECATION_NOTICE.md')
-    );
+  if (authUsage['JWT認証'] && authUsage['JWT認証'].length > 0) {
+    // 現行SSOTのみをチェック対象にしているため、
+    // 検出された場合は全て現行SSOTでの使用
+    errors.push({
+      type: 'DEPRECATED_AUTH_METHOD',
+      method: 'JWT認証',
+      files: authUsage['JWT認証'],
+      message: `非推奨の認証方式（JWT認証）が現行SSOTで使用されています`
+    });
     
-    if (relevantFiles.length > 0) {
-      errors.push({
-        type: 'DEPRECATED_AUTH_METHOD',
-        method: 'JWT認証',
-        files: relevantFiles,
-        message: `非推奨の認証方式（JWT認証）が使用されています`
-      });
-      
-      console.log(`❌ 非推奨の認証方式（JWT認証）が検出されました:`);
-      console.log(`   使用ファイル数: ${relevantFiles.length}件`);
-      relevantFiles.slice(0, 5).forEach(file => {
-        console.log(`   - ${file}`);
-      });
-      if (relevantFiles.length > 5) {
-        console.log(`   ... 他${relevantFiles.length - 5}件`);
-      }
-      console.log('');
-    } else {
-      console.log(`✅ JWT認証: ${authUsage['JWT認証'].length}件（全て古いドキュメント/アーカイブ）\n`);
+    console.log(`❌ 非推奨の認証方式（JWT認証）が現行SSOTで検出されました:`);
+    console.log(`   使用ファイル数: ${authUsage['JWT認証'].length}件`);
+    authUsage['JWT認証'].slice(0, 5).forEach(file => {
+      console.log(`   - ${file}`);
+    });
+    if (authUsage['JWT認証'].length > 5) {
+      console.log(`   ... 他${authUsage['JWT認証'].length - 5}件`);
     }
+    console.log('');
   }
   
   if (authUsage['Session認証']) {
