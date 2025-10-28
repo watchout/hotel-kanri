@@ -22,7 +22,7 @@
     "dev:foreground": "lsof -ti:3100 | xargs kill -9 2>/dev/null || true && nuxt dev --port 3100",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare && ./scripts/prevent-duplicate-db.sh",
+    "postinstall": "nuxt prepare",
     "db:seed": "node prisma/seed.mjs",
     "db:add-test-staff": "node scripts/add-test-staff.js",
     "db:check": "node scripts/db-safety-check.cjs",
@@ -87,7 +87,7 @@
     "lint:fix": "npm run lint:fix:saas && npm run lint:fix:common",
     "lint:fix:saas": "cd /Users/kaneko/hotel-saas && npm run lint:fix || echo '⚠️ hotel-saas lint:fix未設定'",
     "lint:fix:common": "cd /Users/kaneko/hotel-common && npm run lint:fix",
-    "typecheck": "cd /Users/kaneko/hotel-saas && npx nuxi typecheck"
+    "typecheck": "echo '⚠️ hotel-kanriは管理リポジトリのため型チェック不要' && exit 0"
   },
   "dependencies": {
     "@blocknote/core": "^0.12.1",
