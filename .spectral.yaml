@@ -1,0 +1,22 @@
+# Spectral Ruleset for OpenAPI Linting
+# QOS v1 - hotel-kanri project
+extends: ["spectral:oas"]
+
+rules:
+  # Enable recommended OpenAPI rules
+  operation-description: warn
+  operation-operationId: error
+  operation-operationId-unique: error
+  operation-parameters: error
+  operation-tag-defined: error
+  
+  # Schema rules
+  oas3-schema: error
+  
+  # Path rules
+  path-params: error
+  path-declarations-must-exist: error
+  
+  # Security rules
+  oas3-api-servers: warn
+  oas3-operation-security-defined: warn
