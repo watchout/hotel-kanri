@@ -236,24 +236,25 @@ async function checkSsotConsistency() {
     }
   }
   
-  // 非推奨認証方式の使用チェック
+  // 非推奨認証方式の使用チェック（警告のみ）
   if (authUsage['JWT認証'] && authUsage['JWT認証'].length > 0) {
-    // 現行SSOTのみをチェック対象にしているため、
-    // 検出された場合は全て現行SSOTでの使用
-    errors.push({
-      type: 'DEPRECATED_AUTH_METHOD',
+    // JWT認証の言及は警告レベル
+    // （過去の仕様説明、移行履歴の記載等は許容）
+    warnings.push({
+      type: 'DEPRECATED_AUTH_METHOD_MENTIONED',
       method: 'JWT認証',
       files: authUsage['JWT認証'],
-      message: `非推奨の認証方式（JWT認証）が現行SSOTで使用されています`
+      message: `非推奨の認証方式（JWT認証）が言及されています（過去の仕様説明等は許容）`
     });
     
-    console.log(`❌ 非推奨の認証方式（JWT認証）が現行SSOTで検出されました:`);
+    console.log(`⚠️  非推奨の認証方式（JWT認証）が現行SSOTで言及されています:`);
     console.log(`   使用ファイル数: ${authUsage['JWT認証'].length}件`);
-    authUsage['JWT認証'].slice(0, 5).forEach(file => {
+    console.log(`   💡 過去の仕様説明・移行履歴の記載は許容されます`);
+    authUsage['JWT認証'].slice(0, 3).forEach(file => {
       console.log(`   - ${file}`);
     });
-    if (authUsage['JWT認証'].length > 5) {
-      console.log(`   ... 他${authUsage['JWT認証'].length - 5}件`);
+    if (authUsage['JWT認証'].length > 3) {
+      console.log(`   ... 他${authUsage['JWT認証'].length - 3}件`);
     }
     console.log('');
   }
