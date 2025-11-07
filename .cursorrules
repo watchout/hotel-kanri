@@ -122,6 +122,146 @@ gh auth refresh -h github.com -s project,read:project
 
 ---
 
+## 🔌 【必須】Plane API接続の標準化（CRITICAL）
+
+**絶対ルール**: Plane APIに接続する際は、必ず標準化されたライブラリを使用する
+
+### 🤖 AIがPlaneデータを取得する際の必須フロー
+
+**重要**: 環境変数ファイル（`.env.mcp`）はgitignoreされているため、直接アクセスできません。
+必ず以下のいずれかの方法を使用してください。
+
+#### 方法1: **標準スクリプト経由（最も推奨）** ✅
+
+```bash
+# 次のタスク取得（最頻出）
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node get-next-task.cjs
+
+# 全Issue一覧取得
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node list-issues-tree.cjs
+
+# Issue詳細取得
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node get-issue-detail.cjs COM-72
+```
+
+**理由**:
+- ✅ 環境変数を自動ロード（`.env.mcp`から）
+- ✅ 認証ヘッダー自動設定（`x-api-key`）
+- ✅ エンドポイント形式自動補完
+- ✅ エラーハンドリング組込み
+
+#### 方法2: **標準ライブラリ経由（プログラム内）**
+
+```javascript
+const planeApi = require('./lib/plane-api-client.cjs');
+
+// Issue取得
+const issue = await planeApi.getIssue(issueId);
+
+// Issue更新
+const updated = await planeApi.updateIssue(issueId, {
+  description: '新しい説明'
+});
+```
+
+**場所**: `/Users/kaneko/hotel-kanri/scripts/plane/lib/plane-api-client.cjs`
+
+### ❌ 絶対禁止パターン
+
+**以下のパターンは401エラー・404エラーの原因となります**
+
+```javascript
+// ❌ 禁止1: .env.mcpを直接読もうとする
+const fs = require('fs');
+const env = fs.readFileSync('.env.mcp', 'utf8');  // ❌ gitignoreされている
+
+// ❌ 禁止2: Authorization: Bearer ヘッダーの使用
+const headers = {
+  'Authorization': `Bearer ${apiKey}`  // ❌ 401エラーの原因（x-api-keyを使う）
+};
+
+// ❌ 禁止3: 直接のhttpsリクエスト（標準ライブラリを使わない）
+const https = require('https');
+const req = https.request(url, { headers: { 'x-api-key': key } });  // ❌ 環境変数未ロード
+
+// ❌ 禁止4: 間違ったエンドポイント形式
+const url = `${host}/api/issues/${issueId}/`;  // ❌ 404エラーの原因
+const url = `${host}/api/v1/issues/${issueId}/`;  // ❌ workspaceとproject ID不足
+
+// ❌ 禁止5: gh CLIやcurlで直接Plane APIを叩く
+// curl でPlane APIを直接叩こうとする  // ❌ 認証情報がない
+```
+
+### ✅ 正しい実装
+
+```javascript
+// ✅ 標準ライブラリを使用
+const planeApi = require('./lib/plane-api-client.cjs');
+
+// ✅ Issue取得
+const issue = await planeApi.getIssue(issueId);
+
+// ✅ Issue更新
+const updated = await planeApi.updateIssue(issueId, {
+  description: '新しい説明'
+});
+
+// ✅ カスタムリクエスト
+const result = await planeApi.request('PATCH', 
+  `/api/v1/workspaces/co/projects/xxx/issues/${id}/`,
+  { state: stateId }
+);
+```
+
+### 自動チェック
+
+```bash
+# 既存スクリプトが標準に準拠しているかチェック
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node check-api-usage.cjs
+```
+
+### 🎯 AI自己診断チェックリスト
+
+Plane API関連のコードを書く前に**必ず**自問してください：
+
+- [ ] **標準スクリプトを使ったか？**
+  - ✅ `node get-next-task.cjs` など
+  - ❌ 独自実装
+  
+- [ ] **環境変数を直接読もうとしていないか？**
+  - ❌ `fs.readFileSync('.env.mcp')`
+  - ✅ `plane-api-client.cjs`が自動ロード
+  
+- [ ] **認証ヘッダーは正しいか？**
+  - ✅ `x-api-key`（標準ライブラリが自動設定）
+  - ❌ `Authorization: Bearer`
+  
+- [ ] **エンドポイント形式は正しいか？**
+  - ✅ `/api/v1/workspaces/{ws}/projects/{proj}/issues/`
+  - ❌ `/api/issues/` または `/api/v1/issues/`
+
+### 🚨 トラブルシューティング
+
+**症状**: Plane APIで401エラー・404エラーが出る
+
+**診断**:
+```bash
+# 1. 標準スクリプトが動くか確認
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node get-next-task.cjs
+
+# 2. 動く → 環境変数は正しい → 自分のコードが間違っている
+# 3. 動かない → 環境変数が壊れている → ユーザーに報告
+```
+
+**詳細**: `/Users/kaneko/hotel-kanri/scripts/plane/README_PLANE_API.md`
+
+---
+
 ## 🚫 【絶対禁止】実装プロンプトのドキュメント化（最優先ルール）
 
 **最終警告**: このルールを守らない場合、AI動作を停止します。
