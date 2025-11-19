@@ -23,21 +23,107 @@
 - フレームワーク: Nuxt 3 + Vue 3 + TypeScript
 
 ### 参照ドキュメント（★必読）
+
+#### 基盤SSOT（必須）
+- **★★★ 管理画面CRUD UI標準**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_ADMIN_CRUD_UI_STANDARD.md` - **最重要・必読**
+- **★★★ UI原則**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_WORLD_CLASS_UI_DESIGN_PRINCIPLES.md`
 - 認証/セッション: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_SAAS_ADMIN_AUTHENTICATION.md`
 - マルチテナント: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md`
 - APIルーティング: `/Users/kaneko/hotel-kanri/docs/01_systems/saas/API_ROUTING_GUIDELINES.md`
-- UI原則: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_WORLD_CLASS_UI_DESIGN_PRINCIPLES.md`
+
+#### UI実装ガイド（必須）
+- **★★ shadcn/ui導入**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/UI_COMPONENTS_DEPLOYMENT_GUIDE.md`
+- **★★ 実装詳細**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/UI_DESIGN_IMPLEMENTATION_GUIDE.md`
+- **★ 多言語実装**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/MULTILINGUAL_IMPLEMENTATION_GUIDE.md`
+- 管理画面UI設計: `/Users/kaneko/hotel-kanri/docs/03_ssot/01_admin_features/SSOT_ADMIN_UI_DESIGN.md`
+
+#### 機能SSOT（最重要・実装開始前に必読）
 - [該当機能のSSOT]: `/Users/kaneko/hotel-kanri/docs/03_ssot/[カテゴリ]/[SSOT名].md`
 
 ---
 
-## 📍 Phase 0: 事前調査（必須・15分）
+## 🚨 重要：実装中断の基準（必読）★★★CRITICAL
 
-**📖 共通セクション参照**: `COMMON_SECTIONS.md` の Phase 0
+**絶対ルール**: 以下の場合、実装を即座に停止してユーザーに報告する
+
+### 必須停止トリガー（Layer 1）- 絶対に停止
+
+1. **SSOT照合失敗（0件）** or **SSOT複数一致**
+2. **依存ファイル非実在・未生成**（API endpoint、composables、components等）
+3. **型エラー連鎖**（>5件/1ステップ）
+4. **矛盾の発見**（プロンプト vs SSOT、既存実装 vs SSOT）
+5. **エラー原因不明**（15分以上調査で進展なし）
+6. **UI設計の判断**（SSOT_ADMIN_CRUD_UI_STANDARDに記載がないUIパターン）
+7. **アクセシビリティ判断**（WCAG AAA準拠の実装方法が不明）
+8. **多言語対応判断**（翻訳キーの命名規則や配置が不明）
+
+### 推奨停止トリガー（Layer 2）- 判断推奨
+
+1. **UI/UX判断**（複数の実装方法があり、最適解が不明）
+2. **コンポーネント選択**（shadcn/uiのどのコンポーネントを使用すべきか不明）
+3. **レイアウト判断**（CRUD標準レイアウトの適用方法が不明）
+4. **既存実装整合性**（既存UIとの一貫性が不明）
+
+### 停止時の対応
+
+1. 実装を停止
+2. 「🛑 実装停止（判断依頼）」テンプレートで報告
+3. ユーザーの指示を待つ
+4. **推測で実装を続けない**
+
+**詳細**: `/Users/kaneko/hotel-kanri/.cursor/prompts/implementation_halt_protocol.md`
+
+**報告テンプレート**:
+```markdown
+## 🛑 実装停止（判断依頼）
+
+### 停止理由
+- **カテゴリ**: [SSOT照合失敗 / 依存ファイル不在 / 型エラー連鎖 / 矛盾の発見 / UI設計判断 / アクセシビリティ判断 / 多言語対応判断 / UI/UX判断 / コンポーネント選択 / レイアウト判断 / エラー原因不明]
+- **詳細**: [具体的な状況]
+
+### 現在の状況
+- **実施済み**: [完了したItem・Step]
+- **停止箇所**: Item [X] - Step [Y]
+- **問題の内容**: 
+
+[詳細な問題説明]
+
+### 確認したこと
+- [x] SSOT定義を確認したか？
+  - 参照SSOT: [SSOT_ADMIN_CRUD_UI_STANDARD.md / 該当機能のSSOT]
+  - 該当セクション: [セクション名]
+  - **SSOT引用**:
+    ```
+    [該当行の引用]
+    ```
+- [x] プロンプトを確認したか？
+  - 該当箇所: [セクション名]
+- [x] 既存UI実装を確認したか？
+  - 確認ファイル: [pages/admin/*/index.vue]
+  - パターン: [確認したパターン]
+
+### 判断が必要な内容
+- [質問1]
+- [質問2]
+
+### 提案（あれば）
+- [提案1]
+- [提案2]
+
+判断をお願いします。
+```
+
+---
+
+## 📍 Item 1: 事前調査（必須）
+
+**所要時間**: 15分
+
+**📖 共通セクション参照**: `COMMON_SECTIONS.md` の Item 1
 
 **UI実装特有の追加確認**:
 
-### ステップ1: 既存の管理画面を確認
+### Step 1: 既存の管理画面を確認
 
 ```bash
 # 管理画面の既存ファイル一覧
@@ -47,7 +133,7 @@ find /Users/kaneko/hotel-saas-rebuild/pages/admin -name "*.vue" -type f | head -
 ls -la /Users/kaneko/hotel-saas-rebuild/pages/admin/*/index.vue
 ```
 
-### ステップ2: 既存のVueファイルを読む
+### Step 2: 既存のVueファイルを読む
 
 ```bash
 # 最も参考になりそうな画面を1つ選んで読む
@@ -60,7 +146,7 @@ cat /Users/kaneko/hotel-saas-rebuild/pages/admin/[類似画面名]/index.vue
 - ローディング・エラーハンドリングの実装パターン
 - UIコンポーネントの使用パターン
 
-### ステップ3: APIルートの存在確認
+### Step 3: APIルートの存在確認
 
 ```bash
 # 対象機能のAPIルートを確認
@@ -71,7 +157,7 @@ cat /Users/kaneko/hotel-saas-rebuild/server/api/v1/admin/[機能名].get.ts 2>/d
 cat /Users/kaneko/hotel-saas-rebuild/server/api/v1/admin/[機能名].post.ts 2>/dev/null
 ```
 
-### ステップ4: Composablesの確認
+### Step 4: Composablesの確認
 
 ```bash
 # 認証関連Composableの確認
@@ -81,7 +167,7 @@ ls -la /Users/kaneko/hotel-saas-rebuild/composables/
 grep -r "useAuth\|useFetch" /Users/kaneko/hotel-saas-rebuild/pages/admin/*.vue | head -5
 ```
 
-### ステップ5: UIコンポーネントの確認
+### Step 5: UIコンポーネントの確認
 
 ```bash
 # 共通コンポーネントの確認
@@ -93,7 +179,9 @@ ls -la /Users/kaneko/hotel-saas-rebuild/components/ui/ 2>/dev/null
 
 ---
 
-## 📍 Phase 1: 要件スコープの最小化
+## 📍 Item 2: 要件スコープの明確化
+
+**所要時間**: 10分
 
 ### 目的
 実装範囲を明確化し、後続タスクとの境界を定義
@@ -127,7 +215,20 @@ ls -la /Users/kaneko/hotel-saas-rebuild/components/ui/ 2>/dev/null
 
 ---
 
-## 📍 Phase 2: UI実装（Nuxt 3 / Vue 3）
+## 📍 Item 3: UI実装（Nuxt 3 / Vue 3）
+
+**所要時間**: 40分
+
+### ⚠️ 停止チェックポイント（Item開始前・必須）
+
+**以下を確認し、1つでも該当する場合は停止**:
+- [ ] APIエンドポイントが未実装か？ → **Layer 1停止**（依存ファイル不在）
+- [ ] SSOT_ADMIN_CRUD_UI_STANDARDの該当セクションを読んだか？ → 未読なら停止
+- [ ] UIパターンがSSOTに記載されているか？ → 記載なしなら**Layer 2停止**（UI設計判断）
+- [ ] 使用するコンポーネントが明確か？ → 不明なら**Layer 2停止**（コンポーネント選択）
+- [ ] アクセシビリティ要件が明確か？ → 不明なら**Layer 1停止**（アクセシビリティ判断）
+
+→ **1つでも該当する場合は、Item開始前に停止して報告**
 
 ### 目的
 `pages/admin/[機能名]/index.vue` を作成・実装
@@ -282,7 +383,9 @@ const create[機能名] = async () => {
 
 ---
 
-## 📍 Phase 3: サーバールート実装（hotel-saas）
+## 📍 Item 4: サーバールート確認・実装（hotel-saas）
+
+**所要時間**: 20分
 
 ### 目的
 SaaS側のAPIルートを確認・作成
@@ -361,7 +464,9 @@ export default defineEventHandler(async (event) => {
 
 ---
 
-## 📍 Phase 4: 動作確認（手動テスト）
+## 📍 Item 5: 動作確認・テスト（手動テスト）
+
+**所要時間**: 20分
 
 **📖 共通セクション参照**: `COMMON_SECTIONS.md` のエラー時の対処フロー
 
@@ -424,7 +529,9 @@ curl -s -b /tmp/cookies.txt http://localhost:3101/api/v1/admin/[機能名] | jq 
 
 ---
 
-## 📍 Phase 5: 受入基準確認と証跡提出
+## 📍 Item 6: 受入基準確認と証跡提出
+
+**所要時間**: 15分
 
 ### 受入基準
 
@@ -533,6 +640,51 @@ git diff --stat >> /tmp/[タスクID]-changed-files.txt
 - [ ] security: Pass
 - [ ] quality-gate: Pass
 ```
+
+---
+
+## 📍 Item 6.5: 標準テストスクリプト実行（必須・commit/PR前ゲート）
+
+**絶対ルール**: 以下が全て成功しない限り、commit/PRは禁止
+
+### スクリプト選択（実装タイプに応じて）
+
+#### 管理画面UI実装の場合
+
+```bash
+/Users/kaneko/hotel-kanri/scripts/test-standard-admin.sh
+```
+
+**対象**: `/admin/*`  
+**認証**: Session認証（Redis + Cookie）  
+**検証**: ログイン → テナント切替 → API → UI SSR
+
+#### ゲスト画面UI実装の場合
+
+```bash
+/Users/kaneko/hotel-kanri/scripts/test-standard-guest.sh
+```
+
+**対象**: `/menu`  
+**認証**: デバイス認証（MAC/IP → device_rooms）  
+**検証**: デバイス認証 → API → UI注意事項
+
+### 失敗時の対処
+
+**管理画面用**:
+- 401: ログイン/テナント切替やり直し（Cookie転送漏れは`callHotelCommonAPI`を確認）
+- 404: パス/ID不正（API結果から正しいIDを使用）
+
+**ゲスト画面用**:
+- 401: デバイス認証失敗（device_roomsにテストデバイス登録確認）
+- 404: パス/ID不正（API結果から正しいIDを使用）
+- 空配列: seed未投入（10〜20件のカテゴリ/メニューを投入）
+- 5xx: サーバーログで原因特定（実装修正）
+
+成功時（抜粋EvidenceをPRに貼付）:
+- 実行ログ（終了コード0）
+- `/menu` 抜粋（「データの取得に失敗しました」が含まれないこと）
+- `categories/items` 件数（jqの評価結果）
 
 ---
 

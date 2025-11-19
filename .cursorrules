@@ -1,7 +1,7 @@
 # 🏨 hotel-kanri プロジェクト - Cursor AI 統合ルール
 
-**最終更新**: 2025年10月22日  
-**バージョン**: 2.4.0（タグ体系統合）  
+**最終更新**: 2025年11月19日  
+**バージョン**: 2.5.0（標準テスト分離対応）  
 **適用対象**: 全AI（Sun/Luna/Suno/Iza）  
 **自動読み込み**: Cursor起動時に自動適用
 
@@ -650,6 +650,36 @@ Priority 4（State）:
 
 <!-- OPS:END progress -->
 
+## 📖 用語体系: Phase vs Item/Step
+
+**制定日**: 2025年11月7日  
+**バージョン**: 1.0.0  
+
+**絶対ルール**: 用語の混同を防ぐため、以下を厳守すること
+
+### Phase（フェーズ）- プロジェクト全体でのみ使用
+
+- **使用場所**: Plane Issue、ロードマップ、マイルストーン
+- **例**: `[Phase 2] テナント管理実装`
+- **意味**: プロジェクト全体の段階（Phase 1: 基盤設計、Phase 2: 基盤機能実装、等）
+
+### Item + Step - タスク内の実装手順でのみ使用
+
+- **使用場所**: 実装プロンプト、作業手順書、チェックリスト
+- **構造**:
+  ```
+  Item 1: 事前調査
+    ├ Step 1: SSOT確認
+    ├ Step 2: 既存実装調査
+    └ Step 3: スコープ判定
+  Item 2: DB実装
+    ├ Step 1: Prismaスキーマ確認
+    └ Step 2: マイグレーション作成
+  ...
+  ```
+
+**詳細**: `/Users/kaneko/hotel-kanri/docs/standards/TERMINOLOGY_PHASE_VS_ITEM_STEP.md`
+
 ## 📊 【Linear運用ルール】進捗管理の唯一の真実
 
 **導入日**: 2025年10月18日  
@@ -764,6 +794,105 @@ Step 5: ドキュメント記録（Git）
 
 ---
 
+## 🚨 【最優先】実装中断の基準（Implementation Halt Protocol）★★★CRITICAL
+
+**絶対ルール**: 以下の場合、実装を即座に停止してユーザー（管理AI）に報告する
+
+### 必須停止トリガー（Layer 1）- 絶対に停止
+
+1. **SSOT照合失敗（0件）** or **SSOT複数一致**
+   - grep -nE でSSO**T**定義を検索したが0件、または2件以上
+   - 対応: テンプレート1で報告
+   - >> prmt連携: プロンプト生成時にSSOT照合を実施、0件/複数一致で中断
+
+2. **ルーティング不一致**
+   - `/api/v1/admin` 形式外
+   - 深いネスト（`/api/v1/admin/[親]/[id]/[子]/[id]`）
+   - 二重`/api`（`/api/api/`）
+   - A/B方式混在（hotel-common）
+   - B方式違反（hotel-common: routerで絶対パス）
+   - `index.*`ファイル（hotel-saas）
+   - `$fetch`直でCookie未転送（hotel-saas）
+   - Set-Cookie透過未実装（hotel-saas）
+   - auth/healthが保護下（sessionAuthMiddleware後に登録）
+   - 旧プロセス起動検知（ポート占有/EADDRINUSE）
+   - 対応: ルーティング特化報告
+
+3. **システム境界違反**
+   - hotel-commonにNitro構成（`server/api/`）存在
+   - hotel-saasでPrisma直接使用
+   - hotel-saasで`$fetch`直使用（Cookie未転送）
+   - 対応: テンプレート1で報告
+
+4. **依存ファイル非実在・未生成**
+   - プロンプトで参照されているファイルが不在
+   - 対応: テンプレート1で報告
+
+5. **型エラー連鎖（>5件/1ステップ）**
+   - TypeScript型チェックで5件以上のエラー
+   - 条件: "型定義不明"が起点
+   - 対応: テンプレート1で報告
+
+6. **Prismaスキーマ変更・直接SQL**
+   - モデル/列の追加・削除・型変更
+   - マイグレーション作成
+   - 直接SQL実行
+   - 対応: テンプレート1で報告、SSOT_DATABASE_MIGRATION_OPERATION.md準拠確認
+
+7. **tenant_idフォールバック/環境分岐**
+   - `|| 'default'` / `?? 'default'`
+   - `if (process.env.NODE_ENV === 'development')`
+   - 対応: テンプレート1で報告、SSOT違反
+
+8. **矛盾の発見**
+   - プロンプト vs SSOT
+   - 既存実装 vs SSOT
+   - 対応: テンプレート1で報告
+
+9. **エラー原因不明**
+   - 標準的なトラブルシューティングで解決不可
+   - 15分以上調査しても進展なし
+   - 対応: テンプレート1で報告、試したコマンド/結果/仮説を含める
+
+### 推奨停止トリガー（Layer 2）- 判断推奨
+
+1. **セキュリティ・テナント分離・CORS判断**
+2. **パフォーマンス影響**（1000件以上一括取得、N+1クエリ）
+3. **UI/UX判断**
+4. **既存実装整合性**
+
+### 進捗報告トリガー（Layer 3）- 必ず報告
+
+1. **Item完了時**
+2. **大規模変更前**（3ファイル以上、100行以上変更）
+3. **タイムアウト停止**（15分以上進展なし）
+
+### 停止のノイズ対策
+
+- ✅ 1 Itemあたり同一事象での停止は1回まで
+- ✅ タイムアウト停止: 15分ルール
+- ✅ 明示的OK例（停止不要）: Lint修正、型注釈追加、ログ出力調整、README軽微修正、テストExpectation調整
+
+### 停止時の対応
+
+1. 実装を停止
+2. 該当するテンプレート（1/2/3）で報告
+3. ユーザーの指示を待つ
+4. **推測で実装を続けない**
+
+### 自己診断チェックリスト（各Step開始前）
+
+- [ ] これはSSO**T**定義に記載されているか？
+- [ ] これは複数の実装方法があるか？
+- [ ] これは矛盾していないか？
+- [ ] これはエラーの原因が明確か？
+- [ ] 依存ファイルは実在するか？
+- [ ] これはセキュリティ/パフォーマンスに影響するか？
+
+**詳細**: `/Users/kaneko/hotel-kanri/.cursor/prompts/implementation_halt_protocol.md`
+
+---
+
 ## 🎯 基本原則（最優先）
 
 ### 0. QOS v1（Quality Operating System）準拠 ★★★NEW
@@ -849,6 +978,48 @@ Step 7: トレーサビリティ確認（自動生成マトリクス）
   - [ ] 命名規則・パターン・認証方式を把握
   
   🚨 既存実装未確認の場合は実装を開始しない
+
+✅ Phase 2.5: ★NEW 実装状況の完全スキャン（必須・5分）
+  
+  **絶対ルール**: タスク関連の全実装状況を確認する（Untracked filesだけでは不十分）
+  
+  **Step 1: 関連キーワード抽出**
+  - [ ] タスクタイトルからキーワード抽出（例: "テナント管理" → tenant, room-grade等）
+  - [ ] SSOTから関連キーワード抽出
+  - [ ] 既存実装から推測されるキーワード抽出
+  
+  **Step 2: 実装状況の完全スキャン（必須コマンド4種）**
+  ```bash
+  # 1. Untracked files確認
+  git status
+  
+  # 2. Git管理下の全ファイル確認
+  git ls-files server/api/v1/admin/ src/routes/ | grep -i '<keyword>'
+  
+  # 3. コミット履歴確認
+  git log --all --oneline --name-only -- server/api/v1/admin/ src/routes/ | grep -i '<keyword>'
+  
+  # 4. 直近PRマージ済み確認
+  gh pr list --state merged --search '<keyword>' | head -10
+  ```
+  
+  **Step 3: 実装状況サマリー作成**
+  - [ ] hotel-common側: ✅ 実装済み / ❌ 未実装
+  - [ ] hotel-saas側: ✅ 実装済み / ❌ 未実装
+  - [ ] マージ状態: ✅ マージ済み / ❌ 未マージ / ⚠️ Untracked
+  
+  **Step 4: ユーザーにスコープ確認**
+  - [ ] 実装済み項目を明示
+  - [ ] 未実装項目を明示
+  - [ ] スコープが不明確な場合は実装中断 → ユーザーに確認
+  
+  🚨 実装状況スキャン未実施の場合は実装を開始しない
+  
+  **禁止パターン**:
+  - ❌ Untracked filesのみで判断（Git管理下を見落とす）
+  - ❌ コミット履歴・PR履歴を確認しない
+  - ❌ スコープを推測で決め打ち（ユーザー確認なし）
+  - ❌ 関連キーワードの網羅スキャン未実施
 
 ✅ Phase 3: ハルシネーション防止チェック（必須）
   - [ ] 参照する全てのファイルが実在することを確認
@@ -1283,9 +1454,212 @@ const orders = await prisma.order.findMany({
 
 ---
 
-## 🌐 API実装ルール（CRITICAL）
+## 🌐 API実装ルール（hotel-common/hotel-saas共通）★★★CRITICAL
 
-### Nuxt 3 / Nitro 制約
+### 🚨 API実装開始前の必須チェック（絶対遵守）
+
+**絶対ルール**: APIエンドポイントを実装する前に、必ず以下を確認する
+
+#### Step 1: SSOT定義のエンドポイントパス確認（必須）
+
+```bash
+# SSOT定義を検索（HTTPメソッドと正規表現で厳密に）
+grep -nE '^(GET|POST|PUT|PATCH|DELETE)\s+/api/v1/admin/' \
+  /Users/kaneko/hotel-kanri/docs/01_systems/saas/API_ROUTING_GUIDELINES.md | grep -i [機能名]
+
+# マルチテナントSSOTでも確認
+grep -nE '^(GET|POST|PUT|PATCH|DELETE)\s+/api/v1/' \
+  /Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md | grep -i [機能名]
+```
+
+**確認ポイント**:
+- ✅ SSOT定義のエンドポイントパスを特定
+- ✅ HTTPメソッド（GET/POST/PUT/PATCH/DELETE）を確認
+- ✅ パスが `/api/v1/admin/[resource]` 形式か確認
+- ❌ 深いネスト（`/api/v1/admin/[親]/[id]/[子]/[id]`）は禁止
+
+#### Step 2: エンドポイントパスの検証（必須）
+
+**SSOT準拠チェックリスト**:
+- [ ] SSOT定義を確認したか？
+- [ ] エンドポイントパスがSSO**T**定義と完全一致しているか？（SSO→SSOT）
+- [ ] ベースパスが `/api/v1/admin/[resource]` 形式か？
+- [ ] 深いネスト（禁止）になっていないか？
+- [ ] ルーター登録パスがSSO**T**定義と一致しているか？
+
+#### Step 3: ルーター登録方法の決定（システム別）
+
+**hotel-common（Express）**:
+```typescript
+// B方式（標準）: routerは相対パス、app.use側で絶対パス指定
+// ✅ 正しい（二重付与なし）
+router.post('/', ...)
+app.use('/api/v1/admin/switch-tenant', switchTenantRouter)
+
+// ❌ 禁止（二重付与の原因）
+router.post('/api/v1/admin/switch-tenant', ...)
+app.use('/api', router)
+```
+
+**hotel-saas（Nitro）**:
+```typescript
+// ファイル名 = エンドポイントパス
+// ✅ 正しい
+server/api/v1/admin/switch-tenant.post.ts
+server/api/v1/admin/tenants.get.ts
+
+// ❌ 禁止（深いネスト）
+server/api/v1/admin/tenants/[id]/items/[itemId].get.ts
+
+// ❌ 禁止（index.*ファイル）
+server/api/v1/admin/tenants/index.get.ts
+```
+
+#### Step 4: 認証Allowlist確認（必須）
+
+**認証不要パス（必ずミドルウェア外または早期return）**:
+```typescript
+// hotel-common（Express）
+const allowlist = [
+  '/health',
+  '/api/v1/admin/auth/login',
+  '/api/v1/admin/auth/logout',
+  '/api/v1/admin/auth/refresh'
+]
+
+// これらのパスはsessionAuthMiddleware適用前に登録
+app.get('/health', ...)
+app.use('/api/v1/admin/auth', authRouter)  // 認証系
+app.use('/api', sessionAuthMiddleware)     // この後に保護ルート
+app.use('/api/v1/admin/tenants', tenantsRouter)
+```
+
+#### Step 5: 404ポリシー確認（必須）
+
+**SSOT定義の404ポリシー**:
+```typescript
+// ✅ 正しい（列挙耐性）
+if (!resource) {
+  return res.status(404).json(createErrorResponse('NOT_FOUND', 'リソースが見つかりません'))
+}
+
+if (resource.tenantId !== authUser.tenantId) {
+  return res.status(404).json(createErrorResponse('NOT_FOUND', 'リソースが見つかりません'))
+}
+
+// ❌ 禁止（列挙耐性なし）
+if (!authUser) {
+  return res.status(401).json(...)  // ← これはOK
+}
+
+if (resource.tenantId !== authUser.tenantId) {
+  return res.status(403).json(...)  // ← NG: 404にすべき
+}
+```
+
+**404ポリシーまとめ**:
+- **401**: 未認証（セッションなし、トークン無効等）
+- **404**: リソース不在、他テナント所有、権限なし（列挙耐性）
+- **403**: システム管理者権限不足（列挙OK）
+
+#### Step 6: switch-tenant配置確認（特定API）
+
+**SSOT定義**（★太字再掲）:
+- **エンドポイント**: `POST /api/v1/admin/switch-tenant`
+- **実装場所**: `src/routes/switch-tenant.routes.ts`（**独立ファイル**）
+- **登録方法**: `app.use('/api/v1/admin/switch-tenant', switchTenantRouter)`
+
+**❌ 禁止**:
+- `tenants.routes.ts` に配置（→ `/api/v1/admin/tenants/switch-tenant` になる）
+- `auth.routes.ts` に配置（→ `/api/v1/admin/auth/switch-tenant` になる）
+
+### 🔍 API実装時の自己診断チェックリスト
+
+実装開始前に**必ず**自問：
+
+- [ ] **SSOT定義を確認したか？**
+  - ✅ grep -nE で HTTPメソッド + パスを検索済み
+  - ❌ 機能名だけで曖昧検索
+  
+- [ ] **エンドポイントパスがSSO**T**定義と一致しているか？**
+  - ✅ 完全一致（1文字も違わない）
+  - ❌ 「だいたい合ってる」
+  
+- [ ] **ルーター登録がSSO**T**定義と一致しているか？**
+  - ✅ B方式（router相対、app.use絶対）を使用
+  - ❌ A/B方式混在（二重付与の原因）
+  
+- [ ] **深いネスト禁止ルールを確認したか？**
+  - ✅ `/api/v1/admin/[resource]` のみ
+  - ❌ `/api/v1/admin/[親]/[id]/[子]/[id]`
+  
+- [ ] **認証allowlistを確認したか？**
+  - ✅ /health, /auth/* はミドルウェア外
+  - ❌ 全てのルートに認証適用
+  
+- [ ] **404ポリシーを理解したか？**
+  - ✅ 未認証=401、不在/他テナント=404
+  - ❌ 他テナント=403（列挙耐性なし）
+
+### 🚨 自動チェックスキャン（実装後）
+
+**実装完了後に必ず実行**:
+
+```bash
+# hotel-saas（Nitro）: 禁止パターン検出
+cd /Users/kaneko/hotel-saas-rebuild
+
+echo "=== index.*ファイル検出 ==="
+find server/api/v1/admin -name "index.*" 2>/dev/null && echo "❌ 検出" || echo "✅ なし"
+
+echo ""
+echo "=== 深いネスト検出 ==="
+find server/api/v1/admin -path "*/\[*\]/*/\[*\]/*" 2>/dev/null && echo "❌ 検出" || echo "✅ なし"
+
+# 共通: 二重付与検出
+echo ""
+echo "=== 二重付与検出（/api/api/） ==="
+grep -R '/api/api/' src/server src/routes 2>/dev/null && echo "❌ 検出" || echo "✅ なし"
+
+# hotel-common: ルート実在確認
+echo ""
+echo "=== ルート実在確認 ==="
+ls -la src/routes/switch-tenant.routes.ts 2>/dev/null && echo "✅ 存在" || echo "❌ 不在"
+```
+
+### 🔒 CORS/Cookie設定確認（必須）
+
+**開発環境設定**:
+```typescript
+// hotel-common（Express）
+app.use(cors({
+  origin: 'http://localhost:3101',  // hotel-saas限定
+  credentials: true                  // Cookie転送必須
+}))
+
+res.cookie('hotel_session', sessionId, {
+  httpOnly: true,
+  secure: false,      // 開発環境
+  sameSite: 'lax',
+  path: '/',
+  maxAge: 8 * 60 * 60 * 1000
+})
+```
+
+**curl検証（必須）**:
+```bash
+# Cookie保存
+curl -s -c /tmp/cookies.txt -X POST http://localhost:3401/api/v1/admin/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"owner@test.omotenasuai.com","password":"owner123"}' | jq .
+
+# Cookie使用
+curl -s -b /tmp/cookies.txt http://localhost:3401/api/v1/admin/tenants | jq .
+```
+
+---
+
+## 🌐 API実装ルール（Nuxt 3 / Nitro制約）
 
 ```typescript
 // ❌ 禁止パターン：深いネスト
@@ -1481,8 +1855,9 @@ SSOT実装時、hotel-saas API実装では以下を**必ず**確認：
 2. `/Users/kaneko/hotel-kanri/.cursor/prompts/database_naming_standard_reference.md` - クイックリファレンス
 
 ### API関連
-1. `/Users/kaneko/hotel-kanri/docs/01_systems/saas/API_ROUTING_GUIDELINES.md` - ルーティングガイドライン
-2. `/Users/kaneko/hotel-kanri/.cursor/prompts/api_routing_standard_reference.md` - クイックリファレンス
+1. `/Users/kaneko/hotel-kanri/docs/standards/API_ENDPOINT_NAMING_STANDARD.md` - ★★★エンドポイント命名標準（最優先）
+2. `/Users/kaneko/hotel-kanri/docs/01_systems/saas/API_ROUTING_GUIDELINES.md` - ルーティングガイドライン
+3. `/Users/kaneko/hotel-kanri/.cursor/prompts/api_routing_standard_reference.md` - クイックリファレンス
 
 ---
 
@@ -1517,7 +1892,9 @@ hotel-saas → hotel-common → PostgreSQL
 ### フロントエンド
 - **Framework**: Vue 3 + Nuxt 3
 - **言語**: TypeScript（strictモード）
-- **スタイリング**: Tailwind CSS
+- **UIライブラリ**: Vuetify 3（Material Design 3公式実装）
+- **カスタムテーマ**: 日本の伝統色パレット（Sass変数）
+- **アイコン**: Heroicons優先（Iconify経由）、mdi補完
 - **状態管理**: Composables（Pinia不使用）
 
 ### バックエンド
@@ -1682,8 +2059,30 @@ Phase 4: 結論導出
 
 ## 📋 プロンプトテンプレート（`>> prmt`タグ）
 
-**最終更新**: 2025年11月7日  
-**バージョン**: 1.0.0
+**最終更新**: 2025年11月9日  
+**バージョン**: 2.4.0  
+**更新内容**: 
+- 機能実装（Full Stack）テンプレート追加、Gatekeeper要件統合（v2.0.0）
+- SSOT照合ゲートの>> prmt内蔵（v2.1.0）
+- システム境界違反の自動検査追加（v2.1.0）
+- ルーティングA/B方式の固定宣言（B方式）（v2.1.0）
+- allowlist強制チェック追加（v2.1.0）
+- 404ポリシー・Set-Cookie透過・登録順サンプルの自動挿入（v2.1.0）
+- Evidence強化（SSOT引用・ルーティング配置必須化）（v2.1.0）
+- State自動更新（Backlog → In Progress）（v2.2.0）
+- **★NEW Phase 0: 実装状況完全スキャン追加**（v2.3.0）:
+  - 関連キーワード網羅抽出
+  - Git管理下・履歴・PRマージ済み確認（必須コマンド4種）
+  - 実装状況サマリー作成
+  - スコープ不明時の対話質問
+ - **★NEW 標準テストプロトコルの導入**（v2.4.0）
+   - commit/PR前に標準テストスクリプトを必須実行
+   - 失敗時はcommit/PR禁止（ローカルで修正→再実行）
+   - PR本文に実行ログのEvidence貼付を必須化
+ - **★NEW 標準テスト分離対応**（v2.5.0）
+   - 管理画面用: `test-standard-admin.sh`（Session認証）
+   - ゲスト画面用: `test-standard-guest.sh`（デバイス認証）
+   - 実装タイプに応じたスクリプト選択を明記
 
 ### 目的
 
@@ -1700,7 +2099,7 @@ Phase 4: 結論導出
 >> prmt COM-81
 ```
 
-### 動作フロー
+### 動作フロー（v2.3.0）
 
 1. **Planeタスク取得**
    ```bash
@@ -1708,60 +2107,315 @@ Phase 4: 結論導出
    node get-issue-detail.cjs [タスクID]
    ```
 
-2. **タスクタイプ判定**
+2. **★NEW State自動更新（Backlog → In Progress）**
+   
+   **条件**: `issue.state.name === "Backlog"`
+   
+   **処理**:
+   ```bash
+   # State ID定義（プロジェクト固有）
+   BACKLOG_STATE_ID="2564ad4a-abd6-4b05-9af0-2c3dcd28e2be"
+   IN_PROGRESS_STATE_ID="c576eed5-315c-44b9-a3cb-db67d73423b7"
+   DONE_STATE_ID="86937979-4727-4ec9-81be-585f7aae981d"
+   
+   # State確認
+   if [ "$STATE_NAME" = "Backlog" ]; then
+     # In Progress に変更
+     cd /Users/kaneko/hotel-kanri/scripts/plane
+     node update-issue-state.cjs [タスクID] $IN_PROGRESS_STATE_ID
+     echo "✅ ${タスクID}: Backlog → In Progress"
+   fi
+   ```
+   
+   **スキップ条件**:
+   - State = "In Progress" → 既に作業中なので更新不要
+   - State = "In Audit" → 監査中なので更新不要
+   - State = "Done" → 完了済みタスクは再開しない（エラー報告）
+   
+   **依存関係チェック**:
+   ```javascript
+   if (issue.blocked_by && issue.blocked_by.length > 0) {
+     console.error(`⚠️  ${taskId}: 依存タスクが未完了です`)
+     console.error(`  Blocked by: ${issue.blocked_by.map(b => b.name).join(', ')}`)
+     console.error(`  先に依存タスクを完了させてください。`)
+     process.exit(1)
+   }
+   ```
+
+3. **★NEW Phase 0: 実装状況完全スキャン（必須・5分）**
+   
+   **目的**: タスク関連の全実装状況を確認（Untracked filesだけでは不十分）
+   
+   **Step 1: 関連キーワード抽出**
+   ```bash
+   # タスクタイトルからキーワード抽出
+   # 例: "[Phase 2] テナント管理実装" → tenant, room, grade等
+   
+   # SSOTから関連キーワード抽出（タスクDescriptionにSSOT参照がある場合）
+   
+   # 既存実装から推測されるキーワード抽出
+   ```
+   
+   **Step 2: 実装状況の完全スキャン（必須コマンド4種）**
+   ```bash
+   # 1. Untracked files確認
+   cd /Users/kaneko/hotel-common-rebuild
+   git status
+   cd /Users/kaneko/hotel-saas-rebuild
+   git status
+   
+   # 2. Git管理下の全ファイル確認
+   cd /Users/kaneko/hotel-common-rebuild
+   git ls-files src/routes/ src/utils/ | grep -i '<keyword>'
+   cd /Users/kaneko/hotel-saas-rebuild
+   git ls-files server/api/v1/admin/ server/utils/ | grep -i '<keyword>'
+   
+   # 3. コミット履歴確認
+   cd /Users/kaneko/hotel-common-rebuild
+   git log --all --oneline --name-only -- src/routes/ src/utils/ | grep -i '<keyword>'
+   cd /Users/kaneko/hotel-saas-rebuild
+   git log --all --oneline --name-only -- server/api/v1/admin/ server/utils/ | grep -i '<keyword>'
+   
+   # 4. 直近PRマージ済み確認
+   cd /Users/kaneko/hotel-common-rebuild
+   gh pr list --state merged --search '<keyword>' | head -10
+   cd /Users/kaneko/hotel-saas-rebuild
+   gh pr list --state merged --search '<keyword>' | head -10
+   ```
+   
+   **Step 3: 実装状況サマリー作成**
+   ```markdown
+   ## 📊 実装状況サマリー
+   
+   ### hotel-common側
+   - ✅ `response-helpers.ts`: マージ済み（PR #XX）
+   - ✅ `session-helpers.ts`: マージ済み（PR #XX）
+   - ✅ `switch-tenant.routes.ts`: マージ済み（PR #XX）
+   - ⚠️ `tenants.routes.ts`: Untracked（未コミット）
+   - ❌ `xxx.routes.ts`: 未実装
+   
+   ### hotel-saas側
+   - ✅ `switch-tenant.post.ts`: マージ済み（PR #XX）
+   - ⚠️ `tenants/*.ts`: Untracked（未コミット）
+   - ❌ `xxx/*.ts`: 未実装
+   ```
+   
+   **Step 4: ユーザーにスコープ確認**
+   
+   **スコープが明確な場合**: プロンプト生成継続
+   
+   **スコープが不明確な場合**: プロンプト生成中断 → ユーザーに確認
+   ```markdown
+   🚨 実装スコープが不明確です。ユーザーに確認してください。
+   
+   【確認事項】
+   - hotel-common側の実装対象は？
+     - [ ] response-helpers.ts
+     - [ ] session-helpers.ts
+     - [ ] switch-tenant.routes.ts
+     - [ ] tenants.routes.ts
+     - [ ] その他: _______
+   
+   - hotel-saas側の実装対象は？
+     - [ ] switch-tenant.post.ts
+     - [ ] tenants/*.ts
+     - [ ] その他: _______
+   
+   - Untracked filesは本タスクに含める？
+     - [ ] はい（コミット→マージまで実施）
+     - [ ] いいえ（別タスクとして扱う）
+   ```
+   
+   **禁止パターン**:
+   - ❌ Untracked filesのみで判断（Git管理下を見落とす）
+   - ❌ コミット履歴・PR履歴を確認しない
+   - ❌ スコープを推測で決め打ち（ユーザー確認なし）
+   - ❌ 関連キーワードの網羅スキャン未実施
+
+4. **タスクタイプ判定**（優先順位順）
+   - **"[Phase N]"** → `FEATURE_IMPLEMENTATION.md`（★最優先）
    - "[11] UI" → `UI_IMPLEMENTATION.md`
    - "[12] API" → `API_IMPLEMENTATION.md`（未実装）
    - "[13] DB" → `DB_MIGRATION.md`（未実装）
+   - **その他** → ユーザーに確認
 
-3. **テンプレート読み込み**
+5. **SSOT照合ゲート（★NEW・必須）**
+   ```bash
+   # SSOTでエンドポイント定義を検索（API実装タスクの場合）
+   grep -nE '^(GET|POST|PUT|PATCH|DELETE)\s+/api/v1/admin/' \
+     /Users/kaneko/hotel-kanri/docs/01_systems/saas/API_ROUTING_GUIDELINES.md | grep -i [機能名]
+   ```
+   
+   **判定**:
+   - **0件**: プロンプト生成中断 → ユーザーに「SSOT未定義」を報告
+   - **2件以上**: プロンプト生成中断 → ユーザーに「複数一致・選択依頼」を報告
+   - **1件**: プロンプト生成継続
+
+6. **テンプレート読み込み**
    ```bash
    cat /Users/kaneko/hotel-kanri/docs/standards/prompt-templates/[テンプレート名].md
    ```
 
-4. **タスク情報を反映**
+7. **タスク情報を反映**
    - タイトル: [タスクID]
    - SSOT参照: [Descriptionから抽出]
    - 依存関係: [Blocked by等]
+   - SSOT引用: [Step 5で取得したエンドポイント定義]
 
-5. **プロンプト出力（チャット内）**
+8. **自動挿入（API実装タスクのみ・★NEW）**
+   
+   **判定**: タスクがAPI実装を含む場合、以下を自動挿入
+   
+   **挿入A: ルーティングポリシー（Item 1と Item 2/3の間）**:
+   ```markdown
+   ## 🚨 API実装前の必須確認（★★★CRITICAL）
+   
+   **絶対ルール**: API実装を開始する前に、必ず以下を確認する
+   
+   ### Step 0-1: SSOT定義のエンドポイントパス確認
+   
+   \`\`\`bash
+   # SSOTでエンドポイントパスを検索（HTTPメソッドと正規表現で厳密に）
+   grep -nE '^(GET|POST|PUT|PATCH|DELETE)\\s+/api/v1/admin/' \\
+     /Users/kaneko/hotel-kanri/docs/01_systems/saas/API_ROUTING_GUIDELINES.md | grep -i [機能名]
+   \`\`\`
+   
+   ### Step 0-2: 自己診断チェックリスト
+   
+   - [ ] SSOT定義を確認したか？
+   - [ ] エンドポイントパスがSSO**T**定義と完全一致しているか？
+   - [ ] ベースパスが `/api/v1/admin/[resource]` 形式か？
+   - [ ] 深いネスト禁止ルールを確認したか？
+   - [ ] B方式（router相対 + app.use絶対）を採用しているか？
+   - [ ] 認証allowlist確認したか？
+   - [ ] 404ポリシー（未認証=401、不在/他テナント=404）を理解したか？
+   
+   ### Step 0-3: Evidence - Routing（実装前スキャン）
+   
+   \`\`\`bash
+   # 二重付与検出
+   grep -R '/api/api/' src/server src/routes 2>/dev/null && echo "❌ 検出" || echo "✅ なし"
+   
+   # ルート実在確認
+   ls -la src/routes/[ルートファイル名].routes.ts 2>/dev/null && echo "✅ 存在" || echo "❌ 不在"
+   \`\`\`
+   ```
+   
+   **挿入B: 実装中断ポリシー（冒頭・全タスク共通）**:
+   ```markdown
+   ## 🚨 重要：実装中断の基準（必読）
+   
+   **絶対ルール**: 以下の場合、実装を即座に停止してユーザーに報告する
+   
+   ### 必須停止トリガー（Layer 1）
+   1. SSOT照合失敗（0件）or SSOT複数一致
+   2. ルーティング不一致（深いネスト/二重付与/A/B混在/B方式違反/index.*ファイル/allowlist違反）
+   3. システム境界違反（common にNitro構成/saasでPrisma直/saasで$fetch直）
+   4. 依存ファイル非実在
+   5. 型エラー連鎖（>5件）
+   6. Prismaスキーマ変更
+   7. tenant_idフォールバック/環境分岐
+   8. 矛盾の発見
+   9. エラー原因不明（15分以上・試したコマンド/結果/仮説を報告）
+   
+   詳細: implementation_halt_protocol.md v1.2.0
+   ```
+
+9. **プロンプト出力（チャット内）**
    - ✅ チャット内で全文を出力
+   - ✅ **全タスク共通**: 実装中断ポリシー（挿入B）を冒頭に自動挿入
+   - ✅ **API実装タスクの場合**: ルーティングポリシー（挿入A）を追加挿入
+   - ✅ **API実装タスクの場合**: 404ポリシー・Set-Cookie透過・登録順サンプルを追加挿入
+   - ✅ システム別分岐（hotel-common=Express / hotel-saas=Nitro）
+   - ✅ SSOT引用を必須化（該当行を明示）
+   - ✅ Evidence - Routing（実装前スキャン）を常設
    - ❌ ファイル化しない（`.cursorrules`の原則に従う）
+
+### >> prmt 自動挿入まとめ
+
+| 挿入内容 | 対象タスク | 挿入位置 | 目的 |
+|---------|----------|---------|------|
+| **挿入B: 実装中断ポリシー** | **全タスク** | **冒頭** | 停止トリガーの周知 |
+| **挿入A: ルーティングポリシー** | **API実装タスク** | **Item 1と Item 2/3の間** | ルーティング違反防止 |
+
+### 生成後の確認事項
+
+次回 `>> prmt [タスクID]` 実行時、以下を確認：
+- [ ] 冒頭に「🚨 重要：実装中断の基準」が含まれているか？
+- [ ] API実装タスクの場合、「🚨 API実装前の必須確認」が含まれているか？
+- [ ] 自己診断チェックリスト、Evidence - Routingが含まれているか？
+- [ ] システム別分岐（hotel-common/hotel-saas）が正しいか？
 
 ### テンプレート一覧
 
-| テンプレート | 用途 | 場所 |
-|-------------|------|------|
-| `UI_IMPLEMENTATION.md` | UI実装 | `/Users/kaneko/hotel-kanri/docs/standards/prompt-templates/` |
-| `API_IMPLEMENTATION.md` | API実装 | （未実装） |
-| `DB_MIGRATION.md` | DB Migration | （未実装） |
-| `COMMON_SECTIONS.md` | 共通セクション | `/Users/kaneko/hotel-kanri/docs/standards/prompt-templates/` |
+| テンプレート | 用途 | 適用条件 | 場所 |
+|-------------|------|----------|------|
+| `FEATURE_IMPLEMENTATION.md`★NEW | 機能実装（Full Stack） | タイトルに"[Phase N]"を含む | `/Users/kaneko/hotel-kanri/docs/standards/prompt-templates/` |
+| `UI_IMPLEMENTATION.md` | UI実装のみ | タスクに"[11] UI"を含む | `/Users/kaneko/hotel-kanri/docs/standards/prompt-templates/` |
+| `API_IMPLEMENTATION.md` | API実装のみ | タスクに"[12] API"を含む | （未実装） |
+| `DB_MIGRATION.md` | DB Migrationのみ | タスクに"[13] DB"を含む | （未実装） |
+| `COMMON_SECTIONS.md`★更新 | 共通セクション | 全テンプレートで使用 | `/Users/kaneko/hotel-kanri/docs/standards/prompt-templates/` |
 
-### プロンプトの必須要素（7項目）
+### プロンプトの必須要素（10項目）★Gatekeeper要件統合
 
-1. **段階的な指示（Phase分割）**
-   - Phase 0: 事前調査（必須）
-   - Phase 1-5: 実装ステップ
+1. **段階的な指示（Item/Step構造）**
+   - Item 1: 事前調査（SSOT確認・スコープ判定）（必須・20分）
+   - Item 2-7: 実装ステップ（Item別、各ItemにStep 1-N）
 
 2. **具体的なツール使用指示**
-   - `find`, `ls`, `cat`, `grep`, `search_replace`, `write`
-   - コマンド例を明記
+   - `find`, `ls`, `cat`, `grep`, `search_replace`, `write`, `read_file`
+   - コマンド例を明記（`bash`ブロック）
 
 3. **検証可能な成果物の指定**
-   - ファイル一覧
-   - チェックリスト
+   - ファイル一覧（`ls -la`, `sha256sum`）
+   - チェックリスト（`[ ]` 形式）
 
 4. **エラー時の対処フロー明記**
-   - 401/403/500エラー
-   - 診断方法と対処法
+   - 401/403/500/404エラー
+   - 診断コマンド + 対処法
 
-5. **各タスク完了時の報告フォーマット**
+5. **各Item完了時の報告フォーマット**
    - Markdown形式のテンプレート
+   - ユーザー承認待ち指示
 
 6. **実行するコマンドの明示**
-   - `bash`ブロックで明示
+   - `bash`ブロックで全コマンドを明示
+   - 終了コード記録（`echo "終了コード: $?"`）
 
 7. **確認すべき項目のチェックリスト**
-   - `[ ]` 形式
+   - `[ ]` 形式、各Item毎に定義
+
+8. **Evidence取得手順（Gatekeeper必須）**★NEW
+   - Evidence 1: Commands & Logs（実行コマンド+終了コード）
+   - Evidence 2: Files（git status, ls -la, sha256sum）
+   - Evidence 3: Git（branch, HEAD）
+   - Evidence 4: CI（PR作成後に追記）
+   - Evidence 5: CRUD Verify（CI完了後に追記）
+
+9. **PR本文テンプレート（Gatekeeper必須）**★NEW
+   - 必須見出し4件（参照SSOT / Plane / テスト・証跡 / CI）
+   - Evidence 1-5の貼付箇所明示
+   - 受入基準チェックリスト
+
+10. **不可侵ルール（即否認対象）**★NEW
+    - hotel-saas からの Prisma/DB 直接使用
+    - tenant_id フォールバック
+    - $fetch 直接使用（Cookie未転送）
+    - API Routingガイドライン違反
+    - 環境分岐ロジック
+
+11. **標準テストスクリプト選択**★NEW（v2.5.0）
+    - **管理画面実装**: `test-standard-admin.sh`
+      - 対象: `/api/v1/admin/*`, `/admin/*`
+      - 認証: Session認証（Redis + Cookie）
+      - 検証: ログイン → テナント切替 → API → UI SSR
+    - **ゲスト画面実装**: `test-standard-guest.sh`
+      - 対象: `/api/v1/guest/*`, `/menu`
+      - 認証: デバイス認証（MAC/IP → device_rooms）
+      - 検証: デバイス認証 → API → UI注意事項
+    - **スクリプトパス**: `/Users/kaneko/hotel-kanri/scripts/`
+    - **実行タイミング**: 実装完了後、commit/PR前に必須実行
+    - **失敗時対応**: ローカル修正 → 再実行 → commit/PR
 
 ### 禁止事項
 
