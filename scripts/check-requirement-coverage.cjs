@@ -8,7 +8,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const yaml = require('js-yaml');
 
 const MAP_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/requirements.md');
 const OPENAPI_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/openapi/staff-management.yaml');
@@ -40,20 +39,14 @@ function extractRequirementIdsFromMap(text) {
   return Array.from(ids).sort();
 }
 
-function extractRequirementIdsFromOpenAPI(openapi) {
+function extractRequirementIdsFromOpenAPIText(openapiText) {
   const acc = new Set();
-  const paths = openapi.paths || {};
-  for (const p of Object.keys(paths)) {
-    const item = paths[p];
-    for (const method of Object.keys(item)) {
-      const op = item[method];
-      const desc = (op && op.description) || '';
-      const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
-      let m;
-      while ((m = re.exec(desc)) !== null) {
-        acc.add(m[1]);
-      }
-    }
+  // openapi: staff-management.yaml には "STAFF-UI-001..021" のような範囲表現があるため、
+  // ".." を含まない単体IDのみを抽出対象にする（範囲の展開は別スクリプトに委ねる）。
+  const re = /(STAFF(?:-SEC|-UI)?-\d{3})(?!\.\.)/g;
+  let m;
+  while ((m = re.exec(openapiText)) !== null) {
+    acc.add(m[1]);
   }
   return Array.from(acc).sort();
 }
@@ -63,8 +56,7 @@ function main() {
   const targetIds = extractRequirementIdsFromMap(mapText);
 
   const openapiText = readText(OPENAPI_FILE);
-  const openapiDoc = yaml.load(openapiText);
-  const openapiIds = extractRequirementIdsFromOpenAPI(openapiDoc);
+  const openapiIds = extractRequirementIdsFromOpenAPIText(openapiText);
 
   const ssotOnly = targetIds.filter((id) => !openapiIds.includes(id));
   const openapiOnly = openapiIds.filter((id) => !targetIds.includes(id));
