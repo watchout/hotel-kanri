@@ -44,11 +44,13 @@ function extractRequirementIdsFromMap(text) {
   return Array.from(ids).sort();
 }
 
-function extractRequirementIdsFromOpenApiText(text) {
+function extractRequirementIdsFromOpenAPIText(openapiText) {
   const acc = new Set();
-  const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
+  // openapi: staff-management.yaml には "STAFF-UI-001..021" のような範囲表現があるため、
+  // ".." を含まない単体IDのみを抽出対象にする（範囲の展開は別スクリプトに委ねる）。
+  const re = /(STAFF(?:-SEC|-UI)?-\d{3})(?!\.\.)/g;
   let m;
-  while ((m = re.exec(text)) !== null) {
+  while ((m = re.exec(openapiText)) !== null) {
     acc.add(m[1]);
   }
   return Array.from(acc).sort();
@@ -59,7 +61,7 @@ function main() {
   const targetIds = extractRequirementIdsFromMap(mapText);
 
   const openapiText = readText(OPENAPI_FILE);
-  const openapiIds = extractRequirementIdsFromOpenApiText(openapiText);
+  const openapiIds = extractRequirementIdsFromOpenAPIText(openapiText);
 
   const ssotOnly = targetIds.filter((id) => !openapiIds.includes(id));
   const openapiOnly = openapiIds.filter((id) => !targetIds.includes(id));
