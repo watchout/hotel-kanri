@@ -354,48 +354,22 @@ const tabs = [
 
 #### B. おすすめ商品表示
 
-**機能**: 管理画面で設定された`isFeatured=true`商品を優先表示
+**機能**: 管理画面で設定された`isFeatured=true`商品を「おすすめ」として強調表示する
 
-**実装場所**: `pages/order/index.vue` (318-329行目)
+**実装（rebuild）**:
+- UI: `hotel-saas-rebuild/components/MenuItemCard.vue`
+  - `isFeatured` のとき「おすすめ」バッジを表示
+- 一覧ページ: `hotel-saas-rebuild/pages/menu/index.vue`（URL: `/menu`）
 
-```typescript
-const displayItems = computed(() => {
-  if (!selectedCategoryPath.value) {
-    const featuredItems = menuData.value.items.filter(
-      (item: MenuItem) => item.isFeatured
-    )
-    return featuredItems.length > 0 ? featuredItems : menuData.value.items
-  }
-  // カテゴリフィルタリング
-})
-```
+> 注: 旧実装（hotel-saas）の `pages/order/index.vue` への参照は混乱の原因になるため削除しました。
 
 #### C. アップセル提案
 
 **機能**: カート追加時に関連商品を自動提案（最大3件）
 
-**実装場所**: 
-- UI: `components/order/UpsellModal.vue`
-- ロジック: `pages/order/index.vue` (491-507行目)
+**実装状況（rebuild）**: 未実装（将来タスク）
 
-```typescript
-const showUpsellItems = (addedItem: MenuItem) => {
-  const category = addedItem.tags.find(tag => 
-    ['food', 'drink', 'set'].includes(tag)
-  )
-  
-  const relatedItems = menuData.value.items.filter((item: MenuItem) => 
-    item.id !== addedItem.id && 
-    item.tags.includes(category) && 
-    item.tags.includes('upsell') // アップセルタグで判定
-  ).slice(0, 3)
-  
-  if (relatedItems.length > 0) {
-    upsellItems.value = relatedItems
-    showUpsell.value = true
-  }
-}
-```
+> 注: 旧実装参照（`components/order/UpsellModal.vue`, `pages/order/index.vue` 等）はrebuildには存在しないため削除しました。
 
 ### Phase 2追加機能（2つ）
 
