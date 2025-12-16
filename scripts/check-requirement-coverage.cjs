@@ -23,10 +23,19 @@ function readText(filePath) {
 
 function extractRequirementIdsFromMap(text) {
   const ids = new Set();
-  const lines = text split(/\r?\n/);
+  const lines = text.split(/\r?\n/);
+  // 例:
+  // - "| STAFF-001 | ... |"
+  // - "| STAFF-SEC-005/006 | ... |" -> STAFF-SEC-005, STAFF-SEC-006
   for (const line of lines) {
-    const m = line.match(/\|\s*(STAFF(?:-SEC|-UI)?-\d{3})\s*\|/);
-    if (m) ids.add(m[1]);
+    const re = /(STAFF(?:-SEC|-UI)?-)(\d{3})(?:\/(\d{3}))?/g;
+    let m;
+    while ((m = re.exec(line)) !== null) {
+      ids.add(`${m[1]}${m[2]}`);
+      if (m[3]) {
+        ids.add(`${m[1]}${m[3]}`);
+      }
+    }
   }
   return Array.from(ids).sort();
 }
