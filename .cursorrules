@@ -2059,8 +2059,8 @@ Phase 4: 結論導出
 
 ## 📋 プロンプトテンプレート（`>> prmt`タグ）
 
-**最終更新**: 2025年11月9日  
-**バージョン**: 2.4.0  
+**最終更新**: 2025年12月19日  
+**バージョン**: 2.6.0  
 **更新内容**: 
 - 機能実装（Full Stack）テンプレート追加、Gatekeeper要件統合（v2.0.0）
 - SSOT照合ゲートの>> prmt内蔵（v2.1.0）
@@ -2070,19 +2070,23 @@ Phase 4: 結論導出
 - 404ポリシー・Set-Cookie透過・登録順サンプルの自動挿入（v2.1.0）
 - Evidence強化（SSOT引用・ルーティング配置必須化）（v2.1.0）
 - State自動更新（Backlog → In Progress）（v2.2.0）
-- **★NEW Phase 0: 実装状況完全スキャン追加**（v2.3.0）:
+- **Phase 0: 実装状況完全スキャン追加**（v2.3.0）:
   - 関連キーワード網羅抽出
   - Git管理下・履歴・PRマージ済み確認（必須コマンド4種）
   - 実装状況サマリー作成
   - スコープ不明時の対話質問
- - **★NEW 標準テストプロトコルの導入**（v2.4.0）
-   - commit/PR前に標準テストスクリプトを必須実行
-   - 失敗時はcommit/PR禁止（ローカルで修正→再実行）
-   - PR本文に実行ログのEvidence貼付を必須化
- - **★NEW 標準テスト分離対応**（v2.5.0）
-   - 管理画面用: `test-standard-admin.sh`（Session認証）
-   - ゲスト画面用: `test-standard-guest.sh`（デバイス認証）
-   - 実装タイプに応じたスクリプト選択を明記
+- **標準テストプロトコルの導入**（v2.4.0）
+  - commit/PR前に標準テストスクリプトを必須実行
+  - 失敗時はcommit/PR禁止（ローカルで修正→再実行）
+  - PR本文に実行ログのEvidence貼付を必須化
+- **標準テスト分離対応**（v2.5.0）
+  - 管理画面用: `test-standard-admin.sh`（Session認証）
+  - ゲスト画面用: `test-standard-guest.sh`（デバイス認証）
+  - 実装タイプに応じたスクリプト選択を明記
+- **★NEW APIレジストリ必須参照**（v2.6.0）
+  - API実装タスクではSSOT_API_REGISTRY.mdを必須参照
+  - エンドポイント存在確認・ルーター登録確認を自動挿入
+  - hotel-common/hotel-saas両方の整合性チェック
 
 ### 目的
 
@@ -2099,7 +2103,7 @@ Phase 4: 結論導出
 >> prmt COM-81
 ```
 
-### 動作フロー（v2.3.0）
+### 動作フロー（v2.6.0）
 
 1. **Planeタスク取得**
    ```bash
@@ -2107,7 +2111,27 @@ Phase 4: 結論導出
    node get-issue-detail.cjs [タスクID]
    ```
 
-2. **★NEW State自動更新（Backlog → In Progress）**
+2. **★NEW APIレジストリ参照（API実装タスクの場合・必須）**
+   
+   **必読SSOT**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_API_REGISTRY.md`
+   
+   **確認事項**:
+   ```markdown
+   ✅ API実装前の必須チェック:
+   1. [ ] SSOT_API_REGISTRY.md にエンドポイントが定義されているか？
+   2. [ ] hotel-common-rebuild のルートファイルが存在するか？
+   3. [ ] hotel-common-rebuild/src/server/index.ts にルーター登録されているか？
+   4. [ ] hotel-saas-rebuild にプロキシファイルが存在するか？
+   
+   ❌ レジストリ未定義のAPIは実装禁止
+   ❌ ルーター登録なしのルートファイルは無効
+   ```
+   
+   **判定**:
+   - **未定義**: プロンプト生成中断 → ユーザーに「レジストリに追加が必要」を報告
+   - **定義済み**: ルーター登録状況を確認 → プロンプトに整合性チェックを挿入
+
+3. **State自動更新（Backlog → In Progress）**
    
    **条件**: `issue.state.name === "Backlog"`
    
