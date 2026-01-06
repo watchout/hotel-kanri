@@ -101,6 +101,24 @@
 
 ---
 
+### エンタイトルメント管理（/api/v1/admin/entitlements）
+
+> **用途**: 料金プラン・機能制限（エンタイトルメント）の管理  
+> **認証**: **Session認証**（Admin向け）  
+> **関連SSOT**: `SSOT_PRICING_ENTITLEMENTS.md`
+
+| Method | Path | hotel-common | hotel-saas | 説明 |
+|--------|------|--------------|------------|------|
+| GET | `/api/v1/admin/entitlements` | entitlements.routes.ts | entitlements.get.ts | 現在のプラン・エンタイトルメント取得 |
+| GET | `/api/v1/admin/entitlements/check/:featureCode` | entitlements.routes.ts | entitlements/check/[featureCode].get.ts | 機能利用可否チェック |
+| POST | `/api/v1/admin/entitlements/consume-credit` | entitlements.routes.ts | entitlements/consume-credit.post.ts | AIクレジット消費 |
+
+**ルーター登録**: `app.use('/api/v1/admin/entitlements', entitlementsRouter)`
+
+**実装状態**: ❌ 未実装（DEV-0430で実装予定）
+
+---
+
 ## 📊 Guest API（客室端末用・デバイス認証）
 
 ### メニュー閲覧（/api/v1/guest/menus）
@@ -146,6 +164,24 @@
 
 ---
 
+### AIチャット（/api/v1/ai/chat）
+
+> **用途**: 客室端末（ゲスト）向けAIチャット。メニュー誘導（ディープリンク）を返す。  
+> **認証**: **デバイス認証**（Guest向け）  
+> **備考**: `hotel-common` では **認証ミドルウェア適用前**に登録する（Guest API扱い）。
+
+| Method | Path | hotel-common | hotel-saas | 説明 |
+|--------|------|--------------|------------|------|
+| POST | `/api/v1/ai/chat` | ai.routes.ts | ai/chat.post.ts | AIチャット（deeplink actions対応） |
+
+**ルーター登録**: `app.use('/api/v1/ai/chat', aiChatRouter)`
+
+**関連SSOT**:
+- `/Users/kaneko/hotel-kanri/docs/03_ssot/02_guest_features/SSOT_GUEST_MENU_VIEW.md`（AIチャット連携）
+- `/Users/kaneko/hotel-kanri/docs/03_ssot/02_guest_features/SSOT_GUEST_ORDER_FLOW.md`（ORD-AI-002: ディープリンク）
+
+---
+
 ## 📊 System API
 
 ### ヘルスチェック
@@ -170,6 +206,7 @@ app.use('/api/v1/guest/menus', guestMenusRouter)
 app.use('/api/v1/guest/orders', guestOrdersRouter)
 app.use('/api/v1/guest/categories', guestCategoriesRouter)
 app.use('/api/v1/guest/device/status', deviceStatusRouter)
+app.use('/api/v1/ai/chat', aiChatRouter)
 
 // 🔐 認証ミドルウェア（ここから下は認証必須）
 app.use(authMiddleware)
@@ -179,6 +216,7 @@ app.use('/api/v1/admin/switch-tenant', switchTenantRouter)
 app.use('/api/v1/admin/tenants', tenantsRouter)
 app.use('/api/v1/admin/room-grades', roomGradesRouter)
 app.use('/api/v1/admin/menu', menuRouter)
+app.use('/api/v1/admin/entitlements', entitlementsRouter)  // ★DEV-0430で追加予定
 ```
 
 ---

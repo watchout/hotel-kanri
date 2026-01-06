@@ -14,6 +14,111 @@ const fs = require('fs');
 const path = require('path');
 
 /**
+ * ============================
+ * DEV番号重複ガード（CRITICAL）
+ * ============================
+ *
+ * 目的:
+ * - Plane Issue の name に含まれる [DEV-xxxx] が重複した状態で作成/更新されるのを防ぐ
+ * - 進捗管理番号の一意性を強制し、再発を防止する
+ *
+ * バイパス（重複解消の一時作業向け）:
+ * - 環境変数: PLANE_DEV_DUP_GUARD_BYPASS=1
+ */
+function extractDevNosFromName(name) {
+  if (typeof name !== 'string') return [];
+  const out = [];
+  const re = /\[DEV-(\d+)\]/g;
+  let m;
+  while ((m = re.exec(name))) out.push(Number(m[1]));
+  return out;
+}
+
+function formatDevNo(devNo) {
+  return `DEV-${String(devNo).padStart(4, '0')}`;
+}
+
+function isDevDupGuardBypassed() {
+  // process.env を優先（重複解消などローカル作業で明示バイパス）
+  if (process.env.PLANE_DEV_DUP_GUARD_BYPASS === '1') return true;
+  // .env.mcp からの設定も許可（保守用）
+  try {
+    const env = loadEnv();
+    return env.PLANE_DEV_DUP_GUARD_BYPASS === '1';
+  } catch {
+    return false;
+  }
+}
+
+let devIndexCache = {
+  ts: 0,
+  // devNo -> [{id, name, created_at}]
+  map: new Map(),
+};
+
+async function rebuildDevIndex() {
+  const config = getPlaneConfig();
+  const endpoint = `/api/v1/workspaces/${config.workspace}/projects/${config.projectId}/issues/`;
+  const resp = await request('GET', endpoint);
+  const issues = resp.results || resp;
+
+  const map = new Map();
+  for (const i of issues) {
+    const devNos = extractDevNosFromName(i.name);
+    for (const devNo of devNos) {
+      if (!map.has(devNo)) map.set(devNo, []);
+      map.get(devNo).push({ id: i.id, name: i.name, created_at: i.created_at || null });
+    }
+  }
+
+  devIndexCache = { ts: Date.now(), map };
+  return devIndexCache.map;
+}
+
+async function getDevIndex() {
+  // 10秒TTL（連続作成時のAPI負荷軽減）
+  const TTL_MS = 10_000;
+  if (devIndexCache.ts && Date.now() - devIndexCache.ts < TTL_MS) {
+    return devIndexCache.map;
+  }
+  return rebuildDevIndex();
+}
+
+async function assertDevNoUniqueOrThrow({ name, selfIssueId = null, actionLabel }) {
+  if (isDevDupGuardBypassed()) return;
+  const devNos = extractDevNosFromName(name);
+  if (devNos.length === 0) return;
+
+  const index = await getDevIndex();
+  const problems = [];
+  for (const devNo of devNos) {
+    const hits = (index.get(devNo) || []).filter(x => x.id !== selfIssueId);
+    if (hits.length > 0) {
+      problems.push({
+        devNo,
+        existing: hits,
+      });
+    }
+  }
+  if (problems.length === 0) return;
+
+  const lines = [];
+  lines.push(`❌ DEV重複検知: ${actionLabel} を停止しました`);
+  for (const p of problems) {
+    lines.push(`- ${formatDevNo(p.devNo)} は既に使用中です（${p.existing.length}件）:`);
+    for (const ex of p.existing.slice(0, 5)) {
+      lines.push(`  - ${ex.id}: ${ex.name}`);
+    }
+    if (p.existing.length > 5) lines.push(`  - ... (${p.existing.length - 5}件省略)`);
+  }
+  lines.push('');
+  lines.push('対処: 既存の重複を解消するか、別のDEV番号に再採番してください。');
+  lines.push('一時バイパス（重複解消作業のみ）: PLANE_DEV_DUP_GUARD_BYPASS=1');
+
+  throw new Error(lines.join('\n'));
+}
+
+/**
  * 環境変数を.env.mcpから読み込む
  * @returns {Object} 環境変数オブジェクト
  */
@@ -189,9 +294,30 @@ async function getIssue(issueId) {
  * @returns {Promise<Object>}
  */
 async function createIssue(issueData) {
+  if (issueData && typeof issueData.name === 'string') {
+    await assertDevNoUniqueOrThrow({
+      name: issueData.name,
+      selfIssueId: null,
+      actionLabel: 'Issue作成',
+    });
+  }
   const config = getPlaneConfig();
   const endpoint = `/api/v1/workspaces/${config.workspace}/projects/${config.projectId}/issues/`;
-  return request('POST', endpoint, issueData);
+  const created = await request('POST', endpoint, issueData);
+  // キャッシュをベストエフォートで更新（作成直後の連続作成で再取得を減らす）
+  try {
+    const devNos = extractDevNosFromName(issueData?.name);
+    if (devNos.length > 0 && created?.id) {
+      const idx = await getDevIndex();
+      for (const devNo of devNos) {
+        if (!idx.has(devNo)) idx.set(devNo, []);
+        idx.get(devNo).push({ id: created.id, name: issueData.name, created_at: created.created_at || null });
+      }
+    }
+  } catch {
+    // no-op
+  }
+  return created;
 }
 
 /**
@@ -201,9 +327,25 @@ async function createIssue(issueData) {
  * @returns {Promise<Object>}
  */
 async function updateIssue(issueId, updateData) {
+  if (updateData && typeof updateData.name === 'string') {
+    await assertDevNoUniqueOrThrow({
+      name: updateData.name,
+      selfIssueId: issueId,
+      actionLabel: 'Issue更新（name変更）',
+    });
+  }
   const config = getPlaneConfig();
   const endpoint = `/api/v1/workspaces/${config.workspace}/projects/${config.projectId}/issues/${issueId}/`;
-  return request('PATCH', endpoint, updateData);
+  const updated = await request('PATCH', endpoint, updateData);
+  // キャッシュは保守的に再構築（rename時の整合性確保）
+  try {
+    if (updateData && typeof updateData.name === 'string' && extractDevNosFromName(updateData.name).length > 0) {
+      await rebuildDevIndex();
+    }
+  } catch {
+    // no-op
+  }
+  return updated;
 }
 
 /**
