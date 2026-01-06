@@ -30,7 +30,10 @@ OpenAPI: `docs/03_ssot/openapi/staff-management.yaml`
 | STAFF-SEC-002 | テナント分離 | 404（情報秘匿） |
 | STAFF-SEC-003 | 自己削除禁止 | 400 |
 | STAFF-SEC-004 | 最後のOWNER削除禁止 | 400 |
-| STAFF-SEC-005/006 | 招待トークン期限/一回限り | 400 |
+| STAFF-SEC-005 | 招待トークン期限（expired） | 400 |
+| STAFF-SEC-006 | 招待トークン一回限り（already used） | 409 |
+| STAFF-SEC-007 | パスワード強度チェック | 400 |
+| STAFF-SEC-008 | メール重複チェック | 409 |
 
 ## トレーサビリティ（例）
 
