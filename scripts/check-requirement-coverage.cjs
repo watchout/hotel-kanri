@@ -23,7 +23,7 @@ function readText(filePath) {
 
 function extractRequirementIdsFromMap(text) {
   const ids = new Set();
-  const lines = text split(/\r?\n/);
+  const lines = text.split(/\r?\n/);
   for (const line of lines) {
     const m = line.match(/\|\s*(STAFF(?:-SEC|-UI)?-\d{3})\s*\|/);
     if (m) ids.add(m[1]);
