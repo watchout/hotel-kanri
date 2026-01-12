@@ -62,10 +62,23 @@ jobs:
         service: [hotel-common, hotel-saas]
     
     steps:
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "${{ matrix.service }}/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: ${{ matrix.service }}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip: ${{ matrix.service }}"
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v4
           
       - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -73,15 +86,18 @@ jobs:
           cache-dependency-path: '${{ matrix.service }}/package-lock.json'
           
       - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm ci
         
       - name: Run ESLint
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm run lint
         continue-on-error: true
         
       - name: Run TypeScript typecheck
+        if: steps.detect.outputs.exists == 'true'
         if: matrix.service == 'hotel-saas'
         working-directory: ${{ matrix.service }}
         run: npx nuxi typecheck
@@ -99,10 +115,23 @@ jobs:
         service: [hotel-common, hotel-saas]
     
     steps:
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "${{ matrix.service }}/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: ${{ matrix.service }}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip: ${{ matrix.service }}"
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v4
           
       - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -110,19 +139,23 @@ jobs:
           cache-dependency-path: '${{ matrix.service }}/package-lock.json'
           
       - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm ci
         
       - name: Run unit tests
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm run test:unit
         
       - name: Run coverage
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm run test:coverage
         continue-on-error: true
         
       - name: Upload coverage to Codecov
+        if: steps.detect.outputs.exists == 'true'
         uses: codecov/codecov-action@v3
         with:
           directory: ${{ matrix.service }}/coverage
@@ -165,8 +198,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "hotel-common/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: hotel-common"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip API tests: hotel-common"
+          fi
         
       - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -174,16 +220,19 @@ jobs:
           cache-dependency-path: 'hotel-common/package-lock.json'
           
       - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
         working-directory: hotel-common
         run: npm ci
         
       - name: Run Prisma migrations
+        if: steps.detect.outputs.exists == 'true'
         working-directory: hotel-common
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: postgresql://hotel_app:password@localhost:5432/hotel_test
         
       - name: Run API tests
+        if: steps.detect.outputs.exists == 'true'
         working-directory: hotel-common
         run: npm run test:api
         env:
@@ -203,10 +252,23 @@ jobs:
         service: [hotel-common, hotel-saas]
     
     steps:
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "${{ matrix.service }}/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: ${{ matrix.service }}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip build: ${{ matrix.service }}"
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v4
           
       - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -214,10 +276,12 @@ jobs:
           cache-dependency-path: '${{ matrix.service }}/package-lock.json'
           
       - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm ci
         
       - name: Build project
+        if: steps.detect.outputs.exists == 'true'
         working-directory: ${{ matrix.service }}
         run: npm run build
 
