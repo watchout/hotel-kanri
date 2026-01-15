@@ -1,0 +1,755 @@
+
+=== Phase 0: 前提条件確認 ===
+
+✅ hotel-common-rebuild 起動確認 OK
+
+✅ hotel-saas-rebuild 起動確認 OK
+
+=== Phase 1: デバイス認証（hotel-common 直接） ===
+{
+  "success": true,
+  "data": {
+    "roomId": "101",
+    "deviceId": "test-device-localhost"
+  },
+  "meta": {
+    "requestId": "req_01b9d04d-48ba-4845-914c-f1df573993bb",
+    "timestamp": "2026-01-15T05:16:21.373Z"
+  }
+}
+
+✅ デバイス認証成功（Room ID: 101, Device: test-device-localhost）
+
+=== Phase 2-1: Categories API（hotel-saas経由） ===
+{
+  "success": true,
+  "data": {
+    "categories": [
+      {
+        "id": 1,
+        "nameJa": "お食事",
+        "nameEn": "Food",
+        "descriptionJa": "ルームサービスお食事メニュー",
+        "descriptionEn": "Room Service Food Menu",
+        "sortOrder": 1
+      },
+      {
+        "id": 5,
+        "nameJa": "朝食",
+        "nameEn": "Breakfast",
+        "descriptionJa": "朝食メニュー（7:00-10:00）",
+        "descriptionEn": "Breakfast Menu (7:00-10:00)",
+        "sortOrder": 1,
+        "parentId": 1
+      },
+      {
+        "id": 8,
+        "nameJa": "コーヒー・紅茶",
+        "nameEn": "Coffee & Tea",
+        "descriptionJa": "ホットドリンク",
+        "descriptionEn": "Hot Beverages",
+        "sortOrder": 1,
+        "parentId": 2
+      },
+      {
+        "id": 9,
+        "nameJa": "ソフトドリンク",
+        "nameEn": "Soft Drinks",
+        "descriptionJa": "ソフトドリンク・ジュース",
+        "descriptionEn": "Soft Drinks & Juices",
+        "sortOrder": 2,
+        "parentId": 2
+      },
+      {
+        "id": 6,
+        "nameJa": "ランチ",
+        "nameEn": "Lunch",
+        "descriptionJa": "ランチメニュー（11:30-14:30）",
+        "descriptionEn": "Lunch Menu (11:30-14:30)",
+        "sortOrder": 2,
+        "parentId": 1
+      },
+      {
+        "id": 2,
+        "nameJa": "お飲み物",
+        "nameEn": "Drinks",
+        "descriptionJa": "ルームサービス飲み物メニュー",
+        "descriptionEn": "Room Service Drinks Menu",
+        "sortOrder": 2
+      },
+      {
+        "id": 7,
+        "nameJa": "ディナー",
+        "nameEn": "Dinner",
+        "descriptionJa": "ディナーメニュー（17:00-22:00）",
+        "descriptionEn": "Dinner Menu (17:00-22:00)",
+        "sortOrder": 3,
+        "parentId": 1
+      },
+      {
+        "id": 3,
+        "nameJa": "デザート",
+        "nameEn": "Desserts",
+        "descriptionJa": "デザート・スイーツメニュー",
+        "descriptionEn": "Dessert & Sweets Menu",
+        "sortOrder": 3
+      },
+      {
+        "id": 4,
+        "nameJa": "アルコール",
+        "nameEn": "Alcoholic Beverages",
+        "descriptionJa": "アルコール飲料",
+        "descriptionEn": "Alcoholic Beverages",
+        "sortOrder": 4
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "req_f775bb34-8442-4464-ae52-973339207e98",
+    "timestamp": "2026-01-15T05:16:21.399Z"
+  }
+}
+
+✅ Categories API 成功（9 件）
+
+=== Phase 2-2: Menus API（hotel-common直接） ===
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "nameJa": "アメリカンブレックファスト",
+        "nameEn": "American Breakfast",
+        "descriptionJa": "スクランブルエッグ、ベーコン、トースト、サラダ、コーヒー",
+        "descriptionEn": "Scrambled eggs, bacon, toast, salad, coffee",
+        "price": 2800,
+        "categoryId": 5,
+        "tags": [],
+        "stockAvailable": true,
+        "stockQuantity": 100,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "卵",
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 2,
+        "nameJa": "和朝食",
+        "nameEn": "Japanese Breakfast",
+        "descriptionJa": "焼き魚、ご飯、味噌汁、納豆、漬物",
+        "descriptionEn": "Grilled fish, rice, miso soup, natto, pickles",
+        "price": 2500,
+        "categoryId": 5,
+        "tags": [],
+        "stockAvailable": true,
+        "stockQuantity": 30,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "魚",
+          "大豆"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 3,
+        "nameJa": "エッグベネディクト",
+        "nameEn": "Eggs Benedict",
+        "descriptionJa": "ポーチドエッグとホランデーズソース",
+        "descriptionEn": "Poached eggs with hollandaise sauce",
+        "price": 2200,
+        "categoryId": 5,
+        "tags": [
+          "",
+          "和食",
+          "   ",
+          "定食"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": true,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "卵",
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 4,
+        "nameJa": "ビーフカレー",
+        "nameEn": "Beef Curry",
+        "descriptionJa": "特製ビーフカレー、サラダ付き",
+        "descriptionEn": "Special beef curry with salad",
+        "price": 1800,
+        "categoryId": 6,
+        "tags": [
+          "ランチ",
+          "カレー",
+          "人気"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": true,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 5,
+        "nameJa": "スパゲッティカルボナーラ",
+        "nameEn": "Spaghetti Carbonara",
+        "descriptionJa": "クリーミーなカルボナーラ",
+        "descriptionEn": "Creamy carbonara pasta",
+        "price": 1600,
+        "categoryId": 6,
+        "tags": [
+          "ランチ",
+          "パスタ",
+          "洋食"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "卵",
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 6,
+        "nameJa": "ハンバーガーセット",
+        "nameEn": "Burger Set",
+        "descriptionJa": "ビーフバーガー、フライドポテト、ドリンク",
+        "descriptionEn": "Beef burger, french fries, drink",
+        "price": 2000,
+        "categoryId": 6,
+        "tags": [
+          "ランチ",
+          "ハンバーガー",
+          "セット"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "小麦",
+          "卵"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 7,
+        "nameJa": "シーザーサラダ",
+        "nameEn": "Caesar Salad",
+        "descriptionJa": "グリルチキン入りシーザーサラダ",
+        "descriptionEn": "Caesar salad with grilled chicken",
+        "price": 1400,
+        "categoryId": 6,
+        "tags": [
+          "ランチ",
+          "サラダ",
+          "ヘルシー"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "卵",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 8,
+        "nameJa": "ビーフステーキ（200g）",
+        "nameEn": "Beef Steak (200g)",
+        "descriptionJa": "厳選牛肉のステーキ、野菜添え",
+        "descriptionEn": "Premium beef steak with vegetables",
+        "price": 5800,
+        "categoryId": 7,
+        "tags": [
+          "ディナー",
+          "ステーキ",
+          "高級"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": true,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 9,
+        "nameJa": "グリルサーモン",
+        "nameEn": "Grilled Salmon",
+        "descriptionJa": "ノルウェー産サーモンのグリル",
+        "descriptionEn": "Grilled Norwegian salmon",
+        "price": 3800,
+        "categoryId": 7,
+        "tags": [
+          "ディナー",
+          "魚料理",
+          "ヘルシー"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "魚"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 10,
+        "nameJa": "マルゲリータピザ",
+        "nameEn": "Margherita Pizza",
+        "descriptionJa": "モッツァレラとトマトのクラシックピザ",
+        "descriptionEn": "Classic pizza with mozzarella and tomato",
+        "price": 2200,
+        "categoryId": 7,
+        "tags": [
+          "ディナー",
+          "ピザ",
+          "イタリアン"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 11,
+        "nameJa": "海鮮リゾット",
+        "nameEn": "Seafood Risotto",
+        "descriptionJa": "エビ、ホタテ、ムール貝のリゾット",
+        "descriptionEn": "Risotto with shrimp, scallops, and mussels",
+        "price": 2800,
+        "categoryId": 7,
+        "tags": [
+          "ディナー",
+          "シーフード",
+          "イタリアン"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "魚介類",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 12,
+        "nameJa": "ブレンドコーヒー",
+        "nameEn": "Blend Coffee",
+        "descriptionJa": "オリジナルブレンドコーヒー",
+        "descriptionEn": "Original blend coffee",
+        "price": 600,
+        "categoryId": 8,
+        "tags": [
+          "コーヒー",
+          "ホット"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 13,
+        "nameJa": "カフェラテ",
+        "nameEn": "Cafe Latte",
+        "descriptionJa": "エスプレッソとスチームミルク",
+        "descriptionEn": "Espresso with steamed milk",
+        "price": 750,
+        "categoryId": 8,
+        "tags": [
+          "コーヒー",
+          "ホット",
+          "ミルク"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 14,
+        "nameJa": "紅茶（ダージリン）",
+        "nameEn": "Darjeeling Tea",
+        "descriptionJa": "インド産ダージリン紅茶",
+        "descriptionEn": "Darjeeling tea from India",
+        "price": 650,
+        "categoryId": 8,
+        "tags": [
+          "紅茶",
+          "ホット"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 15,
+        "nameJa": "抹茶ラテ",
+        "nameEn": "Matcha Latte",
+        "descriptionJa": "京都産抹茶使用",
+        "descriptionEn": "Latte with Kyoto matcha",
+        "price": 850,
+        "categoryId": 8,
+        "tags": [
+          "抹茶",
+          "ホット",
+          "和"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 16,
+        "nameJa": "オレンジジュース",
+        "nameEn": "Orange Juice",
+        "descriptionJa": "フレッシュオレンジジュース",
+        "descriptionEn": "Fresh orange juice",
+        "price": 700,
+        "categoryId": 9,
+        "tags": [
+          "ジュース",
+          "フレッシュ"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 17,
+        "nameJa": "コーラ",
+        "nameEn": "Coca-Cola",
+        "descriptionJa": "コカコーラ",
+        "descriptionEn": "Coca-Cola",
+        "price": 500,
+        "categoryId": 9,
+        "tags": [
+          "炭酸",
+          "ソフトドリンク"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 18,
+        "nameJa": "ミネラルウォーター",
+        "nameEn": "Mineral Water",
+        "descriptionJa": "ナチュラルミネラルウォーター",
+        "descriptionEn": "Natural mineral water",
+        "price": 400,
+        "categoryId": 9,
+        "tags": [
+          "水",
+          "ヘルシー"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 19,
+        "nameJa": "ティラミス",
+        "nameEn": "Tiramisu",
+        "descriptionJa": "イタリア伝統のティラミス",
+        "descriptionEn": "Traditional Italian tiramisu",
+        "price": 900,
+        "categoryId": 3,
+        "tags": [
+          "デザート",
+          "イタリアン",
+          "人気"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": true,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "卵",
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 20,
+        "nameJa": "チーズケーキ",
+        "nameEn": "Cheesecake",
+        "descriptionJa": "濃厚ニューヨークチーズケーキ",
+        "descriptionEn": "Rich New York cheesecake",
+        "price": 850,
+        "categoryId": 3,
+        "tags": [
+          "デザート",
+          "ケーキ"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "卵",
+          "小麦",
+          "乳"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 21,
+        "nameJa": "アイスクリーム（3種）",
+        "nameEn": "Ice Cream (3 flavors)",
+        "descriptionJa": "バニラ、チョコレート、ストロベリー",
+        "descriptionEn": "Vanilla, chocolate, strawberry",
+        "price": 750,
+        "categoryId": 3,
+        "tags": [
+          "デザート",
+          "アイス"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [
+          "乳",
+          "卵"
+        ],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 22,
+        "nameJa": "フルーツプレート",
+        "nameEn": "Fruit Plate",
+        "descriptionJa": "季節のフルーツ盛り合わせ",
+        "descriptionEn": "Assorted seasonal fruits",
+        "price": 1200,
+        "categoryId": 3,
+        "tags": [
+          "デザート",
+          "フルーツ",
+          "ヘルシー"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": false
+      },
+      {
+        "id": 23,
+        "nameJa": "ビール（生）",
+        "nameEn": "Draft Beer",
+        "descriptionJa": "キリン一番搾り（中ジョッキ）",
+        "descriptionEn": "Kirin Ichiban (Medium mug)",
+        "price": 900,
+        "categoryId": 4,
+        "tags": [
+          "ビール",
+          "アルコール"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": true
+      },
+      {
+        "id": 24,
+        "nameJa": "ハイボール",
+        "nameEn": "Highball",
+        "descriptionJa": "角ハイボール",
+        "descriptionEn": "Kaku highball",
+        "price": 800,
+        "categoryId": 4,
+        "tags": [
+          "ウイスキー",
+          "アルコール"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": true
+      },
+      {
+        "id": 25,
+        "nameJa": "赤ワイン（グラス）",
+        "nameEn": "Red Wine (Glass)",
+        "descriptionJa": "ハウスワイン赤",
+        "descriptionEn": "House red wine",
+        "price": 1000,
+        "categoryId": 4,
+        "tags": [
+          "ワイン",
+          "アルコール"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": true
+      },
+      {
+        "id": 26,
+        "nameJa": "日本酒（冷酒）",
+        "nameEn": "Sake (Chilled)",
+        "descriptionJa": "特別純米酒（1合）",
+        "descriptionEn": "Special junmai sake (180ml)",
+        "price": 1200,
+        "categoryId": 4,
+        "tags": [
+          "日本酒",
+          "アルコール",
+          "和"
+        ],
+        "stockAvailable": true,
+        "isAvailable": true,
+        "isFeatured": false,
+        "isHidden": false,
+        "images": [],
+        "allergens": [],
+        "nutritionalInfo": {},
+        "ageRestricted": true
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "req_fd724bc3-b2f4-493b-932d-b0a36f38aa3c",
+    "timestamp": "2026-01-15T05:16:21.418Z"
+  }
+}
+
+✅ Menus API 成功（26 件）
+
+=== AI Chat API Check (hotel-saas proxy) ===
+{
+  "success": true,
+  "data": {
+    "reply": "当館自慢のメニューをご案内します。アレルギーや宗教上の配慮が必要な場合も、私に何なりとお申し付けください。",
+    "actions": [
+      {
+        "type": "deeplink",
+        "label": "メニューを見る",
+        "url": "/menu"
+      }
+    ],
+    "source": "faq",
+    "faqId": "faq-menu"
+  },
+  "meta": {
+    "requestId": "req_7ed0e44e-f2d6-4465-8d00-2fae824d7da0",
+    "timestamp": "2026-01-15T05:16:21.448Z"
+  }
+}
+deeplink: /menu
+❌ deeplink url format invalid (expected ORD-AI-002): /menu
