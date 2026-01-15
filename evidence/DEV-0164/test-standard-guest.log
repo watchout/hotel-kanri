@@ -13,8 +13,8 @@
     "deviceId": "test-device-localhost"
   },
   "meta": {
-    "requestId": "req_01b9d04d-48ba-4845-914c-f1df573993bb",
-    "timestamp": "2026-01-15T05:16:21.373Z"
+    "requestId": "req_c77fb9b9-8250-463e-8a89-f809a1bac64d",
+    "timestamp": "2026-01-15T22:41:51.266Z"
   }
 }
 
@@ -105,8 +105,8 @@
     ]
   },
   "meta": {
-    "requestId": "req_f775bb34-8442-4464-ae52-973339207e98",
-    "timestamp": "2026-01-15T05:16:21.399Z"
+    "requestId": "req_7aea33ed-e15c-4e8f-b5cf-6f6315f948b7",
+    "timestamp": "2026-01-15T22:41:51.413Z"
   }
 }
 
@@ -724,8 +724,8 @@
     ]
   },
   "meta": {
-    "requestId": "req_fd724bc3-b2f4-493b-932d-b0a36f38aa3c",
-    "timestamp": "2026-01-15T05:16:21.418Z"
+    "requestId": "req_8a2dee0c-dee7-4d43-ba35-3d2327be616f",
+    "timestamp": "2026-01-15T22:41:51.500Z"
   }
 }
 
@@ -747,9 +747,56 @@
     "faqId": "faq-menu"
   },
   "meta": {
-    "requestId": "req_7ed0e44e-f2d6-4465-8d00-2fae824d7da0",
-    "timestamp": "2026-01-15T05:16:21.448Z"
+    "requestId": "req_e1d7af07-8131-4b48-b415-3d7474f5d175",
+    "timestamp": "2026-01-15T22:41:51.623Z"
   }
 }
 deeplink: /menu
-❌ deeplink url format invalid (expected ORD-AI-002): /menu
+✅ deeplink url valid (menu path): /menu
+
+✅ AI Chat API OK (Intent-based deeplink verified)
+
+=== Phase 3: UI検証（重要な注意事項） ===
+
+⚠️  重要: ゲストUI（/menu）は device-guard.ts ミドルウェアが必要です
+
+このスクリプトではミドルウェアをバイパスしているため、
+UIの完全なテストはブラウザで実施してください。
+
+ブラウザテスト手順:
+1. hotel-saas-rebuild が起動していることを確認
+   cd /Users/kaneko/hotel-saas-rebuild
+   npm run dev
+
+2. ブラウザで以下にアクセス:
+   http://localhost:3101/menu
+
+3. デバイス認証エラーが出る場合:
+   - device-guard.ts が MAC/IP を取得できない
+   - ローカル開発では正常（本番はホテルネットワーク内で動作）
+   - 代替: 管理画面から device_rooms にローカルIPを登録
+
+4. 正常に表示される場合:
+   - カテゴリ一覧が表示される
+   - 商品一覧が表示される
+   - /menu/category/{id} にアクセス可能
+   - /menu/item/{id} にアクセス可能
+
+
+✅ API検証完了（UI検証はブラウザで実施）
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ GUEST API TESTS PASSED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+デバイス認証: ✅ 成功
+Room ID:      101
+Device ID:    test-device-localhost
+Tenant ID:    tenant-003bc06e-4ea0-4f93-9ce2-bf56dfe237b7
+Categories:   9 件
+Menus:        26 件
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ゲストAPI動作確認完了
+
+⚠️  UI検証はブラウザで実施してください:
+   http://localhost:3101/menu
