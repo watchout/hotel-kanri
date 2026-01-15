@@ -151,6 +151,48 @@ fi
 
 success "Menus API 成功（$MENUS_COUNT 件）"
 
+# === AI Chat API（hotel-saas proxy経由） ===
+step "AI Chat API Check (hotel-saas proxy)"
+
+# tenant解決がHost依存のため、必要に応じて上書き可能
+TENANT_HOST_HEADER="${TENANT_HOST_HEADER:-hotel-dev.localhost:3101}"
+
+AI_CHAT_RES="$(
+  curl -sS -X POST "http://localhost:3101/api/v1/ai/chat" \
+    -H "Host: ${TENANT_HOST_HEADER}" \
+    -H "Content-Type: application/json" \
+    -d '{"message":"メニュー"}'
+)"
+echo "$AI_CHAT_RES" | jq . || true
+
+# 成功判定
+echo "$AI_CHAT_RES" | jq -e '.success == true' >/dev/null 2>&1 \
+  || { echo "❌ AI Chat API failed"; exit 1; }
+
+# actions[0] が deeplink を含むこと（最低限）
+echo "$AI_CHAT_RES" | jq -e '.data.actions | type=="array" and length>0' >/dev/null 2>&1 \
+  || { echo "❌ AI Chat actions missing"; exit 1; }
+
+DEEPLINK_URL="$(echo "$AI_CHAT_RES" | jq -r '.data.actions[0].url // ""')"
+echo "deeplink: $DEEPLINK_URL"
+[ -n "$DEEPLINK_URL" ] || { echo "❌ deeplink url empty"; exit 1; }
+
+# Intent別deeplink戦略:
+# - 探索系（faq-menu等）: /menu または /menu?...
+# - 推薦系（faq-recommend等）: ORD-AI-002形式 /menu/category/{id}?item={id}&highlight=true
+# どちらもPASSとする
+if [[ "$DEEPLINK_URL" =~ ^/menu(/|$|\?) ]]; then
+  echo "✅ deeplink url valid (menu path): $DEEPLINK_URL"
+elif [[ "$DEEPLINK_URL" =~ ^/menu/category/[0-9]+\?item=[0-9]+\&highlight=true$ ]]; then
+  echo "✅ deeplink url valid (ORD-AI-002): $DEEPLINK_URL"
+else
+  echo "❌ deeplink url format invalid: $DEEPLINK_URL"
+  echo "   Expected: /menu* or /menu/category/{id}?item={id}&highlight=true"
+  exit 1
+fi
+
+success "AI Chat API OK (Intent-based deeplink verified)"
+
 # === Phase 3: UI検証（注意事項あり） ===
 step "Phase 3: UI検証（重要な注意事項）"
 
