@@ -1,0 +1,11 @@
+{
+  "taskId": "DEV-0171",
+  "generatedAt": "2026-01-16T23:49:07Z",
+  "totalCost": "$0.4597",
+  "totalCostJPY": 69,
+  "breakdown": {
+    "claude-opus": {"inputTokens": 5494, "outputTokens": 4532, "cost": "$0.4223"},
+    "gpt-4o": {"inputTokens": 355, "outputTokens": 914, "cost": "$0.0100"},
+    "claude-sonnet": {"inputTokens": 451, "outputTokens": 1737, "cost": "$0.0274"}
+  }
+}
