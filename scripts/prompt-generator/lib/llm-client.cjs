@@ -47,19 +47,28 @@ const COST_PER_1M = {
 function loadEnv() {
   const envPath = path.join(process.cwd(), '.env.mcp');
   
-  if (fs.existsSync(envPath)) {
-    const content = fs.readFileSync(envPath, 'utf-8');
-    content.split('\n').forEach(line => {
-      const match = line.match(/^([^=]+)=(.*)$/);
-      if (match) {
-        process.env[match[1].trim()] = match[2].trim().replace(/^["']|["']$/g, '');
-      }
-    });
+  try {
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf-8');
+      content.split('\n').forEach(line => {
+        const match = line.match(/^([^=]+)=(.*)$/);
+        if (match) {
+          process.env[match[1].trim()] = match[2].trim().replace(/^["']|["']$/g, '');
+        }
+      });
+    }
+  } catch (error) {
+    // 読み込めなくても続行（dry-run対応）
+    console.warn(`⚠️ .env.mcp読み込みスキップ: ${error.code || error.message}`);
   }
 }
 
-// 初期化時に環境変数を読み込み
-loadEnv();
+// 初期化時に環境変数を読み込み（エラーは無視）
+try {
+  loadEnv();
+} catch (e) {
+  // 無視
+}
 
 // ===== LLMクライアントクラス =====
 
