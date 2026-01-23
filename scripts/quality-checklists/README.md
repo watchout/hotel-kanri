@@ -1,7 +1,7 @@
 # 🎯 Quality Checklists - 品質チェックリスト体系
 
-**バージョン**: 1.0.0
-**最終更新**: 2026-01-22
+**バージョン**: 1.1.0
+**最終更新**: 2026-01-23
 
 ---
 
@@ -158,9 +158,36 @@ node scripts/quality-checklists/ssot-audit.cjs docs/03_ssot/YOUR_SSOT.md
 # プロンプト監査
 node scripts/quality-checklists/prompt-audit.cjs prompts/YOUR_PROMPT.md
 
-# テスト実行
+# テスト実行（Admin用 - Session認証）
 node scripts/quality-checklists/test-execution.cjs admin
+
+# テスト実行（Guest用 - デバイス認証）※未実装
+# node scripts/quality-checklists/test-execution.cjs guest
 
 # 統合実行（run-task.cjs経由）
 node scripts/auto-dev/run-task.cjs DEV-0170
 ```
+
+---
+
+## 🔐 認証方式別テスト
+
+| テストタイプ | 認証方式 | API対象 | UI対象 |
+|:------------|:---------|:--------|:-------|
+| `admin` | Session認証（Cookie） | `/api/v1/admin/*` | `/admin` |
+| `guest` | デバイス認証（device_rooms） | `/api/v1/guest/*` | `/menu` |
+
+### Admin テスト（実装済み）
+- ログイン → Cookie取得 → テナント切替 → API検証 → UI検証
+
+### Guest テスト（未実装）
+- デバイス認証（MAC/IP → device_rooms） → API検証 → UI検証
+
+---
+
+## 📝 更新履歴
+
+| バージョン | 日付 | 変更内容 |
+|:-----------|:-----|:---------|
+| 1.1.0 | 2026-01-23 | Admin/Guest分離、テストチェックリスト修正 |
+| 1.0.0 | 2026-01-22 | 初版リリース |
