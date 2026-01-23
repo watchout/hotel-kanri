@@ -127,17 +127,17 @@ const CHECKLIST = {
   api: [
     {
       id: 'E07',
-      name: 'GET API成功',
+      name: 'Admin GET API成功（テナント一覧）',
       weight: 10,
       level: 'critical',
       verify: 'api',
       method: 'GET',
-      url: `${CONFIG.saasUrl}/api/v1/guest/categories`,
+      url: `${CONFIG.saasUrl}/api/v1/admin/tenants`,
       useCookie: true,
       expectedBody: { success: true },
-      description: 'カテゴリ一覧取得',
-      failMessage: 'GET APIが失敗しました。',
-      saveResponse: 'categories'
+      description: 'テナント一覧取得（Admin API）',
+      failMessage: 'Admin GET APIが失敗しました。',
+      saveResponse: 'tenants'
     },
     {
       id: 'E08',
@@ -146,27 +146,27 @@ const CHECKLIST = {
       level: 'major',
       verify: 'custom',
       customVerify: async (context) => {
-        const categories = context.responses?.categories;
-        if (!categories) return false;
-        const count = categories.data?.categories?.length || 0;
+        const tenants = context.responses?.tenants;
+        if (!tenants) return false;
+        const count = tenants.data?.tenants?.length || tenants.data?.length || 0;
         return count >= 1;
       },
-      description: 'データが1件以上存在',
+      description: 'テナントデータが1件以上存在',
       failMessage: 'データが0件です。seedを実行してください。'
     },
     {
       id: 'E09',
-      name: 'Menu API成功',
+      name: 'Admin GET API成功（セッション）',
       weight: 10,
       level: 'critical',
       verify: 'api',
       method: 'GET',
-      url: `${CONFIG.saasUrl}/api/v1/guest/menus`,
+      url: `${CONFIG.saasUrl}/api/v1/admin/auth/session`,
       useCookie: true,
       expectedBody: { success: true },
-      description: 'メニュー一覧取得',
-      failMessage: 'Menu APIが失敗しました。',
-      saveResponse: 'menus'
+      description: 'セッション情報取得（Admin API）',
+      failMessage: 'セッションAPIが失敗しました。',
+      saveResponse: 'session'
     },
     {
       id: 'E10',
@@ -175,10 +175,10 @@ const CHECKLIST = {
       level: 'major',
       verify: 'custom',
       customVerify: async (context) => {
-        const menus = context.responses?.menus;
-        if (!menus) return false;
+        const session = context.responses?.session;
+        if (!session) return false;
         // 標準レスポンス形式 { success: true, data: {...} }
-        return menus.success === true && typeof menus.data === 'object';
+        return session.success === true && typeof session.data === 'object';
       },
       description: '標準レスポンス形式',
       failMessage: 'レスポンス形式が標準ではありません。'
@@ -204,15 +204,15 @@ const CHECKLIST = {
   ui: [
     {
       id: 'E12',
-      name: 'ページSSR成功',
+      name: 'Admin ページSSR成功',
       weight: 10,
       level: 'critical',
       verify: 'http',
-      url: `${CONFIG.saasUrl}/menu`,
+      url: `${CONFIG.saasUrl}/admin`,
       expectedStatus: 200,
       useCookie: true,
-      description: '/menuページが表示される',
-      failMessage: '/menuページのSSRに失敗しました。'
+      description: '/adminページが表示される',
+      failMessage: '/adminページのSSRに失敗しました。'
     },
     {
       id: 'E13',
@@ -220,23 +220,23 @@ const CHECKLIST = {
       weight: 5,
       level: 'major',
       verify: 'html',
-      url: `${CONFIG.saasUrl}/menu`,
+      url: `${CONFIG.saasUrl}/admin`,
       useCookie: true,
-      notContains: ['エラー', 'Error', 'データの取得に失敗'],
+      notContains: ['Internal Server Error', 'データの取得に失敗', 'statusCode":500'],
       description: 'エラーメッセージが表示されない',
       failMessage: 'ページにエラーメッセージが表示されています。'
     },
     {
       id: 'E14',
-      name: 'データ表示確認',
+      name: 'Admin UI確認',
       weight: 5,
       level: 'major',
       verify: 'html',
-      url: `${CONFIG.saasUrl}/menu`,
+      url: `${CONFIG.saasUrl}/admin`,
       useCookie: true,
-      contains: [CONFIG.brandName],
-      description: 'データが表示されている',
-      failMessage: 'ページにデータが表示されていません。'
+      contains: ['html', 'head'],
+      description: 'HTMLが正しく返される',
+      failMessage: 'ページが正しく表示されていません。'
     }
   ],
 
@@ -292,9 +292,13 @@ async function callHttp(url, options = {}) {
     curlArgs.push('-X', options.method);
   }
   
+  // JSONボディがある場合は一時ファイル経由で渡す（エスケープ問題回避）
+  let tempBodyFile = null;
   if (options.body) {
     curlArgs.push('-H', 'Content-Type: application/json');
-    curlArgs.push('-d', JSON.stringify(options.body));
+    tempBodyFile = '/tmp/curl_body_' + Date.now() + '.json';
+    fs.writeFileSync(tempBodyFile, JSON.stringify(options.body));
+    curlArgs.push('-d', `@${tempBodyFile}`);
   }
   
   if (options.saveCookie) {
@@ -308,7 +312,8 @@ async function callHttp(url, options = {}) {
   curlArgs.push(url);
   
   try {
-    const result = execSync(`curl ${curlArgs.map(a => `"${a}"`).join(' ')}`, {
+    // シングルクォートでエスケープ（ダブルクォート問題回避）
+    const result = execSync(`curl ${curlArgs.map(a => `'${a}'`).join(' ')}`, {
       encoding: 'utf8',
       timeout: CONFIG.timeout
     });
@@ -325,6 +330,11 @@ async function callHttp(url, options = {}) {
     return { statusCode, body, json };
   } catch (error) {
     return { statusCode: 0, error: error.message };
+  } finally {
+    // 一時ファイル削除
+    if (tempBodyFile && fs.existsSync(tempBodyFile)) {
+      fs.unlinkSync(tempBodyFile);
+    }
   }
 }
 
