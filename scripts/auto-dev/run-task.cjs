@@ -133,9 +133,18 @@ async function getTaskInfo(taskId) {
 
 async function getSubTasks(taskId) {
   // 子タスクを取得（例: DEV-0170 → DEV-0171, DEV-0172, ...）
+  const parentDevNo = parseInt(taskId.replace('DEV-', ''));
+  
+  // 親タスクは末尾が0の場合のみ子タスクを持つ
+  // 例: DEV-0170 → 子タスクあり（0171-0179）
+  // 例: DEV-0174 → 子タスクなし（自身を実行）
+  if (parentDevNo % 10 !== 0) {
+    // 末尾が0でない → 子タスクなし
+    return [];
+  }
+  
   const allIssuesResult = await listAllIssues();
   const allIssues = allIssuesResult.results || allIssuesResult;
-  const parentDevNo = parseInt(taskId.replace('DEV-', ''));
   
   // 子タスクをフィルタ（DEV番号の範囲で判定: DEV-0170 → 0171-0179）
   const subTasks = allIssues.filter(i => {
