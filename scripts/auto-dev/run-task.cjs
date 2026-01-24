@@ -184,7 +184,7 @@ async function callClaudeCode(prompt, workingDir = null) {
       const result = execSync(`cat "${tempFile}" | claude --print --dangerously-skip-permissions`, {
         encoding: 'utf8',
         maxBuffer: 50 * 1024 * 1024,
-        timeout: 600000, // 10分
+        timeout: 900000, // 15分（Claude Codeの実装時間を考慮）
         cwd
       });
       fs.unlinkSync(tempFile);
@@ -280,16 +280,35 @@ async function multiLLMAudit(ssotPath, logger) {
   
   logger.log('info', `Gemini: ${geminiResult.score}点, GPT-4o: ${gpt4oResult.score}点`);
   
-  // AND合成: 両方Passした項目のみPass
-  const andScore = Math.min(geminiResult.score, gpt4oResult.score);
+  // エラーチェック: 片方がエラー（0点 + error）の場合、もう片方のみ使用
+  const geminiHasError = geminiResult.error || geminiResult.score === 0;
+  const gpt4oHasError = gpt4oResult.error || gpt4oResult.score === 0;
+  
+  let andScore;
+  if (geminiHasError && gpt4oHasError) {
+    // 両方エラーの場合は0点
+    logger.log('error', '両モデルでエラー発生、監査失敗');
+    andScore = 0;
+  } else if (geminiHasError) {
+    // Geminiのみエラー → GPT-4oのスコアを使用
+    logger.log('warning', `Geminiエラー、GPT-4oのみで判定: ${gpt4oResult.score}点`);
+    andScore = gpt4oResult.score;
+  } else if (gpt4oHasError) {
+    // GPT-4oのみエラー → Geminiのスコアを使用
+    logger.log('warning', `GPT-4oエラー、Geminiのみで判定: ${geminiResult.score}点`);
+    andScore = geminiResult.score;
+  } else {
+    // 両方正常 → AND合成（厳しい方を採用）
+    andScore = Math.min(geminiResult.score, gpt4oResult.score);
+  }
   
   // 指摘事項を統合
   const combinedOutput = `
-## Gemini監査結果（${geminiResult.score}点）
-${geminiResult.output || ''}
+## Gemini監査結果（${geminiResult.score}点）${geminiResult.error ? ' [ERROR]' : ''}
+${geminiResult.output || geminiResult.error || ''}
 
-## GPT-4o監査結果（${gpt4oResult.score}点）
-${gpt4oResult.output || ''}
+## GPT-4o監査結果（${gpt4oResult.score}点）${gpt4oResult.error ? ' [ERROR]' : ''}
+${gpt4oResult.output || gpt4oResult.error || ''}
 
 ## AND合成スコア: ${andScore}点
 `;
@@ -300,7 +319,9 @@ ${gpt4oResult.output || ''}
     score: andScore,
     output: combinedOutput,
     geminiScore: geminiResult.score,
-    gpt4oScore: gpt4oResult.score
+    gpt4oScore: gpt4oResult.score,
+    geminiError: geminiResult.error,
+    gpt4oError: gpt4oResult.error
   };
 }
 
@@ -530,13 +551,13 @@ async function executeSubTask(subTask, logger, dryRun = false) {
     
     // 4. スコア不足なら修正（95点以上が合格）
     let retries = 0;
-    while (auditResult.score < CONFIG.auditPassScore && retries < CONFIG.maxRetries) {
-      logger.log('warning', `スコア${auditResult.score}点 < ${CONFIG.auditPassScore}点、修正を試行（${retries + 1}/${CONFIG.maxRetries}）`);
+    while (auditResult.score < CONFIG.ssotAuditPassScore && retries < CONFIG.maxRetries) {
+      logger.log('warning', `スコア${auditResult.score}点 < ${CONFIG.ssotAuditPassScore}点、修正を試行（${retries + 1}/${CONFIG.maxRetries}）`);
       
       // Claude Codeで修正
       const fixPrompt = `
 以下のSSOT監査で指摘された問題を修正してください。
-目標スコア: ${CONFIG.auditPassScore}点以上
+目標スコア: ${CONFIG.ssotAuditPassScore}点以上
 
 ## 監査結果
 ${auditResult.output}
@@ -559,12 +580,12 @@ ${ssotPath}
       retries++;
     }
     
-    if (auditResult.score < CONFIG.auditPassScore) {
-      logger.log('error', `監査スコア不足（${auditResult.score}点 < ${CONFIG.auditPassScore}点）、人間の介入が必要`);
+    if (auditResult.score < CONFIG.ssotAuditPassScore) {
+      logger.log('error', `監査スコア不足（${auditResult.score}点 < ${CONFIG.ssotAuditPassScore}点）、人間の介入が必要`);
       return { success: false, reason: 'audit_failed', score: auditResult.score };
     }
     
-    logger.log('success', `SSOT監査合格: ${auditResult.score}点`)
+    logger.log('success', `SSOT監査合格: ${auditResult.score}点（基準: ${CONFIG.ssotAuditPassScore}点）`)
 
     // 5. プロンプト生成
     logger.log('step', 'プロンプト生成');
