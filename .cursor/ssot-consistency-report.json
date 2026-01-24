@@ -1,7 +1,8 @@
 {
-  "timestamp": "2025-10-20T23:21:27.619Z",
-  "totalSsots": 89,
-  "errors": [
+  "timestamp": "2026-01-24T01:15:03.685Z",
+  "totalSsots": 76,
+  "errors": [],
+  "warnings": [
     {
       "type": "DEPRECATED_AUTH_METHOD",
       "method": "JWT認証",
