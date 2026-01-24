@@ -119,6 +119,24 @@
 
 ---
 
+### ハンドオフ管理（スタッフ向け）（/api/v1/admin/handoff）
+
+> **用途**: スタッフがハンドオフリクエストを管理・対応  
+> **認証**: **Session認証**（Admin向け）  
+> **関連SSOT**: `SSOT_GUEST_AI_HANDOFF.md`
+
+| Method | Path | hotel-common | hotel-saas | 説明 |
+|--------|------|--------------|------------|------|
+| GET | `/api/v1/admin/handoff/requests` | handoff-admin.routes.ts | admin/handoff/requests.get.ts | リクエスト一覧取得 |
+| GET | `/api/v1/admin/handoff/requests/:id` | handoff-admin.routes.ts | admin/handoff/requests/[id].get.ts | リクエスト詳細取得 |
+| PATCH | `/api/v1/admin/handoff/requests/:id/status` | handoff-admin.routes.ts | admin/handoff/requests/[id]/status.patch.ts | ステータス更新 |
+
+**ルーター登録**: `app.use('/api/v1/admin/handoff', handoffAdminRouter)`
+
+**実装状態**: ❌ 未実装（DEV-0172 Phase 2で実装予定）
+
+---
+
 ## 📊 Guest API（客室端末用・デバイス認証）
 
 ### メニュー閲覧（/api/v1/guest/menus）
@@ -179,6 +197,23 @@
 **関連SSOT**:
 - `/Users/kaneko/hotel-kanri/docs/03_ssot/02_guest_features/SSOT_GUEST_MENU_VIEW.md`（AIチャット連携）
 - `/Users/kaneko/hotel-kanri/docs/03_ssot/02_guest_features/SSOT_GUEST_ORDER_FLOW.md`（ORD-AI-002: ディープリンク）
+
+---
+
+### ハンドオフ（ゲスト向け）（/api/v1/guest/handoff）
+
+> **用途**: ゲストがAIチャットからスタッフへ問い合わせを引き継ぐ  
+> **認証**: **デバイス認証**（Guest向け）  
+> **関連SSOT**: `SSOT_GUEST_AI_HANDOFF.md`
+
+| Method | Path | hotel-common | hotel-saas | 説明 |
+|--------|------|--------------|------------|------|
+| POST | `/api/v1/guest/handoff/requests` | handoff-guest.routes.ts | guest/handoff/requests.post.ts | ハンドオフリクエスト作成 |
+| GET | `/api/v1/guest/handoff/requests/:id` | handoff-guest.routes.ts | guest/handoff/requests/[id].get.ts | 自分のリクエスト詳細取得 |
+
+**ルーター登録**: `app.use('/api/v1/guest/handoff', handoffGuestRouter)`（authMiddleware前）
+
+**実装状態**: ❌ 未実装（DEV-0172で実装予定）
 
 ---
 

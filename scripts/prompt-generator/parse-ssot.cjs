@@ -170,17 +170,29 @@ function determineRequirementType(id, content, position) {
 }
 
 /**
- * Accept条件を抽出
+ * Accept条件を抽出（改良版：複数パターン対応）
  */
 function extractAcceptConditions(content, startPosition) {
   const conditions = [];
   
-  // startPosition以降でAcceptブロックを探す
-  const afterText = content.substring(startPosition, startPosition + 2000);
+  // startPosition以降で次の要件IDまでのテキストを取得
+  // ★修正: 現在の要件行をスキップするため、最初の改行以降から探す
+  const afterText = content.substring(startPosition);
+  const firstNewline = afterText.indexOf('\n');
+  const afterFirstLine = firstNewline > 0 ? afterText.substring(firstNewline + 1) : afterText;
   
-  const acceptMatch = afterText.match(/- \*?\*?Accept\*?\*?:?\s*\n((?:\s+- .+\n?)+)/i);
-  if (acceptMatch) {
-    const items = acceptMatch[1].match(/^\s+- (.+)$/gm);
+  const nextReqMatch = afterFirstLine.match(/^###?\s+[A-Z]{2,4}-\d{3}:/m);
+  const sectionEnd = nextReqMatch ? nextReqMatch.index : 3000;
+  const sectionText = afterFirstLine.substring(0, Math.min(sectionEnd, 3000));
+  
+  // パターン1: Accept条件（ネスト形式）
+  // - **Accept**:
+  //   - 条件1
+  //   - 条件2
+  const nestedPattern = /- \*?\*?Accept\*?\*?:?\s*\n((?:\s+- .+\n?)+)/gi;
+  let match;
+  while ((match = nestedPattern.exec(sectionText)) !== null) {
+    const items = match[1].match(/^\s+- (.+)$/gm);
     if (items) {
       items.forEach(item => {
         const cleaned = item.replace(/^\s+- /, '').trim();
@@ -189,7 +201,56 @@ function extractAcceptConditions(content, startPosition) {
     }
   }
   
-  return conditions;
+  // パターン2: Accept条件（インライン形式）
+  // - **Accept**: 条件1, 条件2（1行に複数条件がある場合のみ）
+  // ★修正: 読点「、」での分割は行わない（日本語文中の読点は通常表現）
+  // ★修正: 次の行がインデント箇条書きの場合はスキップ（パターン1で処理済み）
+  const inlinePattern = /- \*?\*?Accept\*?\*?:\s*([^\n]+)/gi;
+  while ((match = inlinePattern.exec(sectionText)) !== null) {
+    const inline = match[1].trim();
+    // 空白のみ、または次行がインデント箇条書きの場合はスキップ
+    if (!inline || inline === '') continue;
+    // 半角カンマでのみ分割（読点「、」は分割しない）
+    inline.split(/,/).forEach(cond => {
+      const cleaned = cond.trim();
+      if (cleaned && !conditions.includes(cleaned)) {
+        conditions.push(cleaned);
+      }
+    });
+  }
+  
+  // パターン3: ✅ チェックボックス形式
+  // - [ ] 条件1
+  // - [x] 条件2
+  const checkboxPattern = /^- \[[ x]\]\s+(.+)$/gm;
+  while ((match = checkboxPattern.exec(sectionText)) !== null) {
+    const cond = match[1].trim();
+    if (cond && !conditions.includes(cond)) {
+      conditions.push(cond);
+    }
+  }
+  
+  // パターン4: 番号付きリスト
+  // 1. 条件1
+  // 2. 条件2
+  const numberedPattern = /^\d+\.\s+(.+)$/gm;
+  const acceptSectionMatch = sectionText.match(/- \*?\*?Accept\*?\*?:.*?\n((?:\d+\.\s+.+\n?)+)/i);
+  if (acceptSectionMatch) {
+    while ((match = numberedPattern.exec(acceptSectionMatch[1])) !== null) {
+      const cond = match[1].trim();
+      if (cond && !conditions.includes(cond)) {
+        conditions.push(cond);
+      }
+    }
+  }
+  
+  // ★重複除去とクリーンアップ
+  const cleaned = [...new Set(conditions)]
+    .map(c => c.replace(/^-\s*/, '').trim()) // 先頭の「- 」を除去
+    .filter(c => c.length > 0)
+    .filter((c, i, arr) => arr.indexOf(c) === i); // 再度重複除去
+  
+  return cleaned;
 }
 
 /**
@@ -245,38 +306,101 @@ function extractApiSpecs(content) {
 }
 
 /**
- * データベーススキーマを抽出
+ * データベーススキーマを抽出（改良版：完全抽出）
  */
 function extractDatabaseSchema(content) {
   const schemas = [];
   
-  // Prismaモデルを探す
-  const modelPattern = /model\s+(\w+)\s*\{([^}]+)\}/g;
+  // Prismaコードブロック全体を抽出
+  const prismaBlockPattern = /```prisma\n([\s\S]+?)```/g;
+  let blockMatch;
   
-  let match;
-  while ((match = modelPattern.exec(content)) !== null) {
-    const modelName = match[1];
-    const modelBody = match[2];
+  while ((blockMatch = prismaBlockPattern.exec(content)) !== null) {
+    const prismaCode = blockMatch[1];
     
-    // フィールドを抽出
-    const fields = [];
-    const fieldPattern = /(\w+)\s+(\w+)(\?)?(\s+@\w+.*)?/g;
-    let fieldMatch;
-    
-    while ((fieldMatch = fieldPattern.exec(modelBody)) !== null) {
-      fields.push({
-        name: fieldMatch[1],
-        type: fieldMatch[2],
-        optional: !!fieldMatch[3],
-        attributes: fieldMatch[4] ? fieldMatch[4].trim() : null
+    // enum定義を抽出
+    const enumPattern = /enum\s+(\w+)\s*\{([^}]+)\}/g;
+    let enumMatch;
+    while ((enumMatch = enumPattern.exec(prismaCode)) !== null) {
+      const enumName = enumMatch[1];
+      const enumValues = enumMatch[2]
+        .split('\n')
+        .map(v => v.trim())
+        .filter(v => v && !v.startsWith('//'));
+      
+      schemas.push({
+        type: 'enum',
+        name: enumName,
+        values: enumValues,
+        raw: enumMatch[0]
       });
     }
     
-    schemas.push({
-      type: 'prisma',
-      name: modelName,
-      fields
-    });
+    // model定義を抽出
+    const modelPattern = /model\s+(\w+)\s*\{([\s\S]+?)\n\}/g;
+    let modelMatch;
+    
+    while ((modelMatch = modelPattern.exec(prismaCode)) !== null) {
+      const modelName = modelMatch[1];
+      const modelBody = modelMatch[2];
+      
+      // フィールドを抽出（改良版）
+      const fields = [];
+      const lines = modelBody.split('\n');
+      
+      lines.forEach(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('@@')) return;
+        
+        // フィールド定義パターン: fieldName Type? @attribute
+        const fieldMatch = trimmed.match(/^(\w+)\s+(\w+)(\[\])?(\?)?(\s+@.+)?$/);
+        if (fieldMatch) {
+          fields.push({
+            name: fieldMatch[1],
+            type: fieldMatch[2] + (fieldMatch[3] || ''),
+            optional: !!fieldMatch[4],
+            attributes: fieldMatch[5] ? fieldMatch[5].trim() : null
+          });
+        }
+      });
+      
+      schemas.push({
+        type: 'prisma',
+        name: modelName,
+        fields,
+        raw: modelMatch[0]
+      });
+    }
+  }
+  
+  // フォールバック：旧パターン（```prismaブロック外のmodel定義）
+  if (schemas.length === 0) {
+    const modelPattern = /model\s+(\w+)\s*\{([^}]+)\}/g;
+    let match;
+    while ((match = modelPattern.exec(content)) !== null) {
+      const modelName = match[1];
+      const modelBody = match[2];
+      
+      const fields = [];
+      const fieldPattern = /(\w+)\s+(\w+)(\?)?(\s+@\w+.*)?/g;
+      let fieldMatch;
+      
+      while ((fieldMatch = fieldPattern.exec(modelBody)) !== null) {
+        fields.push({
+          name: fieldMatch[1],
+          type: fieldMatch[2],
+          optional: !!fieldMatch[3],
+          attributes: fieldMatch[4] ? fieldMatch[4].trim() : null
+        });
+      }
+      
+      schemas.push({
+        type: 'prisma',
+        name: modelName,
+        fields,
+        raw: match[0]
+      });
+    }
   }
   
   // テーブル定義（Markdown表）も探す

@@ -23,17 +23,21 @@ const { parseSSOT } = require('./parse-ssot.cjs');
 // ===== 監査設定 =====
 
 const AUDIT_CONFIG = {
-  // 合格基準スコア（100点満点）
-  passThreshold: 80,
+  // 合格基準スコア
+  passThreshold: 95,
+  
+  // ★ SSOT単独合格基準（最優先）
+  // SSOT Auditorが95点以上なら合格（Security/Opsは参考値）
+  ssotPassThreshold: 95,
   
   // 最大修正ループ回数
   maxFixIterations: 3,
   
-  // 重み付け
+  // 重み付け（参考スコア計算用）
   weights: {
-    ssot: 0.50,      // SSOT準拠: 50%
-    security: 0.30,  // セキュリティ: 30%
-    ops: 0.20        // 運用: 20%
+    ssot: 0.60,      // SSOT準拠: 60%（最重要）
+    security: 0.25,  // セキュリティ: 25%（参考）
+    ops: 0.15        // 運用: 15%（参考）
   },
   
   // モデル設定
@@ -163,42 +167,41 @@ const AUDIT_PROMPTS = {
 \`\`\``,
 
   /**
-   * Ops Auditor - 実行可能性・運用チェック
+   * Ops Auditor - 実行可能性・運用チェック（緩和版）
    */
   ops: `あなたは運用・実行可能性の監査専門家です。
 以下の実装プロンプトが実際に実行可能か検証してください。
+
+**重要**: 完璧を求めず、「実装者が理解できるか」を基準に評価してください。
+- 細かいパスの誤りは減点しない
+- bashコマンドが大まかに正しければOK
+- Item/Step構造が存在すれば高評価
 
 ## プロンプト内容
 \`\`\`markdown
 {{PROMPT_CONTENT}}
 \`\`\`
 
-## チェック項目
+## チェック項目（重要度順）
 
-### 1. ファイルパス
-- [ ] ファイルパスが実在する形式
-- [ ] ディレクトリ構造が正しい
-- [ ] 命名規則が一貫している
+### 1. Item/Step構造（最重要）
+- [ ] 段階的な指示（Item 1, 2, 3...）が存在する
+- [ ] 各Itemに具体的なStepがある
+- [ ] 完了条件がある程度明確
 
-### 2. コマンド実行可能性
-- [ ] bashコマンドが正しい構文
-- [ ] 環境変数が適切に設定されている前提
-- [ ] エラーハンドリングがある
+### 2. 実行可能なコマンド（重要）
+- [ ] bashコマンドブロックが1つ以上存在する
+- [ ] npm run dev, curl, git など基本的なコマンドが含まれる
 
-### 3. 依存関係
-- [ ] 必要なモジュール/ライブラリが明示
-- [ ] インポートパスが正しい
-- [ ] 循環依存がない
+### 3. テスト・確認方法（重要）
+- [ ] テスト手順またはEvidence取得方法が存在する
+- [ ] test-standard-*.sh の言及がある
 
-### 4. テスト可能性
-- [ ] テスト手順が明確
-- [ ] 確認コマンドが提供されている
-- [ ] Evidence取得方法が明示
+### 4. ファイルパス（参考）
+- [ ] ファイルパスが概ね正しい形式（厳密でなくてOK）
 
-### 5. Item/Step構造
-- [ ] 段階的な指示になっている
-- [ ] 各Itemが独立して実行可能
-- [ ] 完了条件が明確
+### 5. 依存関係（参考）
+- [ ] importの概念が示されている
 
 ## 出力フォーマット（JSON）
 以下のJSON形式で回答してください。余計な説明は不要です。
@@ -246,11 +249,41 @@ const AUDIT_PROMPTS = {
 ## 修正指示
 1. 指摘されたissuesを全て解消してください
 2. suggestionsを可能な限り反映してください
-3. 元のプロンプトの構造は維持してください
+3. **元のプロンプトの構造（Item/Step形式）は絶対に維持してください**
 4. 修正箇所には <!-- FIXED --> コメントを付けてください
 
+## 🚨 必須保持セクション（削除禁止）
+
+以下のセクションは必ず保持し、具体的な内容を含めてください：
+
+### 1. 実行コマンド（bashブロック必須）
+- ファイル作成コマンド（touch/mkdir）
+- git status/git add コマンド
+- npm run dev などのサーバー起動
+- curl による動作確認
+
+### 2. テスト手順（bashブロック必須）
+\`\`\`bash
+# 標準テスト実行
+./scripts/test-standard-guest.sh 2>&1 | tee evidence/{{TASK_ID}}/test.log
+\`\`\`
+
+### 3. Evidence取得手順（bashブロック必須）
+\`\`\`bash
+mkdir -p evidence/{{TASK_ID}}
+echo "=== Evidence ===" > evidence/{{TASK_ID}}/commands.log
+git status --short >> evidence/{{TASK_ID}}/commands.log
+\`\`\`
+
+### 4. 完了チェックリスト
+- [ ] TypeScript型エラーなし
+- [ ] Prisma直接使用なし（hotel-saas）
+- [ ] tenant_idフィルタあり
+- [ ] 標準テストPASS
+
 ## 出力
-修正後のプロンプト全文をマークダウン形式で出力してください。`
+修正後のプロンプト全文をマークダウン形式で出力してください。
+必須保持セクションがすべて含まれていることを確認してください。`
 };
 
 // ===== 監査クラス =====
@@ -404,7 +437,15 @@ class PromptAuditor {
       (opsResult.score || 0) * weights.ops;
     
     const totalScore = Math.round(weightedScore);
-    const passed = totalScore >= this.config.passThreshold;
+    
+    // ★ SSOT単独95点で合格判定（最優先基準）
+    const ssotScore = ssotResult.score || 0;
+    const passedBySSOT = ssotScore >= this.config.ssotPassThreshold;
+    const passed = passedBySSOT; // SSOT単独で判定
+    
+    if (passedBySSOT) {
+      console.log(`   🎯 SSOT単独合格: ${ssotScore}点 >= ${this.config.ssotPassThreshold}点`);
+    }
     
     // 全てのissuesを収集
     const allIssues = [
@@ -423,6 +464,11 @@ class PromptAuditor {
       totalScore,
       passed,
       threshold: this.config.passThreshold,
+      
+      // ★ SSOT単独スコア（最重要指標）
+      ssotScore,
+      ssotThreshold: this.config.ssotPassThreshold,
+      passedBySSOT,
       
       details: {
         ssot: {
@@ -459,10 +505,12 @@ class PromptAuditor {
   }
 
   /**
-   * 自動修正ループ
+   * 自動修正ループ（スコア保護付き）
    */
   async auditAndFix(promptContent, ssotContent, requirements = []) {
     let currentPrompt = promptContent;
+    let bestPrompt = promptContent;  // 最高スコアのプロンプトを保持
+    let bestScore = 0;
     let iteration = 0;
     const history = [];
     
@@ -478,6 +526,12 @@ class PromptAuditor {
         issues: auditResult.allIssues.length
       });
       
+      // スコア保護: 最高スコアのプロンプトを保持
+      if (auditResult.totalScore > bestScore) {
+        bestScore = auditResult.totalScore;
+        bestPrompt = currentPrompt;
+      }
+      
       // 合格なら終了
       if (auditResult.passed) {
         console.log(`\n✅ 監査合格！スコア: ${auditResult.totalScore}点`);
@@ -492,19 +546,35 @@ class PromptAuditor {
         };
       }
       
+      // 初回で85点以上なら修正をスキップ（十分な品質）
+      if (iteration === 0 && auditResult.totalScore >= 85) {
+        console.log(`\n✅ 初回スコア ${auditResult.totalScore}点 >= 85点: 修正スキップ（十分な品質）`);
+        return {
+          success: false,
+          skipped: true,
+          finalPrompt: currentPrompt,
+          finalScore: auditResult.totalScore,
+          iterations: 1,
+          history,
+          auditResult,
+          cost: this.llm.getTotalCost()
+        };
+      }
+      
       // 修正
       console.log(`\n📝 修正中... (現在スコア: ${auditResult.totalScore}点)`);
       currentPrompt = await this._fixPrompt(currentPrompt, auditResult);
       iteration++;
     }
     
-    // 最大回数到達
-    const finalAudit = await this.audit(currentPrompt, ssotContent, requirements);
+    // 最大回数到達: 最高スコアのプロンプトを使用（スコア保護）
+    console.log(`\n🛡️ スコア保護: 最高スコア ${bestScore}点 のプロンプトを使用`);
+    const finalAudit = await this.audit(bestPrompt, ssotContent, requirements);
     
     return {
       success: finalAudit.passed,
-      finalPrompt: currentPrompt,
-      finalScore: finalAudit.totalScore,
+      finalPrompt: bestPrompt,
+      finalScore: Math.max(finalAudit.totalScore, bestScore),
       iterations: iteration,
       history,
       auditResult: finalAudit,

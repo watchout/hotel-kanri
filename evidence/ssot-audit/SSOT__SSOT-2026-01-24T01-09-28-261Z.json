@@ -1,0 +1,167 @@
+{
+  "ssotName": "SSOT__SSOT",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT__SSOT.md",
+  "timestamp": "2026-01-24T01:09:14.801Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": true,
+          "comment": ""
+        },
+        "T04": {
+          "pass": true,
+          "comment": ""
+        },
+        "T05": {
+          "pass": true,
+          "comment": ""
+        },
+        "T06": {
+          "pass": true,
+          "comment": ""
+        },
+        "T07": {
+          "pass": true,
+          "comment": ""
+        },
+        "T08": {
+          "pass": true,
+          "comment": ""
+        },
+        "T09": {
+          "pass": true,
+          "comment": ""
+        },
+        "T10": {
+          "pass": true,
+          "comment": ""
+        },
+        "T11": {
+          "pass": true,
+          "comment": ""
+        },
+        "T12": {
+          "pass": true,
+          "comment": ""
+        },
+        "T13": {
+          "pass": true,
+          "comment": ""
+        },
+        "T14": {
+          "pass": true,
+          "comment": ""
+        },
+        "T15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": ""
+        },
+        "I02": {
+          "pass": true,
+          "comment": ""
+        },
+        "I03": {
+          "pass": true,
+          "comment": ""
+        },
+        "I04": {
+          "pass": true,
+          "comment": ""
+        },
+        "I05": {
+          "pass": true,
+          "comment": ""
+        },
+        "I06": {
+          "pass": true,
+          "comment": ""
+        },
+        "I07": {
+          "pass": true,
+          "comment": ""
+        },
+        "I08": {
+          "pass": true,
+          "comment": ""
+        },
+        "I09": {
+          "pass": true,
+          "comment": ""
+        },
+        "I10": {
+          "pass": true,
+          "comment": ""
+        },
+        "I11": {
+          "pass": true,
+          "comment": ""
+        },
+        "I12": {
+          "pass": true,
+          "comment": ""
+        },
+        "I13": {
+          "pass": true,
+          "comment": ""
+        },
+        "I14": {
+          "pass": true,
+          "comment": ""
+        },
+        "I15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [],
+      "score": 50,
+      "summary": "SSOTは全ての要件を満たしており、実装可能性に問題はありません。全項目がクリアされており、特に修正が必要な点はありません。"
+    }
+  },
+  "totalScore": 92,
+  "totalCost": 0.0015179999999999998,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      }
+    ],
+    "warning": [],
+    "info": []
+  }
+}

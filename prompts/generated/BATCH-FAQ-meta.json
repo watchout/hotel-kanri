@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-FAQ",
+  "ssotPath": "docs/03_ssot/02_guest_features/ai_chat/SSOT_GUEST_AI_FAQ_AUTO_RESPONSE.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "claude-code",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 10,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": false,
+    "initialScore": 67,
+    "finalScore": 67,
+    "ssotScore": 0,
+    "passedBySSOT": false,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 42326,
+      "outputTokens": 10730,
+      "totalCostUSD": 0.500464,
+      "totalCostJPY": 75.06960000000001,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 4,
+          "costUSD": 0.05465500000000001
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 2,
+          "costUSD": 0.15737399999999999
+        },
+        "claude-opus-4-20250514": {
+          "calls": 1,
+          "costUSD": 0.288435
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T22:27:33.296Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-FAQ-ssot_guest_ai_faq_auto_response.md"
+}

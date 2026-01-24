@@ -147,14 +147,15 @@ async function getSubTasks(taskId) {
   return subTasks;
 }
 
-async function updateTaskState(taskId, state) {
+async function updateTaskState(issueId, state) {
+  // issueId: Plane API用のUUID（subTask.id）
   const stateIds = {
     'Backlog': '2564ad4a-abd6-4b05-9af0-2c3dcd28e2be',
     'In Progress': 'c576eed5-315c-44b9-a3cb-db67d73423b7',
     'Done': '86937979-4727-4ec9-81be-585f7aae981d'
   };
   
-  await planeApi.updateIssue(taskId, { state: stateIds[state] });
+  await planeApi.updateIssue(issueId, { state: stateIds[state] });
 }
 
 // ===== GPT呼び出し（監査用） =====
@@ -226,7 +227,7 @@ ${task.description || 'なし'}
 `;
 
   try {
-    const result = await callClaudeCode(prompt, 'ssot-generation');
+    const result = await callClaudeCode(prompt); // 作業ディレクトリはデフォルト（hotel-kanri）
     
     // ファイル名生成
     const taskMatch = task.name.match(/\[DEV-\d+\].*?\[COM-\d+\]\s*(.+)/);
@@ -509,8 +510,8 @@ async function executeSubTask(subTask, logger, dryRun = false) {
   }
 
   try {
-    // 1. タスクをIn Progressに
-    await updateTaskState(taskId, 'In Progress');
+    // 1. タスクをIn Progressに（subTask.idはPlane APIのUUID）
+    await updateTaskState(subTask.id, 'In Progress');
     logger.log('info', 'ステータス: In Progress');
 
     // 2. SSOT確認（未存在なら生成）
@@ -551,7 +552,7 @@ ${ssotPath}
 
 ファイルを直接編集して修正してください。
 `;
-      await callClaudeCode(fixPrompt, 'ssot-fix');
+      await callClaudeCode(fixPrompt); // 作業ディレクトリはデフォルト
       
       // 再監査（マルチLLM）
       auditResult = await multiLLMAudit(ssotPath, logger);
@@ -624,7 +625,7 @@ ${promptResult}
 実装完了後、変更したファイルを報告してください。
 `;
     
-    await callClaudeCode(implementPrompt, 'implementation');
+    await callClaudeCode(implementPrompt); // 作業ディレクトリはデフォルト
     logger.log('info', '実装完了');
 
     // 8. テスト
@@ -657,8 +658,8 @@ ${testResult.error}
     // 8. PR作成
     const prResult = await createPR(taskId, subTask.name, logger);
 
-    // 9. タスクをDoneに
-    await updateTaskState(taskId, 'Done');
+    // 9. タスクをDoneに（subTask.idはPlane APIのUUID）
+    await updateTaskState(subTask.id, 'Done');
     logger.log('success', `${taskId} 完了!`);
 
     return { success: true, pr: prResult.url };
@@ -747,10 +748,10 @@ async function main() {
       }
     }
 
-    // 全子タスク完了なら親もDone
+    // 全子タスク完了なら親もDone（parentTask.idはPlane APIのUUID）
     const allSuccess = results.every(r => r.success);
     if (allSuccess && !dryRun) {
-      await updateTaskState(taskId, 'Done');
+      await updateTaskState(parentTask.id, 'Done');
       logger.log('success', `親タスク ${taskId} 完了!`);
     }
 

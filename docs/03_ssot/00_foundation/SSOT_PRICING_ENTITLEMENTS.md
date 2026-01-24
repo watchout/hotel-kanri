@@ -3,7 +3,7 @@
 **ドキュメントID**: SSOT_PRICING_ENTITLEMENTS  
 **バージョン**: 1.1.0  
 **作成日**: 2026-01-03  
-**最終更新**: 2026-01-03  
+**最終更新**: 2026-01-19  
 **ステータス**: 🟢 確定  
 **Planeタスク**: DEV-0409  
 **APIレジストリ**: SSOT_API_REGISTRY.md（登録済み）
@@ -28,20 +28,21 @@
 ### 1.1 目的
 
 OmotenasuAIの料金プランと機能制限（エンタイトルメント）を一元管理する。
+**SSOT_MARKETING_STRATEGY.md** に基づく「リスク・リバーサル」戦略を反映し、成果報酬型プランを導入する。
 
 ### 1.2 関連ドキュメント
 
 | ドキュメント | 用途 |
 |:-------------|:-----|
 | `SSOT_BUYOUT_STRATEGY.md` | バイアウト戦略（KPI目標） |
-| `SSOT_MARKETING_STRATEGY.md` | マーケティング戦略 |
+| `SSOT_MARKETING_STRATEGY.md` | マーケティング戦略（プライシングの根拠） |
 | `DOMESTIC_PRICING_STRATEGY_FINAL.md` | 詳細料金表 |
 
 ### 1.3 バイアウト戦略との整合
 
 | 年 | 施設数目標 | ARR目標 | ARPU目標 | 主要プラン |
 |:---|:-----------|:--------|:---------|:-----------|
-| Year 1 | 100施設 | ¥3,000万 | ¥2.5万/月 | Starter中心 |
+| Year 1 | 100施設 | ¥3,000万 | ¥2.5万/月 | Starter (成果報酬) |
 | Year 2 | 300施設 | ¥1億 | ¥3万/月 | Pro Lite移行 |
 | Year 3 | 500施設 | ¥3億 | ¥5万/月 | Professional主軸 |
 
@@ -51,24 +52,24 @@ OmotenasuAIの料金プランと機能制限（エンタイトルメント）を
 
 ### 2.1 LEISURE（レジャーホテル特化）
 
-| プラン | コード | 月額 | 室数上限 | 超過料金 | AIクレジット |
-|:-------|:-------|-----:|:--------:|:--------:|:------------:|
-| **Starter** ⭐NEW | `leisure_starter` | ¥9,800 | 10室 | ¥1,200/室 | 100/月 |
-| Economy | `leisure_economy` | ¥19,800 | 20室 | ¥1,000/室 | 300/月 |
-| **Pro Lite** ⭐NEW | `leisure_pro_lite` | ¥34,800 | 35室 | ¥950/室 | 500/月 |
-| Professional | `leisure_professional` | ¥49,800 | 50室 | ¥900/室 | 1,000/月 |
-| Enterprise | `leisure_enterprise` | ¥99,800 | 100室 | ¥800/室 | 無制限 |
+| プラン | コード | 月額 | 室数上限 | 超過料金 | AIクレジット | 備考 |
+|:-------|:-------|-----:|:--------:|:--------:|:------------:|:-----|
+| **Starter** ⭐UPDATED | `leisure_starter` | **¥0** | 10室 | ¥1,200/室 | 100/月 | 初期¥5万+成果報酬10% |
+| Economy | `leisure_economy` | ¥19,800 | 20室 | ¥1,000/室 | 300/月 | 固定費モデル |
+| **Pro Lite** | `leisure_pro_lite` | ¥34,800 | 35室 | ¥950/室 | 500/月 | |
+| Professional | `leisure_professional` | ¥49,800 | 50室 | ¥900/室 | 1,000/月 | |
+| Enterprise | `leisure_enterprise` | ¥99,800 | 100室 | ¥800/室 | 無制限 | |
 
 ### 2.2 OmotenasuAI（一般ホテル特化）
 
-| プラン | コード | 月額 | 室数上限 | 超過料金 | AIクレジット |
-|:-------|:-------|-----:|:--------:|:--------:|:------------:|
-| **Starter** ⭐NEW | `omotenasu_starter` | ¥14,800 | 15室 | ¥1,500/室 | 100/月 |
-| Economy | `omotenasu_economy` | ¥29,800 | 30室 | ¥1,200/室 | 300/月 |
-| **Pro Lite** ⭐NEW | `omotenasu_pro_lite` | ¥49,800 | 50室 | ¥1,100/室 | 700/月 |
-| Professional | `omotenasu_professional` | ¥79,800 | 80室 | ¥1,000/室 | 1,500/月 |
-| Enterprise | `omotenasu_enterprise` | ¥139,800 | 200室 | ¥800/室 | 無制限 |
-| Ultimate | `omotenasu_ultimate` | ¥299,800 | 500室 | ¥700/室 | 無制限 |
+| プラン | コード | 月額 | 室数上限 | 超過料金 | AIクレジット | 備考 |
+|:-------|:-------|-----:|:--------:|:--------:|:------------:|:-----|
+| **Starter** ⭐UPDATED | `omotenasu_starter` | **¥0** | 15室 | ¥1,500/室 | 100/月 | 初期¥5万+成果報酬10% |
+| Economy | `omotenasu_economy` | ¥29,800 | 30室 | ¥1,200/室 | 300/月 | 固定費モデル |
+| **Pro Lite** | `omotenasu_pro_lite` | ¥49,800 | 50室 | ¥1,100/室 | 700/月 | |
+| Professional | `omotenasu_professional` | ¥79,800 | 80室 | ¥1,000/室 | 1,500/月 | |
+| Enterprise | `omotenasu_enterprise` | ¥139,800 | 200室 | ¥800/室 | 無制限 | |
+| Ultimate | `omotenasu_ultimate` | ¥299,800 | 500室 | ¥700/室 | 無制限 | |
 
 ### 2.3 年払い割引
 

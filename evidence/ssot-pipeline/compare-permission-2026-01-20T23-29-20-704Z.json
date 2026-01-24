@@ -1,0 +1,48 @@
+{
+  "baseline": {
+    "task": "権限システム",
+    "method": "baseline",
+    "ssot": "# 管理画面権限システム（RBAC）SSOT文書\n\n## 1. 概要\n\n### 目的\nこの文書は、管理画面の権限システム（RBAC）の設計と実装における全ての要件を定義し、プロジェクトの一貫した開発を支援することを目的としています。\n\n### 適用範囲\nこのSSOTは、管理画面におけるロールと権限管理を行うための機能に適用されます。\n\n### 関連SSOT\n- ユーザー管理システムSSOT\n- 認証システムSSOT\n\n## 2. 要件定義\n\n### 機能要件\n\n#### FR-001: ロール管理機能\n- 要件: ロールを作成、編集、削除できること。\n- Accept条件: ロールの作成、編集、削除が成功すると、データベースに正確に反映されること。\n\n#### FR-002: 権限管理機能\n- 要件: リソースとアクションの紐付けによる権限管理を行うこと。\n- Accept条件: 管理画面での設定が適切にAPI経由で反映されること。\n\n#### FR-003: ロール×権限の割り当て\n- 要件: 各ロールに対して権限を割り当てることができること。\n- Accept条件: 割り当てた権限がロールに正確に反映され、かつ変更がログに記録されること。\n\n#### FR-004: スタッフへのロール割り当て\n- 要件: スタッフに対してロールを割り当てることができること。\n- Accept条件: スタッフに割り当てたロールが正確に認識され、操作に影響すること。\n\n#### FR-005: 権限チェックAPI\n- 要件: 権限をチェックするためのAPIを提供すること。\n- Accept条件: 100ms以内でチェック結果が返ってくること。\n\n### 非機能要件\n\n#### NFR-001: マルチテナント対応\n- 要件: システムがマルチテナント対応であること。\n- Accept条件: 各テナントごとに独立した権限管理が行えること。\n\n#### NFR-002: パフォーマンス\n- 要件: 権限チェックが100ms以内に完了すること。\n- Accept条件: 負荷テスト中も100ms以内でレスポンスが返ること。\n\n#### NFR-003: 監査ログ\n- 要件: 全ての権限管理操作が監査ログに記録されること。\n- Accept条件: 操作ごとのログが正確に保存されていること。\n\n## 3. データベース設計\n\n```prisma\nmodel Role {\n  id        Int       @id @default(autoincrement())\n  name      String    @unique\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  @map(\"roles\")\n}\n\nmodel Permission {\n  id        Int       @id @default(autoincrement())\n  resource  String\n  action    String\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n  @map(\"permissions\")\n}\n\nmodel RolePermission {\n  id           Int       @id @default(autoincrement())\n  roleId       Int\n  permissionId Int\n  createdAt    DateTime  @default(now())\n  Role         Role      @relation(fields: [roleId], references: [id])\n  Permission   Permission @relation(fields: [permissionId], references: [id])\n  @map(\"role_permissions\")\n}\n\nmodel StaffRole {\n  id        Int      @id @default(autoincrement())\n  staffId   Int\n  roleId    Int\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  @map(\"staff_roles\")\n}\n```\n\n## 4. API設計\n\n### ロールAPI (/api/v1/admin/roles)\n\n#### ロール作成\n- リクエスト: POST /api/v1/admin/roles\n  ```json\n  {\n    \"name\": \"admin\"\n  }\n  ```\n- レスポンス:\n  ```json\n  {\n    \"id\": 1,\n    \"name\": \"admin\",\n    \"createdAt\": \"2023-10-10T00:00:00Z\"\n  }\n  ```\n\n#### ロール取得\n- リクエスト: GET /api/v1/admin/roles\n- レスポンス:\n  ```json\n  [\n    {\n      \"id\": 1,\n      \"name\": \"admin\"\n    }\n  ]\n  ```\n\n### 権限チェックAPI (/api/v1/admin/permissions/check)\n- リクエスト: POST /api/v1/admin/permissions/check\n  ```json\n  {\n    \"roleId\": 1,\n    \"resource\": \"dashboard\",\n    \"action\": \"view\"\n  }\n  ```\n- レスポンス:\n  ```json\n  {\n    \"allowed\": true\n  }\n  ```\n\n## 5. UI/UX要件\n\n- ロール管理画面は直感的であり、必要な操作を3クリック以内で行えること。\n- 権限設定画面は全てのリソースとアクションが一覧表示され、選択が容易であること。\n\n## 6. エラーハンドリング\n\n- 400エラー: 不正なリクエスト\n- 403エラー: 権限不足\n- 500エラー: サーバー内部エラー\n\n## 7. ビジネス指標\n\n### ROI\n- 本システム導入によるセキュリティインシデントの削減。\n\n### KPI\n- 権限チェックレスポンスタイム100ms以下達成率99%\n- ロール・権限登録のエラー発生率1%未満\n\n## 8. 実装チェックリスト\n\n### Phase 1: 要件定義確認\n- [ ] 機能要件の確定\n- [ ] 非機能要件の確定\n\n### Phase 2: データベース設計\n- [ ] Prismaスキーマ定義\n- [ ] マイグレーション実行\n\n### Phase 3: API実装\n- [ ] ロールAPIの実装\n- [ ] 権限管理APIの実装\n\n### Phase 4: UI/UX設計\n- [ ] UI/UXモックアップ作成\n- [ ] ユーザーテスト実施\n\n### Phase 5: 監査ログ実装\n- [ ] 監査ログ機能の実装\n- [ ] ログ確認用ツール整備\n\n## 9. 変更履歴\n\n- 2023/10/10: 初版作成\n- 2023/10/15: 要件定義の微調整\n- 2023/10/20: データベース設計の更新",
+    "score": {
+      "technical": 26,
+      "implementability": 33,
+      "total": 59
+    },
+    "duration": 19
+  },
+  "pipeline": {
+    "task": "権限システム",
+    "steps": {
+      "create": {
+        "model": "gpt-4o",
+        "success": true
+      },
+      "audit1": {
+        "model": "gpt-4o",
+        "success": true,
+        "score": 75
+      },
+      "audit2": {
+        "model": "gpt-4o-mini",
+        "success": true,
+        "score": 75
+      },
+      "fix": {
+        "model": "gpt-4o",
+        "success": true
+      }
+    },
+    "finalScore": {
+      "technical": 32,
+      "implementability": 35,
+      "total": 67
+    },
+    "cost": {
+      "gpt": 0.05321415,
+      "total": "$0.0532"
+    },
+    "ssot": "```markdown\n# 管理画面の権限システム（RBAC）SSOT\n\n## 1. 概要\n\n### 目的\n本ドキュメントは、管理画面の権限システムに関するSingle Source of Truth (SSOT)を提供し、開発の一貫性と品質を保証することを目的とします。\n\n### 適用範囲\nこのSSOTは、管理画面のロール管理、権限管理、権限とロールの割り当て、スタッフへのロール割り当て、そして権限チェックAPIの機能に適用されます。\n\n### 関連SSOT\n- ユーザー管理システムSSOT\n- セキュリティポリシーSSOT\n\n## 2. 要件定義\n\n### 機能要件\n\n- **FR-001: ロール管理**\n  - ロールの作成、編集、削除が可能である。\n  - Accept条件: ユーザーはGUIから新規ロール作成ができ、更新と削除も行えること。\n\n- **FR-002: 権限管理**\n  - リソースとアクションに基づく権限を定義できる。\n  - Accept条件: 特定のリソースとアクションを指定して権限設定ができること。\n\n- **FR-003: ロール×権限の割り当て**\n  - 各ロールに対して権限を割り当てられる。\n  - Accept条件: ロール編集画面で権限を追加・削除できること。\n\n- **FR-004: スタッフへのロール割り当て**\n  - スタッフに対してロールを割り当て可能である。\n  - Accept条件: スタッフ管理画面でロール割り当てができること。\n\n- **FR-005: 権限チェックAPI**\n  - スタッフの権限をチェックするAPIを提供する。\n  - Accept条件: APIのレスポンス時間が100ms以内であること。\n\n### 非機能要件\n\n- **NFR-001: マルチテナント対応**\n  - 複数のテナントをサポートする。\n  - Accept条件: テナントごとに異なるロールと権限が管理できること。\n\n- **NFR-002: 権限チェックは100ms以内**\n  - 権限チェックの処理時間は100ms以内である。\n  - Accept条件: ロードテストで平均レスポンスタイムが100ms未満であることを確認。\n\n- **NFR-003: 監査ログ必須**\n  - すべての操作には監査ログを記録する。\n  - Accept条件: ログが指定のフォーマットで記録されていることを確認。\n\n- **NFR-004: 権限チェックのキャッシュ戦略**\n  - 権限チェックAPIのパフォーマンスを確保するための具体的なキャッシュ戦略を追加する。\n\n## 3. データベース設計\n\n### Prismaスキーマ\n\n```prisma\nmodel Role {\n  id          Int          @id @default(autoincrement())\n  name        String       @unique\n  tenantId    Int\n  createdAt   DateTime     @default(now())\n  updatedAt   DateTime     @updatedAt\n  Tenant      Tenant       @relation(fields: [tenantId], references: [id])\n  permissions Permission[] @relation(\"RolePermissions\")\n\n  @map(\"roles\")\n}\n\nmodel Permission {\n  id        Int    @id @default(autoincrement())\n  resource  String\n  action    String\n  roleId    Int\n  Role      Role   @relation(\"RolePermissions\", fields: [roleId], references: [id])\n\n  @map(\"permissions\")\n}\n\nmodel StaffMember {\n  id         Int     @id @default(autoincrement())\n  roleId     Int\n  tenantId   Int\n  Role       Role    @relation(fields: [roleId], references: [id])\n  Tenant     Tenant  @relation(fields: [tenantId], references: [id])\n\n  @map(\"staff_members\")\n}\n\nmodel Tenant {\n  id    Int    @id @default(autoincrement())\n  name  String\n  Role  Role[]\n\n  @map(\"tenants\")\n}\n```\n\n## 4. API設計\n\n### エンドポイント: /api/v1/admin/roles\n\n- **POST /roles**\n  - Request:\n    ```json\n    {\n      \"name\": \"admin\",\n      \"tenantId\": 1\n    }\n    ```\n  - Response:\n    ```json\n    {\n      \"id\": 1,\n      \"name\": \"admin\"\n    }\n    ```\n\n- **PUT /roles/:id**\n  - Request:\n    ```json\n    {\n      \"name\": \"super-admin\"\n    }\n    ```\n  - Response:\n    ```json\n    {\n      \"id\": 1,\n      \"name\": \"super-admin\"\n    }\n    ```\n\n- **DELETE /roles/:id**\n  - Accept: オーナーロールは削除不可でエラーメッセージを返す。\n\n- **GET /roles/:id**\n  - Response:\n    ```json\n    {\n      \"id\": 1,\n      \"name\": \"admin\",\n      \"permissions\": [\n        {\n          \"resource\": \"users\",\n          \"action\": \"edit\"\n        }\n      ]\n    }\n    ```\n\n### エンドポイント: /api/v1/admin/permissions\n\n- **GET /permissions/:roleId**\n  - Response:\n    ```json\n    [\n      {\n        \"resource\": \"users\",\n        \"action\": \"edit\"\n      }\n    ]\n    ```\n\n## 5. UI/UX要件\n\n- ロール管理画面は直感的に操作できるインターフェースを持ち、フィルタリング機能を提供する。\n- スタッフ管理画面では所属テナントのロールのみ表示され、選択可能である。\n\n## 6. エラーハンドリング\n\n- 権限が不足している場合はHTTP 403を返す。\n- リクエストパラメータに問題がある場合はHTTP 400を返し、詳細なエラー情報を含める。\n\n## 7. 監査ログのフォーマット\n\n- フォーマット例: \n  ```json\n  {\n    \"timestamp\": \"2023-10-01T12:00:00Z\",\n    \"userId\": 123,\n    \"action\": \"create-role\",\n    \"details\": {\n      \"roleId\": 1,\n      \"name\": \"admin\"\n    }\n  }\n  ```\n\n## 8. ビジネス指標\n\n- **ROI**: 提供された権限管理システムの導入による運用効率化とセキュリティ向上。\n- **KPI**: \n  - 権限チェックのレスポンス時間\n  - コール数の増加率（APIエンポイントごと）\n\n## 9. 実装チェックリスト\n\n- **Phase 1: 要件分析**\n  - [ ] すべての要件が記述されていることを確認\n\n- **Phase 2: データベース設計**\n  - [ ] Prismaスキーマに@mapが適用されているか確認\n  - [ ] RoleとPermissionのrelationが適切であることを確認\n\n- **Phase 3: API開発**\n  - [ ] 各APIエンドポイントのレスポンスの確認\n\n- **Phase 4: UI/UX設計**\n  - [ ] ロール管理画面のUI/UXが直感的であるか確認\n\n- **Phase 5: テスト**\n  - [ ] すべての機能要件のテストケースが成功することを確認\n\n## 10. 変更履歴\n\n- **2023/10/01**\n  - ドキュメント初版作成\n```\n",
+    "duration": 60
+  },
+  "diff": 8
+}

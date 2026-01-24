@@ -2370,6 +2370,30 @@ Phase 4: 結論導出
 - [ ] 自己診断チェックリスト、Evidence - Routingが含まれているか？
 - [ ] システム別分岐（hotel-common/hotel-saas）が正しいか？
 
+### 親タスク完了ルール（★NEW・必須）
+
+**サブタスクが全て完了したら、親タスクもDoneにする**
+
+```markdown
+親タスク命名規則:
+- 親: DEV-0160（末尾が0）
+- 子: DEV-0161〜0169（末尾が1-9）
+
+子タスク全Done → 親タスクもDone
+```
+
+**自動チェックスクリプト**:
+```bash
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node check-parent-completion.cjs --dry-run  # 確認
+node check-parent-completion.cjs            # 実行
+```
+
+**タスク完了時の必須フロー**:
+1. サブタスクをDoneに更新
+2. `check-parent-completion.cjs` を実行
+3. 親タスクが自動でDoneに更新される
+
 ### テンプレート一覧
 
 | テンプレート | 用途 | 適用条件 | 場所 |
@@ -2452,6 +2476,82 @@ Phase 4: 結論導出
 ### 詳細ガイド
 
 **場所**: `/Users/kaneko/hotel-kanri/docs/standards/prompt-templates/README.md`
+
+---
+
+## 🎯 Marketing Injection Rules（マーケ視点の開発ルール）★NEW
+
+**目的**: 高品質な機能開発と高速なマーケティングを両立させる
+
+### Config First（ハードコード禁止）
+
+**原則**: テキスト・文言・価格はハードコードしない
+
+```typescript
+// ❌ 禁止: ハードコード
+const welcomeMessage = 'いらっしゃいませ！'
+const price = 9800
+const campaignText = '期間限定20%OFF'
+
+// ✅ 推奨: Config/DB から取得
+const welcomeMessage = await getConfig('ai.welcome_message', tenantId)
+const price = await getTenantSetting('starter.price', tenantId)
+const campaignText = await getI18n('campaign.limited_offer', tenantId)
+```
+
+**Config化すべき項目**:
+- ✅ AIキャラクター名・口調・人格
+- ✅ キャンペーン文言
+- ✅ 価格・割引率
+- ✅ 営業時間・表示設定
+
+**ハードコードOKな項目**:
+- ✅ システムエラーメッセージ（開発者向け）
+- ✅ ログ出力メッセージ
+- ✅ 技術的な定数（ポート番号、タイムアウト値等）
+
+### Tracking by Default（計測必須）
+
+**原則**: 全てのアクションに計測タグを入れる
+
+```vue
+<!-- ❌ 禁止: 計測タグなし -->
+<button @click="sendMessage">送信</button>
+
+<!-- ✅ 推奨: data-analytics-id 必須 -->
+<button 
+  data-analytics-id="ai-chat-send"
+  @click="sendMessage"
+>
+  送信
+</button>
+```
+
+```typescript
+// APIログ必須
+router.post('/', async (req, res) => {
+  console.log('[POST /api/v1/xxx] tenantId:', tenantId)
+  // 処理
+})
+```
+
+**計測すべきイベント**:
+| イベント | analytics-id | 記録先 |
+|:---------|:-------------|:-------|
+| AIチャット送信 | `ai-chat-send` | console + DB |
+| AI推奨クリック | `ai-recommend-click` | DB必須 |
+| カート追加 | `cart-add` | DB必須 |
+| 注文確定 | `order-confirm` | DB必須 |
+
+### Doc is Asset（ドキュメント = 資産）
+
+**原則**: コードを書くのと同じくらい、ドキュメント維持は重要
+
+- ✅ SSOT更新は機能変更とセットで実施
+- ✅ トレーサビリティマトリクスを常に最新化
+- ✅ 将来のバイアウト・DDに備えたドキュメント品質維持
+
+**詳細SSOT**: `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_MARKETING_INTEGRATION.md`（作成予定）
 
 ---
 

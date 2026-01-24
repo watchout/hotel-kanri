@@ -1,0 +1,103 @@
+{
+  "taskId": "DEV-0170",
+  "startTime": "2026-01-23T23:56:14.936Z",
+  "endTime": "2026-01-23T23:56:17.697Z",
+  "logs": [
+    {
+      "timestamp": "2026-01-23T23:56:14.938Z",
+      "level": "step",
+      "message": "親タスク情報取得",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:16.493Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0170] [COM-246] [MVP] 有人ハンドオフ最小（通知1チャネル固定/60秒で電話CTA）",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:16.493Z",
+      "level": "step",
+      "message": "子タスク取得",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.689Z",
+      "level": "info",
+      "message": "子タスク数: 4",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.690Z",
+      "level": "step",
+      "message": "━━━━━ サブタスク開始: DEV-0171 ━━━━━",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.690Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0171] [COM-246] ハンドオフ要件・運用フロー整理 / SSOT整合チェック",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.691Z",
+      "level": "info",
+      "message": "[DRY RUN] 実行をスキップ",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.691Z",
+      "level": "step",
+      "message": "━━━━━ サブタスク開始: DEV-0172 ━━━━━",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.691Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0172] [COM-246] 通知チャネル＆ハンドオフAPI実装",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.692Z",
+      "level": "info",
+      "message": "[DRY RUN] 実行をスキップ",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.693Z",
+      "level": "step",
+      "message": "━━━━━ サブタスク開始: DEV-0173 ━━━━━",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.693Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0173] [COM-246] UI実装（通知→電話CTA導線）",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.693Z",
+      "level": "info",
+      "message": "[DRY RUN] 実行をスキップ",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.694Z",
+      "level": "step",
+      "message": "━━━━━ サブタスク開始: DEV-0174 ━━━━━",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.694Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0174] [COM-246] 有人ハンドオフ テスト＆Evidence整備",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-23T23:56:17.695Z",
+      "level": "info",
+      "message": "[DRY RUN] 実行をスキップ",
+      "data": null
+    }
+  ]
+}

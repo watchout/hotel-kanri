@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-MENU",
+  "ssotPath": "docs/03_ssot/01_admin_features/SSOT_SAAS_MENU_MANAGEMENT.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "claude-code",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 32,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": true,
+    "initialScore": 44,
+    "finalScore": 73,
+    "ssotScore": 95,
+    "passedBySSOT": true,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 108117,
+      "outputTokens": 21884,
+      "totalCostUSD": 1.5856184999999998,
+      "totalCostJPY": 237.842775,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 3,
+          "costUSD": 0.0452175
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 5,
+          "costUSD": 0.35490599999999994
+        },
+        "claude-opus-4-20250514": {
+          "calls": 3,
+          "costUSD": 1.185495
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T22:21:47.064Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-MENU-ssot_saas_menu_management.md"
+}

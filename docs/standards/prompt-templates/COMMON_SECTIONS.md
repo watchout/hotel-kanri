@@ -209,6 +209,143 @@ import { SomeType } from '@/types' // プレースホルダー
 
 ---
 
+## 🎯 Marketing Injection（マーケ視点チェック・必須）
+
+### 目的
+高品質な機能開発と高速なマーケティングを両立させるためのチェックリスト
+
+### Config First（ハードコード禁止）
+
+**原則**: テキスト・文言・価格はハードコードしない
+
+```typescript
+// ❌ 禁止: ハードコード
+const welcomeMessage = 'いらっしゃいませ！'
+const price = 9800
+const campaignText = '期間限定20%OFF'
+
+// ✅ 推奨: Config/DB から取得
+const welcomeMessage = await getConfig('ai.welcome_message', tenantId)
+const price = await getTenantSetting('starter.price', tenantId)
+const campaignText = await getI18n('campaign.limited_offer', tenantId)
+```
+
+**チェックリスト**:
+- [ ] UIに表示するテキスト・文言はハードコードしていないか？
+- [ ] 価格・割引率はハードコードしていないか？
+- [ ] AIの口調・人格設定はハードコードしていないか？
+- [ ] キャンペーン関連のパラメータはハードコードしていないか？
+
+**許容されるハードコード**:
+- システムエラーメッセージ（開発者向け）
+- ログ出力メッセージ
+- 技術的な定数（ポート番号、タイムアウト値等）
+
+### Tracking by Default（計測必須）
+
+**原則**: 全てのアクションに計測タグを入れる
+
+```vue
+<!-- ❌ 禁止: 計測タグなし -->
+<button @click="sendMessage">送信</button>
+
+<!-- ✅ 推奨: data-analytics-id 必須 -->
+<button 
+  data-analytics-id="ai-chat-send"
+  @click="sendMessage"
+>
+  送信
+</button>
+```
+
+```typescript
+// ❌ 禁止: ログなしAPI
+router.post('/', async (req, res) => {
+  // 処理のみ
+})
+
+// ✅ 推奨: ログ出力必須
+router.post('/', async (req, res) => {
+  console.log('[POST /api/v1/xxx] tenantId:', tenantId, 'userId:', userId)
+  // 処理
+})
+```
+
+**チェックリスト**:
+- [ ] 全てのCTAボタンに `data-analytics-id` を付与したか？
+- [ ] APIエンドポイントにリクエストログを出力しているか？
+- [ ] 重要なユーザーアクション（カート追加、注文確定等）はDB記録しているか？
+
+**計測すべきイベント例**:
+| イベント | analytics-id | 記録先 |
+|:---------|:-------------|:-------|
+| AIチャット送信 | `ai-chat-send` | console + DB |
+| AI推奨クリック | `ai-recommend-click` | DB必須 |
+| カート追加 | `cart-add` | DB必須 |
+| 注文確定 | `order-confirm` | DB必須 |
+
+### 親タスク完了ルール（必須）
+
+**サブタスクが全て完了したら、親タスクもDoneにする**
+
+```markdown
+## 親タスク完了チェック
+
+親タスク: DEV-0160 [MVP] FAQ自動応答
+├── DEV-0161: コンテンツ設計 → Done ✅
+├── DEV-0162: API実装 → Done ✅
+├── DEV-0163: UI実装 → Done ✅
+└── DEV-0164: テスト → Done ✅
+
+↓ 全サブタスクDone
+
+✅ 親タスク DEV-0160 も Done に更新
+```
+
+**チェック方法**:
+```bash
+# 自動チェック（dry-run）
+cd /Users/kaneko/hotel-kanri/scripts/plane
+node check-parent-completion.cjs --dry-run
+
+# 実行（親タスクを自動更新）
+node check-parent-completion.cjs
+```
+
+**手動更新の場合**:
+```bash
+# Plane UIで親タスクをDoneに変更
+# または
+node -e "
+const api = require('./lib/plane-api-client.cjs');
+// COM-XXX を Done に更新
+"
+```
+
+---
+
+### 📊 Marketing Injection 完了報告
+
+```markdown
+## Marketing Injection チェック完了
+
+### Config First
+- [ ] テキスト・文言: ハードコードなし
+- [ ] 価格・パラメータ: 外部注入可能
+- [ ] 対象ファイル: [ファイル一覧]
+
+### Tracking by Default
+- [ ] CTAボタン: data-analytics-id 付与済み
+- [ ] APIログ: console出力あり
+- [ ] 重要イベント: DB記録あり
+- [ ] 追加したanalytics-id: [一覧]
+
+### 備考
+- [特記事項があれば]
+```
+
+---
+
 ## 📞 質問テンプレート
 
 **実装前・実装中に不明点が出た場合**:

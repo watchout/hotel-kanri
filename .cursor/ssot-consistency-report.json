@@ -1,29 +1,12 @@
 {
-  "timestamp": "2025-10-20T23:21:27.619Z",
-  "totalSsots": 89,
-  "errors": [
+  "timestamp": "2026-01-18T00:23:07.548Z",
+  "totalSsots": 72,
+  "errors": [],
+  "warnings": [
     {
-      "type": "DEPRECATED_AUTH_METHOD",
+      "type": "DEPRECATED_AUTH_METHOD_MENTIONED",
       "method": "JWT認証",
       "files": [
-        "phase0_progress_saas.md",
-        "phase0_instructions_for_saas_v2.md",
-        "phase0_instructions_for_saas_FINAL.md",
-        "phase0_instructions_for_saas.md",
-        "phase0_instructions_for_common_FINAL.md",
-        "SSOT_PROGRESS_MASTER.md",
-        "PHASE_0_COMPLETION_REPORT.md",
-        "PHASE0_VERIFICATION_REPORT.md",
-        "IMPLEMENTATION_STATUS_ANALYSIS.md",
-        "CRITICAL_ISSUES_REPORT.md",
-        "_archived_progress/phase0_progress_saas.md",
-        "_archived_progress/SSOT_CREATION_LIST_REVISED.md",
-        "_archived_progress/DEVELOPMENT_ROADMAP_v2.0.0_20251010.md",
-        "01_admin_features/SSOT_SAAS_ROOM_MANAGEMENT.md",
-        "01_admin_features/SSOT_SAAS_ORDER_MANAGEMENT.md",
-        "01_admin_features/SSOT_SAAS_MENU_MANAGEMENT.md",
-        "01_admin_features/SSOT_SAAS_FRONT_DESK_OPERATIONS.md",
-        "01_admin_features/SSOT_ADMIN_BILLING.md",
         "00_foundation/SSOT_SAAS_MULTITENANT.md",
         "00_foundation/SSOT_SAAS_DEVICE_AUTHENTICATION.md",
         "00_foundation/SSOT_SAAS_DATABASE_SCHEMA.md",
@@ -32,11 +15,17 @@
         "00_foundation/SSOT_QUALITY_CHECKLIST.md",
         "00_foundation/SSOT_PRODUCTION_PARITY_RULES.md",
         "00_foundation/LINEAR_SETUP_GUIDE.md",
-        "01_admin_features/reports/SSOT_SAAS_MENU_MANAGEMENT_SAAS_IMPLEMENTATION_GUIDE.md"
+        "01_admin_features/SSOT_SAAS_ROOM_MANAGEMENT.md",
+        "01_admin_features/SSOT_SAAS_ORDER_MANAGEMENT.md",
+        "01_admin_features/SSOT_SAAS_MENU_MANAGEMENT.md",
+        "01_admin_features/SSOT_SAAS_FRONT_DESK_OPERATIONS.md",
+        "01_admin_features/SSOT_ADMIN_BILLING.md",
+        "01_admin_features/reports/SSOT_SAAS_MENU_MANAGEMENT_SAAS_IMPLEMENTATION_GUIDE.md",
+        "02_guest_features/ai_chat/drafts/HANDOFF_TECH_ARCHITECT.md",
+        "SSOT_PROGRESS_MASTER.md"
       ],
-      "message": "非推奨の認証方式（JWT認証）が使用されています"
+      "message": "非推奨の認証方式（JWT認証）が言及されています（過去の仕様説明等は許容）"
     }
   ],
-  "warnings": [],
-  "score": 90
+  "score": 98
 }

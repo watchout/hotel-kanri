@@ -1,0 +1,91 @@
+{
+  "mcpServers": {
+    "postgres-readonly": {
+      "description": "hotel-common PostgreSQL（読み取り専用）",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://readonly_user:${POSTGRES_READONLY_PASSWORD}@localhost:5432/hotel_common"
+      ],
+      "env": {
+        "POSTGRES_READONLY_PASSWORD": "${POSTGRES_READONLY_PASSWORD}"
+      },
+      "notes": [
+        "読み取り専用ユーザーを使用すること",
+        "DROP/DELETE/UPDATE権限なし",
+        "スキーマ確認用途のみ"
+      ]
+    },
+    "github": {
+      "description": "GitHub連携（Issue/PR操作）",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "notes": [
+        "Issue/PRの読み取り・作成",
+        "コミット履歴の確認"
+      ]
+    },
+    "filesystem": {
+      "description": "ファイルシステムアクセス",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/kaneko/hotel-kanri",
+        "/Users/kaneko/hotel-saas-rebuild",
+        "/Users/kaneko/hotel-common-rebuild"
+      ],
+      "notes": [
+        "許可されたディレクトリのみアクセス可能"
+      ]
+    },
+    "brave-search": {
+      "description": "Web検索（ドキュメント検索用）",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "notes": [
+        "最新ドキュメントの検索",
+        "ライブラリ更新情報の確認"
+      ]
+    }
+  },
+  "projectConfig": {
+    "hotel-kanri": {
+      "enabledServers": ["filesystem", "github"],
+      "disabledServers": ["postgres-readonly", "brave-search"],
+      "notes": "管理作業用。DBアクセス不要。"
+    },
+    "hotel-common-rebuild": {
+      "enabledServers": ["filesystem", "postgres-readonly", "github"],
+      "disabledServers": ["brave-search"],
+      "notes": "API開発用。DB参照が必要。"
+    },
+    "hotel-saas-rebuild": {
+      "enabledServers": ["filesystem", "github"],
+      "disabledServers": ["postgres-readonly", "brave-search"],
+      "notes": "フロントエンド開発用。DB直接アクセス禁止。"
+    }
+  },
+  "contextWindowManagement": {
+    "maxEnabledServers": 10,
+    "maxActiveTools": 80,
+    "notes": [
+      "コンテキストウィンドウ節約のため、必要なサーバーのみ有効化",
+      "20-30のMCPを設定し、10以下を有効化",
+      "80ツール以下をアクティブに維持"
+    ]
+  }
+}

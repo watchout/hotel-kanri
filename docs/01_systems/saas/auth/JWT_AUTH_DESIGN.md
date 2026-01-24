@@ -1,24 +1,11 @@
-# JWT認証統一設計書
+# JWT認証統一設計書（旧 / アーカイブへ移動）
 
-> ⚠️ **この設計書は廃止されました** ⚠️
-> 
-> **廃止日**: 2025年10月1日  
-> **理由**: JWT認証からセッション認証への移行決定  
-> **新設計**: セッション認証（Redis + HttpOnly Cookie）
+このファイルは **廃止済み（JWT設計）**で、アーカイブへ移動しました。
 
----
+## 正（参照すべきSSOT）
+- `docs/03_ssot/00_foundation/SSOT_SAAS_ADMIN_AUTHENTICATION.md`
+- `docs/03_ssot/00_foundation/SSOT_SAAS_DEVICE_AUTHENTICATION.md`
+- `docs/03_ssot/00_foundation/SSOT_SAAS_AUTHENTICATION.md`
 
-## 🔄 **新しい認証設計**
-
-**統一認証仕様書を参照してください**:
-👉 `/docs/AUTHENTICATION_MASTER_SPECIFICATION.md`
-
-### **変更内容**
-- ❌ JWT認証 → ✅ セッション認証
-- ❌ 複雑な設計 → ✅ シンプルな設計
-- ❌ バグ多発 → ✅ 安定動作
-
----
-
-**このファイルの内容は使用しないでください。**  
-**新しい統一仕様書を参照してください。**
+## アーカイブ原本
+- `docs/_archived_auth/original/01_systems/saas/auth/JWT_AUTH_DESIGN.md`

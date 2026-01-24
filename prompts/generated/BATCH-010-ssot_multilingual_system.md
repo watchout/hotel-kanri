@@ -1,0 +1,559 @@
+# BATCH-010: MULTILINGUAL SYSTEM
+
+**タスクタイプ**: fullstack
+**推定工数**: 22時間
+**生成日時**: 2026-01-18T06:45:08.881Z
+
+---
+
+# 共通セクション テンプレート
+
+---
+
+## 🚨 【自動挿入】実装中断の基準（全タスク共通）
+
+**絶対ルール**: 以下の場合、実装を即座に停止してユーザーに報告する
+
+### 必須停止トリガー（Layer 1）
+1. **SSOT照合失敗（0件）** or **SSOT複数一致**
+   - grep -nE でSSO**T**定義を検索したが0件、または2件以上
+2. **ルーティング不一致**
+   - `/api/v1/admin` 形式外
+   - 深いネスト（`/api/v1/admin/[親]/[id]/[子]/[id]`）
+   - 二重`/api`（`/api/api/`）
+   - `index.*`ファイル（hotel-saas）
+3. **システム境界違反**
+   - hotel-commonにNitro構成（`server/api/`）存在
+   - hotel-saasでPrisma直接使用
+   - hotel-saasで`$fetch`直接使用（Cookie未転送）
+4. **依存ファイル非実在・未生成**
+5. **型エラー連鎖（>5件/1ステップ）**
+6. **Prismaスキーマ変更・直接SQL**
+7. **tenant_idフォールバック/環境分岐**
+8. **矛盾の発見**
+9. **エラー原因不明（15分以上）**
+
+---
+
+## 📖 【自動挿入】必読ドキュメント
+
+### 基盤SSOT（必須）
+| ドキュメント | パス | 用途 |
+|:------------|:-----|:-----|
+| APIレジストリ | `docs/03_ssot/00_foundation/SSOT_API_REGISTRY.md` | エンドポイント定義 |
+| ルーティング | `docs/01_systems/saas/API_ROUTING_GUIDELINES.md` | ルーティング規則 |
+| DB命名規則 | `docs/standards/DATABASE_NAMING_STANDARD.md` | テーブル・カラム命名 |
+| 認証SSOT | `docs/03_ssot/00_foundation/SSOT_SAAS_ADMIN_AUTHENTICATION.md` | Session認証 |
+| マルチテナント | `docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md` | テナント分離 |
+
+### 実装ガイド
+| ドキュメント | パス | 用途 |
+|:------------|:-----|:-----|
+| 実装ガード | `.cursor/prompts/ssot_implementation_guard.md` | エラー対応 |
+| 実装チェック | `.cursor/prompts/implement_from_ssot.md` | 実装フロー |
+
+---
+
+## ✅ 【自動挿入】禁止パターンチェックリスト
+
+### hotel-saas（プロキシ層）での禁止
+```typescript
+// ❌ Prisma直接使用
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+// ❌ $fetch直接使用（Cookie未転送）
+const data = await $fetch('http://localhost:3401/api/...');
+
+// ❌ tenant_idフォールバック
+const tenantId = session.tenantId || 'default';
+
+// ❌ 環境分岐
+if (process.env.NODE_ENV === 'development') { ... }
+```
+
+### 正しいパターン
+```typescript
+// ✅ callHotelCommonAPI使用（Cookie自動転送）
+import { callHotelCommonAPI } from '~/server/utils/api-client';
+const response = await callHotelCommonAPI(event, '/api/v1/...', { method: 'GET' });
+
+// ✅ tenant_idは必須
+if (!tenantId) {
+  throw createError({ statusCode: 401, message: 'テナントIDが必要です' });
+}
+```
+
+---
+
+## 📋 【自動挿入】完了条件テンプレート
+
+### Evidence 1: Commands & Logs
+```bash
+echo "=== BATCH-010 実行ログ ===" > evidence/BATCH-010/commands.log
+
+# 実行したコマンドを記録
+echo "$ npm run dev" >> evidence/BATCH-010/commands.log
+echo "Exit code: $?" >> evidence/BATCH-010/commands.log
+```
+
+### Evidence 2: Files
+```bash
+echo "=== 作成/変更ファイル ===" > evidence/BATCH-010/files.log
+git status --short >> evidence/BATCH-010/files.log
+ls -la <作成ファイル> >> evidence/BATCH-010/files.log
+```
+
+### Evidence 3: Git
+```bash
+echo "=== Git状態 ===" > evidence/BATCH-010/git.log
+git branch --show-current >> evidence/BATCH-010/git.log
+git log --oneline -3 >> evidence/BATCH-010/git.log
+```
+
+### Evidence 4: Test
+```bash
+echo "=== テスト結果 ===" > evidence/BATCH-010/test.log
+./scripts/test-standard-guest.sh >> evidence/BATCH-010/test.log 2>&1
+# または
+./scripts/test-standard-admin.sh >> evidence/BATCH-010/test.log 2>&1
+```
+
+---
+
+## 📝 【自動挿入】完了報告フォーマット
+
+```markdown
+## ✅ BATCH-010 完了報告
+
+### 参照SSOT
+- docs/03_ssot/00_foundation/SSOT_MULTILINGUAL_SYSTEM.md
+
+### 実装成果物
+| ファイル | 変更内容 |
+|:---------|:---------|
+| `path/to/file.ts` | 新規作成 |
+
+### テスト結果
+| テスト | 結果 |
+|:-------|:-----|
+| 標準テスト | ✅ PASS |
+| 手動確認 | ✅ OK |
+
+### Evidence
+- `evidence/BATCH-010/commands.log`
+- `evidence/BATCH-010/files.log`
+- `evidence/BATCH-010/git.log`
+- `evidence/BATCH-010/test.log`
+
+### 次のステップ
+- [ ] PR作成
+- [ ] CI確認
+- [ ] マージ
+- [ ] Plane更新
+```
+
+---
+
+## 🔧 【自動挿入】トラブルシューティング
+
+### 401 Unauthorized
+```bash
+# 原因: セッション切れ or Cookie未転送
+# 対処:
+curl -c /tmp/cookies.txt -X POST http://localhost:3401/api/v1/admin/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"owner@test.omotenasuai.com","password":"owner123"}'
+
+curl -b /tmp/cookies.txt <API_URL>
+```
+
+### 404 Not Found
+```bash
+# 原因: ルーター未登録 or パス不一致
+# 対処:
+# 1. src/server/index.ts でルーター登録確認
+grep -n "app.use" hotel-common-rebuild/src/server/index.ts
+
+# 2. パス一致確認
+grep -rn "/api/v1/<path>" hotel-common-rebuild/src/
+```
+
+### 500 Internal Server Error
+```bash
+# 原因: サーバー側エラー
+# 対処:
+# 1. サーバーログ確認
+tail -50 <server_log>
+
+# 2. Prismaエラーの場合
+cd hotel-common-rebuild && npx prisma generate
+```
+
+### EADDRINUSE
+```bash
+# 原因: ポート使用中
+# 対処:
+lsof -i :3401 | grep LISTEN
+kill -9 <PID>
+```
+
+
+---
+
+# BATCH-010: MULTILINGUAL SYSTEM - Backend API実装
+
+## 🚨 重要：実装中断の基準（必読）
+
+**絶対ルール**: 以下の場合、実装を即座に停止してユーザーに報告する
+
+### 必須停止トリガー（Layer 1）
+1. SSOT照合失敗（0件）or SSOT複数一致
+2. ルーティング不一致（深いネスト/二重付与/index.*ファイル）
+3. システム境界違反（saasでPrisma直/saasで$fetch直）
+4. 依存ファイル非実在
+5. 型エラー連鎖（>5件）
+6. Prismaスキーマ変更
+7. tenant_idフォールバック/環境分岐
+8. エラー原因不明（15分以上）
+
+---
+
+## 📖 必読SSOT
+
+| ドキュメント | パス |
+|:------------|:-----|
+| **メインSSOT** | `docs/03_ssot/00_foundation/SSOT_MULTILINGUAL_SYSTEM.md` |
+| **APIレジストリ** | `docs/03_ssot/00_foundation/SSOT_API_REGISTRY.md` |
+| **ルーティング** | `docs/01_systems/saas/API_ROUTING_GUIDELINES.md` |
+| **命名規則** | `docs/standards/DATABASE_NAMING_STANDARD.md` |
+
+---
+
+## 📋 実装対象
+
+### 要件一覧（0件）
+
+_（要件なし）_
+
+### API一覧（1件）
+
+| Method | Path | 説明 |
+|:-------|:-----|:-----|
+| GET | `/api/v1/translations/entity` | コードブロックから抽出 |
+
+
+### データベーススキーマ
+
+```prisma
+model Translation {
+  id                String    @id @default(uuid())
+  tenantId          String    @map("tenant_id")
+  entityType        String    @map("entity_type")
+  entityId          String    @map("entity_id")
+  languageCode      String    @map("language_code")
+  fieldName         String    @map("field_name")
+  translatedText    String    @map("translated_text")
+  translationMethod String    @default("auto") @map("translation_method")
+  qualityScore      Float?    @map("quality_score")
+  reviewedBy        String?   @map("reviewed_by")
+  reviewedAt        DateTime? @map("reviewed_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  
+  tenant  Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  history TranslationHistory[]
+  
+  @@unique([entityType, entityId, languageCode, fieldName])
+  @@index([entityType, entityId])
+  @@index([languageCode])
+  @@index([tenantId])
+  @@index([qualityScore])
+  @@map("translations")
+}
+
+model TranslationJob {
+  id              String    @id @default(uuid())
+  tenantId        String    @map("tenant_id")
+  entityType      String    @map("entity_type")
+  entityId        String    @map("entity_id")
+  sourceLanguage  String    @default("ja") @map("source_language")
+  targetLanguages String[]  @map("target_languages")
+  fields          String[]
+  status          String    @default("pending")
+  totalTasks      Int       @map("total_tasks")
+  completedTasks  Int       @default(0) @map("completed_tasks")
+  failedTasks     Int       @default(0) @map("failed_tasks")
+  errorDetails    Json?     @map("error_details")
+  startedAt       DateTime? @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  
+  tenant   Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  costLogs TranslationCostLog[]
+  
+  @@index([status])
+  @@index([entityType, entityId])
+  @@index([tenantId, createdAt])
+  @@map("translation_jobs")
+}
+
+model TranslationCostLog {
+  id             String   @id @default(uuid())
+  tenantId       String   @map("tenant_id")
+  jobId          String?  @map("job_id")
+  languageCode   String   @map("language_code")
+  characterCount Int      @map("character_count")
+  estimatedCost  Float    @map("estimated_cost")
+  actualCost     Float?   @map("actual_cost")
+  apiProvider    String   @default("google") @map("api_provider")
+  createdAt      DateTime @default(now()) @map("created_at")
+  
+  tenant Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  job    TranslationJob? @relation(fields: [jobId], references: [id])
+  
+  @@index([tenantId, createdAt])
+  @@index([jobId])
+  @@map("translation_cost_logs")
+}
+
+model TranslationHistory {
+  id            String   @id @default(uuid())
+  translationId String   @map("translation_id")
+  previousText  String   @map("previous_text")
+  newText       String   @map("new_text")
+  changedBy     String   @map("changed_by")
+  changeReason  String?  @map("change_reason")
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  translation Translation @relation(fields: [translationId], references: [id], onDelete: Cascade)
+  
+  @@index([translationId])
+  @@index([createdAt])
+  @@map("translation_history")
+}
+
+```
+
+### Accept条件（完了基準）
+
+_（Accept条件なし）_
+
+---
+
+## Item 1: 事前調査（必須・15分）
+
+### Step 1: SSOT確認
+```bash
+# SSOT読み込み
+cat docs/03_ssot/00_foundation/SSOT_MULTILINGUAL_SYSTEM.md
+
+# API定義を確認
+grep -nE '^(GET|POST|PUT|PATCH|DELETE)' docs/03_ssot/00_foundation/SSOT_MULTILINGUAL_SYSTEM.md
+```
+
+### Step 2: 既存実装調査
+```bash
+# 類似ルートファイル確認
+ls -la hotel-common-rebuild/src/routes/
+
+# 命名パターン確認
+head -50 hotel-common-rebuild/src/routes/guest-orders.routes.ts
+```
+
+### Step 3: 完了条件
+- [ ] 全要件ID（0件）を把握した
+- [ ] 全APIエンドポイント（1件）を把握した
+- [ ] Accept条件を把握した
+- [ ] 既存実装の命名規則を確認した
+
+---
+
+## Item 2: ルートファイル作成
+
+### Step 1: ファイル作成
+```bash
+touch hotel-common-rebuild/src/routes/system.routes.ts
+```
+
+### Step 2: 基本構造
+```typescript
+import { Router, Request, Response } from 'express';
+import { prisma } from '../lib/prisma';
+import { 
+  createSuccessResponse, 
+  createErrorResponse 
+} from '../utils/response-helpers';
+
+const router = Router();
+
+
+/**
+ * GET /api/v1/translations/entity
+ * コードブロックから抽出
+ */
+router.get('/entity', async (req: Request, res: Response) => {
+  try {
+    const tenantId = req.headers['x-tenant-id'] as string;
+    if (!tenantId) {
+      return res.status(401).json(createErrorResponse('UNAUTHORIZED', 'テナントIDが必要です'));
+    }
+
+    // TODO: ビジネスロジック実装
+    const result = await prisma.translation.findMany({
+      where: { tenant_id: tenantId }
+    });
+
+    return res.status(200).json(createSuccessResponse(result));
+  } catch (error) {
+    console.error('/api/v1/translations/entity エラー:', error);
+    return res.status(500).json(createErrorResponse('INTERNAL_ERROR', 'サーバーエラー'));
+  }
+});
+
+export default router;
+```
+
+### Step 3: ルーター登録
+`hotel-common-rebuild/src/server/index.ts` に追加:
+
+```typescript
+import systemRouter from '../routes/system.routes';
+
+// 認証ミドルウェア前に登録（Guestの場合）
+app.use('/api/v1/translations', systemRouter);
+```
+
+### Step 4: 完了条件
+- [ ] `system.routes.ts` が作成された
+- [ ] `index.ts` にルーター登録された
+- [ ] TypeScript型エラーがない
+
+---
+
+## Item 3: hotel-saasプロキシ実装
+
+### Step 1: プロキシファイル作成
+```bash
+mkdir -p hotel-saas-rebuild/server/api/v1/translations
+```
+
+### Step 2: 各エンドポイントのプロキシ作成
+
+
+### GET /api/v1/translations/entity
+
+ファイル: `server/api/v1/translations/entity.get.ts`
+
+```typescript
+import { callHotelCommonAPI } from '~/server/utils/api-client';
+import { ensureGuestContext } from '~/server/utils/guest-context';
+
+export default defineEventHandler(async (event) => {
+  const { tenantId } = await ensureGuestContext(event);
+
+  const response = await callHotelCommonAPI(event, `/api/v1/translations/entity`, {
+    method: 'GET',
+    headers: { 'x-tenant-id': tenantId }
+  });
+  
+  return response;
+});
+```
+
+### Step 3: 完了条件
+- [ ] 全プロキシファイルが作成された
+- [ ] `callHotelCommonAPI` を使用している
+- [ ] `$fetch` 直接使用がない
+- [ ] `x-tenant-id` ヘッダーを付与している
+
+---
+
+## Item 4: 動作確認
+
+### Step 1: サーバー起動
+```bash
+# hotel-common
+cd hotel-common-rebuild && npm run dev &
+
+# hotel-saas
+cd hotel-saas-rebuild && npm run dev &
+```
+
+### Step 2: API動作確認
+
+```bash
+# GET /api/v1/translations/entity
+curl -s http://localhost:3401/api/v1/translations/entity \
+  -H 'x-tenant-id: tenant-003bc06e-4ea0-4f93-9ce2-bf56dfe237b7' | jq .
+```
+
+### Step 3: 完了条件
+- [ ] hotel-common直接で正常レスポンス
+- [ ] hotel-saas経由で正常レスポンス
+- [ ] エラーケースも確認
+
+---
+
+## Item 5: テスト実行
+
+### Step 1: 標準テスト
+```bash
+# ゲストAPI用
+./scripts/test-standard-guest.sh 2>&1 | tee evidence/BATCH-010/test.log
+
+# または管理画面API用
+./scripts/test-standard-admin.sh 2>&1 | tee evidence/BATCH-010/test.log
+```
+
+### Step 2: Evidence保存
+```bash
+mkdir -p evidence/BATCH-010
+echo "=== BATCH-010 Evidence ===" > evidence/BATCH-010/commands.log
+git status --short >> evidence/BATCH-010/commands.log
+ls -la hotel-common-rebuild/src/routes/system.routes.ts >> evidence/BATCH-010/commands.log
+```
+
+### Step 3: 完了条件
+- [ ] 標準テストがPASS
+- [ ] Evidenceログが保存された
+
+---
+
+## ✅ 最終チェックリスト
+
+### 実装
+- [ ] 要件なし
+
+### 品質
+- [ ] TypeScript型エラーなし
+- [ ] Prisma直接使用なし（hotel-saas）
+- [ ] `$fetch`直接使用なし
+- [ ] tenant_idフィルタあり
+- [ ] エラーハンドリング実装
+
+### テスト
+- [ ] 標準テストPASS
+- [ ] 手動API確認完了
+- [ ] Evidence保存完了
+
+---
+
+## 📝 完了報告テンプレート
+
+```markdown
+## ✅ BATCH-010 完了報告
+
+### 参照SSOT
+- docs/03_ssot/00_foundation/SSOT_MULTILINGUAL_SYSTEM.md
+
+### 実装成果物
+- `hotel-common-rebuild/src/routes/system.routes.ts`
+- `hotel-saas-rebuild/server/api/v1/translations/`
+
+### テスト結果
+- 標準テスト: ✅ PASS
+
+### Evidence
+- `evidence/BATCH-010/`
+```

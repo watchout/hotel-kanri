@@ -43,7 +43,37 @@ git remote add origin git@github.com:watchout/hotel-saas-rebuild.git
 
 ---
 
-## 4. PR作成フロー（共通・最小ステップ）
+## 4. GitHub CLI使用ルール（gh-safe.sh 経由・gh auth login 禁止）
+
+> ✅ GitHub操作は **必ず `gh-safe.sh` 経由** で行い、  
+> ❌ `gh auth login` や `gh ...` の直接実行は行わないこと。
+>
+> 理由: `.env.mcp` に保存された `GH_TOKEN` / `GITHUB_TOKEN` を標準的に読み込み、  
+> 認証状態を人間のローカル環境に依存させないため。
+
+```bash
+# ✅ 正しい例（標準ラッパーを使用）
+cd /Users/kaneko/hotel-kanri/scripts/github
+./gh-safe.sh health              # 接続確認
+./gh-safe.sh pr view 9 --repo watchout/hotel-saas-rebuild
+
+# ❌ NG例（禁止）
+gh auth login                    # インタラクティブ認証は禁止
+gh pr create ...                 # 直接のgh呼び出しは禁止
+```
+
+- `gh-safe.sh` の挙動:
+  - `/Users/kaneko/hotel-kanri/.env.mcp` から `GH_TOKEN` or `GITHUB_TOKEN` を読み込み
+  - `export GH_TOKEN=...` をセットしてから `gh ...` を実行
+  - **どのAI/ユーザーが実行しても同じ認証状態** で動作する
+
+> **運用ルール**:
+> - AIにGitHub操作をさせる場合も、プロンプト上で **「ghではなく ./gh-safe.sh を使う」** と明示すること。
+> - shellスクリプト内で `gh` を直接呼び出さないこと（`gh-safe.sh` 経由に置き換える）。
+
+---
+
+## 5. PR作成フロー（共通・最小ステップ）
 ```bash
 # 例: hotel-common-rebuild / COM-52
 cd /Users/kaneko/hotel-common-rebuild
@@ -64,7 +94,7 @@ gh pr create \
 
 ---
 
-## 5. CI 必須ジョブ（名前統一）
+## 6. CI 必須ジョブ（名前統一）
 - evidence-check: PR本文の必須見出し検証
 - ssot-compliance: SSOT整合
 - crud-verify: artifact `crud-verify-results.txt` を必須
@@ -94,20 +124,20 @@ gh pr create \
 
 ---
 
-## 6. CRUD Verify（artifact必須）
+## 7. CRUD Verify（artifact必須）
 - 成果物: `crud-verify-results.txt` をCI Artifactとしてアップロード
 - PR本文にArtifactのURLを記載（抜粋も貼付）
 
 ---
 
-## 7. Plane 同期ルール（唯一の進捗源）
+## 8. Plane 同期ルール（唯一の進捗源）
 - PR Open → Plane: Statusを Started / In Progress
 - PR Merge（CI Green）→ Plane: Done + PR URL追記
 - 逆方向ガード: Plane Done には PR URL + CI Green Evidence が必要
 
 ---
 
-## 8. よくある失敗と対策
+## 9. よくある失敗と対策
 - origin未設定 → リモート追加（本書 3章）
 - base=mainでPR作成 → base=developに修正（rebuild各リポ）
 - PR本文が空 → evidence-checkでFail。テンプレを使用
@@ -115,7 +145,7 @@ gh pr create \
 
 ---
 
-## 9. 運用チェックリスト（毎PR）
+## 10. 運用チェックリスト（毎PR）
 - [ ] base=develop（kanriのみmain）
 - [ ] PR本文: 必須4見出し記載
 - [ ] Evidence: コマンド生ログ/終了コード/時刻
@@ -125,7 +155,7 @@ gh pr create \
 
 ---
 
-## 10. テンプレート適用（他リポにコピー）
+## 11. テンプレート適用（他リポにコピー）
 - `.github/workflows/rebuild-pr-policy.yml`（templates/workflows 参照）
 - `scripts/quality/pr-policy.cjs`（templates/scripts 参照）
 - `.github/PULL_REQUEST_TEMPLATE.md`（本リポを流用）

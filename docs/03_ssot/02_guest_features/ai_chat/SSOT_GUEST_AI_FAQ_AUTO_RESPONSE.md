@@ -13,6 +13,7 @@
 - [SSOT_API_REGISTRY.md](../../00_foundation/SSOT_API_REGISTRY.md) - API一覧
 
 **関連SSOT**:
+- [SSOT_GUEST_PAGE_REGISTRY.md](../../00_foundation/SSOT_GUEST_PAGE_REGISTRY.md) - ゲストページレジストリ（リンク整合性）
 - [SSOT_GUEST_ORDER_FLOW.md](../guest_order/SSOT_GUEST_ORDER_FLOW.md) - ゲスト注文フロー
 - [SSOT_GUEST_MENU_VIEW.md](../guest_order/SSOT_GUEST_MENU_VIEW.md) - メニュー表示
 - [SSOT_ADMIN_AI_CONCIERGE_OVERVIEW.md](../../01_admin_features/ai_concierge/SSOT_ADMIN_AI_CONCIERGE_OVERVIEW.md) - AIコンシェルジュ概要
@@ -238,7 +239,7 @@
   レスポンス:
   {
     "reply": "ようこそ。当館のチェックインは15:00から...",
-    "actions": [{ "label": "荷物預かりの場所", "url": "/info/luggage" }],
+    "actions": [{ "type": "info", "label": "荷物預かりの場所", "url": "/info/luggage" }],
     "source": "faq",
     "faqId": "faq-checkin",
     "feedback": { "enabled": true, "question": "お役に立てましたか？" }

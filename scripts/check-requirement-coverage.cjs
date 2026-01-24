@@ -44,9 +44,9 @@ function extractRequirementIdsFromOpenAPIText(openapiText) {
   // openapi: staff-management.yaml には "STAFF-UI-001..021" のような範囲表現があるため、
   // ".." を含まない単体IDのみを抽出対象にする（範囲の展開は別スクリプトに委ねる）。
   const re = /(STAFF(?:-SEC|-UI)?-\d{3})(?!\.\.)/g;
-  let m;
+      let m;
   while ((m = re.exec(openapiText)) !== null) {
-    acc.add(m[1]);
+        acc.add(m[1]);
   }
   return Array.from(acc).sort();
 }

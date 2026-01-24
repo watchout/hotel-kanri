@@ -1,0 +1,48 @@
+{
+  "baseline": {
+    "task": "権限システム",
+    "method": "baseline",
+    "ssot": "# 管理画面 権限システム SSOT\n\n## 1. 概要\n\n**目的**  \nこのドキュメントの目的は、管理画面におけるロールベースアクセルコントロール（RBAC）システムの詳細な仕様を定義し、SSOTとして機能することです。\n\n**適用範囲**  \nこのSSOTは以下の要素をカバーします:\n- ユーザーおよびスタッフ管理\n- ロールと権限の付与と管理\n- 高速かつ正確な権限チェック\n\n**関連SSOT**  \n- ロールおよび権限の全般管理\n- マルチテナントアーキテクチャ\n\n## 2. 要件定義\n\n### 機能要件\n\n- **FR-001: ロール管理**\n  - **説明**: 新規ロールの作成、既存ロールの編集および削除が可能であること。\n  - **Accept条件**: ロール作成／編集／削除の成功とエラーメッセージが表示されること。\n\n- **FR-002: 権限管理**\n  - **説明**: リソースとアクションによる権限を管理できること。\n  - **Accept条件**: 新規権限を正常に追加／編集／削除できること。\n\n- **FR-003: ロール×権限の割り当て**\n  - **説明**: ロールに対して権限を複数割り当てられること。\n  - **Accept条件**: 追加した権限がロールに反映されること。\n\n- **FR-004: スタッフへのロール割り当て**\n  - **説明**: スタッフにロールを割り当てることができる。\n  - **Accept条件**: スタッフプロファイルにロールが関連付けられていること。\n\n- **FR-005: 権限チェックAPI**\n  - **説明**: APIで指定ロール／ユーザーの権限をチェックできること。\n  - **Accept条件**: 100ms以内に正しい権限情報が返されること。\n\n### 非機能要件\n\n- **NFR-001: マルチテナント対応**\n  - **Accept条件**: 各テナント毎に分離された権限管理が可能であること。\n\n- **NFR-002: 権限チェックは100ms以内**\n  - **Accept条件**: 権限チェックAPIのレスポンス性能が100ms以下であること。\n\n- **NFR-003: 監査ログ必須**\n  - **Accept条件**: すべての権限操作が監査ログに保存されること。\n\n## 3. データベース設計\n\n```prisma\nmodel Role {\n  id          Int       @id @default(autoincrement())\n  name        String    @unique\n  permissions Permission[]\n  tenants     Tenant[]  @relation(\"RoleTenant\")\n  createdAt   DateTime  @default(now()) @map(\"created_at\")\n}\n\nmodel Permission {\n  id          Int       @id @default(autoincrement())\n  resource    String\n  action      String\n  roles       Role[]    @relation(\"RolePermission\")\n  createdAt   DateTime  @default(now()) @map(\"created_at\")\n}\n\nmodel Staff {\n  id       Int    @id @default(autoincrement())\n  name     String\n  role     Role?  @relation(fields: [roleId], references: [id])\n  roleId   Int?\n  tenantId Int\n}\n\nmodel Tenant {\n  id     Int     @id @default(autoincrement())\n  name   String\n  roles  Role[]  @relation(\"RoleTenant\")\n  staffs Staff[]\n}\n```\n\n## 4. API設計\n\n### ロール操作API\n\n**エンドポイント**: `/api/v1/admin/roles`\n\n- **POST /roles**\n  - **リクエスト**: `{ \"name\": \"example_role\" }`\n  - **レスポンス**: `{ \"id\": 1, \"name\": \"example_role\" }`\n\n- **PUT /roles/:id**\n  - **リクエスト**: `{ \"name\": \"updated_role\" }`\n  - **レスポンス**: `{ \"id\": 1, \"name\": \"updated_role\" }`\n\n- **DELETE /roles/:id**\n  - **リクエスト**: なし\n  - **レスポンス**: `204 No Content`\n\n### 権限チェックAPI\n\n**エンドポイント**: `/api/v1/admin/permissions/check`\n\n- **POST /check**\n  - **リクエスト**: `{ \"userId\": 1, \"resource\": \"resource_name\", \"action\": \"read\" }`\n  - **レスポンス**: `{ \"allowed\": true }`\n\n## 5. UI/UX要件\n\n- ロールおよび権限の管理画面は、直観的かつ使いやすいUIを提供すること。\n- フィルタ・検索機能を提供し、大量のデータを効率的に管理できるようにする。\n\n## 6. エラーハンドリング\n\n- APIエラーレスポンスには、HTTPステータスコードとともにエラー内容を示すメッセージを含めること。\n- ログインエラーメッセージは、認証情報が無効であることのみ通知し、詳細は表示しない。\n\n## 7. ビジネス指標（ROI/KPI）\n\n- ロール・権限管理のオペレーション効率: 増加率20%\n- APIの応答時間: 平均100ms以下の維持\n- ユーザー満足度: 初年度NPS 30\n\n## 8. 実装チェックリスト\n\n### Phase 1: 概念設計\n\n- [ ] 要件定義のレビュー完了\n- [ ] Prismaモデルスキーマのドラフト完了\n\n### Phase 2: 設計\n\n- [ ] UI/UXモックアップの作成\n- [ ] API仕様の詳細設計\n\n### Phase 3: 実装\n\n- [ ] Prismaモデルの実装\n- [ ] APIの実装および単体テスト\n\n### Phase 4: 検証\n\n- [ ] 性能テスト（レスポンスタイム100ms確認）\n- [ ] 監査ログのテスト\n\n### Phase 5: リリース\n\n- [ ] 動作確認完了\n- [ ] ドキュメント更新完了\n\n## 9. 変更履歴\n\n- Version 1.0 （2023年10月）: 初版作成\n\n---\n\nこのドキュメントは、開発の各フェーズで参照され、仕様との整合性を確認するための基盤として機能します。",
+    "score": {
+      "technical": 26,
+      "implementability": 35,
+      "total": 61
+    },
+    "duration": 29
+  },
+  "pipeline": {
+    "task": "権限システム",
+    "steps": {
+      "create": {
+        "model": "gpt-4o",
+        "success": true
+      },
+      "audit1": {
+        "model": "gpt-4o",
+        "success": true,
+        "score": 80
+      },
+      "audit2": {
+        "model": "gpt-4o-mini",
+        "success": true,
+        "score": 70
+      },
+      "fix": {
+        "model": "gpt-4o",
+        "success": true
+      }
+    },
+    "finalScore": {
+      "technical": 30,
+      "implementability": 30,
+      "total": 60
+    },
+    "cost": {
+      "gpt": 0.05018490000000001,
+      "total": "$0.0502"
+    },
+    "ssot": "```markdown\n# 管理画面の権限システム（RBAC）SSOT\n\n## 1. 概要\n\n**目的:**  \n本ドキュメントは、管理画面におけるロールベースのアクセス制御（RBAC）システムの設計と実装に関する単一の信頼性のある情報源（SSOT）を提供します。\n\n**適用範囲:**  \nこのSSOTは、RBAC機能の設計、開発、検証に関連する全てのステークホルダーに適用されます。\n\n**関連SSOT:**  \n他の関連するシステムやモジュールのSSOTは、参照が必要です。\n\n## 2. 要件定義\n\n### 機能要件\n\n- **FR-001: ロールの作成、編集、削除**\n  - **Accept条件:** 各操作後にデータベース上でロールの正確な状態が確認できること。\n\n- **FR-002: 権限管理（リソース×アクション）**\n  - **Accept条件:** 各リソースとアクションの組み合わせがデータベースに記録され、APIからも取得可能であること。\n\n- **FR-003: ロールと権限の割り当て**\n  - **Accept条件:** 指定したロールに正しい権限が付与されていることが、UIとAPIから確認できること。\n\n- **FR-004: スタッフへのロール割り当て**\n  - **Accept条件:** スタッフメンバーが割り当てられたロールに基づいて、適切なアクセスを得られること。\n\n- **FR-005: 権限チェックAPI**\n  - **Accept条件:** リクエストに対し100ms以内に適切な権限の有無をレスポンスとして返却できること。\n\n- **FR-006: 権限のオーソリゼーションロジック**\n  - **Accept条件:** 権限の許可条件と拒否条件が明確に定義されており、特定の条件下でのアクセス制御が正しく機能すること。\n\n### 非機能要件\n\n- **NFR-001: マルチテナント対応**\n  - **Accept条件:** 各テナントが他のテナントと独立して操作を行えること。\n\n- **NFR-002: 権限チェックの性能**\n  - **Accept条件:** 権限チェックAPIが100ms以内にレスポンスを返すこと。\n\n  - **測定方法:** ツールを使用した定期的な性能テストにより、応答時間を定量的に評価。\n\n- **NFR-003: 監査ログ**\n  - **Accept条件:** 全てのRBAC関連操作が監査ログに記録されていること。\n\n  - **測定方法:** ログの内容と完全性を定期的に監査し、記録すべき情報（アクションの詳細、タイムスタンプ、実施者の情報など）の正確性を検証。\n\n## 3. データベース設計\n\nPrismaスキーマ:\n\n```prisma\nmodel Role {\n  id          Int      @id @default(autoincrement())\n  name        String   @unique\n  permissions RolePermission[]\n  StaffMember StaffMember[]\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@map(\"roles\")\n}\n\nmodel RolePermission {\n  id           Int         @id @default(autoincrement())\n  role         Role        @relation(fields: [roleId], references: [id])\n  roleId       Int\n  permission   Permission  @relation(fields: [permissionId], references: [id])\n  permissionId Int\n\n  @@unique([roleId, permissionId])\n  @@map(\"role_permissions\")\n}\n\nmodel Permission {\n  id       Int    @id @default(autoincrement())\n  resource String\n  action   String\n\n  @@unique([resource, action])\n  @@map(\"permissions\")\n}\n\nmodel StaffMember {\n  id     Int    @id @default(autoincrement())\n  name   String\n  role   Role?  @relation(fields: [roleId], references: [id])\n  roleId Int?\n\n  @@map(\"staff_members\")\n}\n\nmodel Tenant {\n  id     Int    @id @default(autoincrement())\n  name   String\n  roles  Role[]\n  staff  StaffMember[]\n\n  @@map(\"tenants\")\n}\n```\n\n**テナント分離の詳細設計:**  \n各テナント固有のデータ（ロールやスタッフ）は、`Tenant`モデルを介して分離管理されます。テナントコンテキストは認証トークンで管理され、アクセス時に必ずコンテキスト確認が行われます。\n\n## 4. API設計\n\n### ロール操作API\n\n- **POST /api/v1/admin/roles**\n  - **リクエスト:** `{ \"name\": \"String\" }`\n  - **レスポンス:** `{ \"success\": true, \"roleId\": \"Int\" }`\n\n- **PUT /api/v1/admin/roles/{roleId}**\n  - **リクエスト:** `{ \"name\": \"String\" }`\n  - **レスポンス:** `{ \"success\": true }`\n\n- **DELETE /api/v1/admin/roles/{roleId}**\n  - **レスポンス:** `{ \"success\": true }`\n\n### 権限チェックAPI\n\n- **GET /api/v1/admin/permissions/check**\n  - **リクエスト:** `?resource=String&action=String&staffId=Int`\n  - **レスポンス:** `{ \"hasPermission\": true }`\n\n- **エラーハンドリング:**\n  - **404エラー:** 不正なロールIDの場合\n  - **400エラー:** 無効なアクションやリソースの場合\n  - **403エラー:** 削除不可のオーナーロールの場合\n\n**API エンドポイントの整合性:**  \n各エンドポイントは以下のエラーメッセージおよびコードを返します。\n- **400 Bad Request:** `{\"error\": \"Invalid request parameters\" }`\n- **404 Not Found:** `{\"error\": \"Resource not found\" }`\n- **403 Forbidden:** `{\"error\": \"Operation not allowed\" }`\n\n## 5. UI/UX要件\n\n- ロールおよび権限管理のための直感的なインターフェース\n- スタッフメンバーに対する一目で分かるロール割り当てビュー\n- エラーメッセージのクリアな表示とナビゲーション\n\n## 6. エラーハンドリング\n\n- 不正なロールIDの場合、404エラーを返す\n- 無効なアクションやリソースの場合、400エラーを返す\n- 削除不可のオーナーロールの場合、403エラーを返す\n\n## 7. ビジネス指標（ROI/KPI）\n\n- **ROI:** システム全体のセキュリティ向上と管理効率化\n- **KPI:** \n  - 権限チェックAPIの平均応答時間 \n  - 監査ログの完全性\n  - ユーザー満足度（UI/UXおよびパフォーマンス）\n\n## 8. 実装チェックリスト\n\n- **Phase 1:** データベース設計\n- **Phase 2:** APIエンドポイントの実装\n- **Phase 3:** UIのプロトタイプ\n- **Phase 4:** パフォーマンステスト\n- **Phase 5:** 監査ログの実装\n\n## 9. 変更履歴\n\n- **Version 1.0:** 初稿作成、2023年10月15日\n\n---\n\n本ドキュメントは、新たな要件や改善がある場合には随時更新されます。\n```\n",
+    "duration": 67
+  },
+  "diff": -1
+}

@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-DB",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_SAAS_DATABASE_SCHEMA.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "codex",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 78,
+    "priority": "P2"
+  },
+  "audit": {
+    "success": false,
+    "initialScore": 47,
+    "finalScore": 74,
+    "ssotScore": 85,
+    "passedBySSOT": false,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 105955,
+      "outputTokens": 29064,
+      "totalCostUSD": 1.5975820000000003,
+      "totalCostJPY": 239.6373,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 4,
+          "costUSD": 0.060160000000000005
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 7,
+          "costUSD": 0.45616199999999996
+        },
+        "claude-opus-4-20250514": {
+          "calls": 4,
+          "costUSD": 1.08126
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T09:20:45.571Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-DB-ssot_saas_database_schema.md"
+}

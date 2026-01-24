@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-DEV",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_SAAS_DEVICE_AUTHENTICATION.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "codex",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 100,
+    "priority": "P2"
+  },
+  "audit": {
+    "success": true,
+    "initialScore": 53,
+    "finalScore": 77,
+    "ssotScore": 95,
+    "passedBySSOT": true,
+    "iterations": 2,
+    "cost": {
+      "inputTokens": 95241,
+      "outputTokens": 11672,
+      "totalCostUSD": 1.04413,
+      "totalCostJPY": 156.6195,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 2,
+          "costUSD": 0.045880000000000004
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 3,
+          "costUSD": 0.253635
+        },
+        "claude-opus-4-20250514": {
+          "calls": 2,
+          "costUSD": 0.744615
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T22:24:29.068Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-DEV-ssot_saas_device_authentication.md"
+}
