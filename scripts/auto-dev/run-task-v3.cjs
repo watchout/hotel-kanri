@@ -581,7 +581,22 @@ function buildSsotSearchNeedles({ parentTaskId, parentIssueName, subIssueNames }
   (lower.match(/[a-z0-9][a-z0-9_-]{2,}/g) || []).forEach((w) => keywordHints.add(w));
 
   // 重要キーワード（日本語）
-  const jpHints = ['ハンドオフ', '通知', '電話', '証跡', 'テスト', '要件', '監査', '画面', 'API'];
+  const jpHints = [
+    'ハンドオフ',
+    '通知',
+    '電話',
+    '証跡',
+    'テスト',
+    '要件',
+    '監査',
+    '画面',
+    'API',
+    // 0180系: セッションリセット運用
+    'セッション',
+    'リセット',
+    '清掃',
+    'QR'
+  ];
   jpHints.forEach((k) => {
     if (allText.includes(k)) keywordHints.add(k);
   });
@@ -627,10 +642,17 @@ function scoreSsotCandidate({ filePath, content, needles }) {
     'SSOT_ADMIN_HANDOFF_NOTIFICATION.MD',
     'SSOT_GUEST_HANDOFF_PHONE_CTA_UI.MD'
   ];
-  if (highPriority.includes(base.toUpperCase())) score += 500;
+  const is0170Series =
+    /^DEV-017\d$/i.test(String(needles.primaryDevId || '')) ||
+    (needles.comIds || []).map((x) => String(x || '').toUpperCase()).includes('COM-246') ||
+    (needles.keywordHints || []).some((k) => {
+      const s = String(k || '').toLowerCase();
+      return s === 'handoff' || k === 'ハンドオフ';
+    });
+  if (is0170Series && highPriority.includes(base.toUpperCase())) score += 500;
 
   // ノイズ抑制（親SSOT解決では、Dev専用/内部/基盤は優先度を下げる）
-  if (upperBase.startsWith('SSOT_DEV-')) score -= 400;
+  // NOTE: DEVタスク運用では SSOT_DEV-**** が主SSOTになることも多いため、ここでは減点しない
   if (upperBase.startsWith('SSOT__')) score -= 300;
   if (filePath.includes(`${path.sep}00_foundation${path.sep}`)) score -= 200;
 
