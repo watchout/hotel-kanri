@@ -126,7 +126,11 @@ function loadEnv() {
   const ROOT = path.resolve(__dirname, '../../..');
   const env = {};
   try {
-    const content = fs.readFileSync(path.join(ROOT, '.env.mcp'), 'utf8');
+    const envFilePath = path.join(ROOT, '.env.mcp');
+    // .env.mcp はgitignore想定。存在しない環境（CI/Claude Web等）では静かに空を返す
+    if (!fs.existsSync(envFilePath)) return env;
+
+    const content = fs.readFileSync(envFilePath, 'utf8');
     const lines = content.split(/\r?\n/);
     
     for (let line of lines) {
@@ -151,6 +155,7 @@ function loadEnv() {
       env[match[1]] = value;
     }
   } catch (err) {
+    // ここで落とさない（環境変数での設定を許可する）
     console.error('⚠️  .env.mcpの読み込みに失敗しました:', err.message);
   }
   return env;
@@ -164,14 +169,17 @@ function loadEnv() {
 function getPlaneConfig() {
   const env = loadEnv();
   
-  let host = env.PLANE_API_HOST_URL || '';
+  // 優先順位: process.env（クラウド/CI） > .env.mcp（ローカル）
+  const get = (k) => (process.env[k] ?? env[k] ?? '');
+
+  let host = get('PLANE_API_HOST_URL');
   if (host && !/^https?:\/\//i.test(host)) {
     host = 'https://' + host;
   }
   
-  const apiKey = env.PLANE_API_KEY || '';
-  const workspace = env.PLANE_WORKSPACE_SLUG || env.PLANE_WORKSPACE_ID || '';
-  const projectId = env.PLANE_PROJECT_ID || '';
+  const apiKey = get('PLANE_API_KEY');
+  const workspace = get('PLANE_WORKSPACE_SLUG') || get('PLANE_WORKSPACE_ID');
+  const projectId = get('PLANE_PROJECT_ID');
   
   if (!host) {
     throw new Error('❌ PLANE_API_HOST_URL が設定されていません');
