@@ -84,6 +84,9 @@ const CONFIG = {
     common: COMMON_DIR,
     saas: SAAS_DIR
   },
+  // 親タスクに ssot: が無い場合はSTOP（推定で進めると取り違えが起きるため）
+  // 例外的に推定を許可したい場合: AUTODEV_V3_REQUIRE_SSOT_LINK=0
+  requireSsotLink: (process.env.AUTODEV_V3_REQUIRE_SSOT_LINK || '1') !== '0',
   // PR対象repo（カンマ区切り）
   // 例: "common,saas"（デフォルト） / "kanri,common,saas"
   prRepos: String(process.env.AUTODEV_V3_PR_REPOS || 'common,saas')
@@ -568,6 +571,81 @@ function extractAllIdsFromText(text) {
   return { devIds: [...devIds], comIds: [...comIds] };
 }
 
+function stripHtmlToText(html) {
+  const s = String(html || '');
+  if (!s) return '';
+  return s
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>\s*<p>/gi, '\n')
+    .replace(/<\/?[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .trim();
+}
+
+function getPlaneIssueCombinedText(issue) {
+  const desc = String(issue?.description || '').trim();
+  const htmlText = stripHtmlToText(issue?.description_html || '');
+  return [desc, htmlText].filter(Boolean).join('\n');
+}
+
+function extractSsotRefsFromText(text) {
+  const s = String(text || '');
+  if (!s) return [];
+
+  const refs = [];
+  const lines = s.split(/\r?\n/);
+  let inBlock = false;
+
+  for (const line of lines) {
+    const trimmed = String(line || '').trim();
+
+    // ブロックの終了（空行）
+    if (!trimmed) {
+      if (inBlock) break;
+      continue;
+    }
+
+    // ssot: / SSOT: の開始（インライン or ブロック）
+    const mStart = trimmed.match(/^(ssot|SSOT):\s*(.*)$/);
+    if (mStart) {
+      const rest = String(mStart[2] || '').trim();
+      if (rest) {
+        // インライン指定
+        const found = rest.match(/docs\/03_ssot\/[^\s"'<>\]]+\.md/gi) || [];
+        if (found.length > 0) refs.push(...found);
+        else if (/^SSOT_[A-Z0-9_-]+\.md$/i.test(rest)) refs.push(rest);
+        inBlock = false;
+      } else {
+        // ssot: の後に箇条書きで続くブロック
+        inBlock = true;
+      }
+      continue;
+    }
+
+    if (inBlock) {
+      const found = trimmed.match(/docs\/03_ssot\/[^\s"'<>\]]+\.md/gi) || [];
+      if (found.length > 0) {
+        refs.push(...found);
+        continue;
+      }
+      const mFile = trimmed.match(/SSOT_[A-Z0-9_-]+\.md/i);
+      if (mFile) {
+        refs.push(mFile[0]);
+        continue;
+      }
+      // 想定外の行が出たらブロック終了
+      break;
+    }
+  }
+
+  return [...new Set(refs)];
+}
+
+function extractSsotRefsFromPlaneIssue(issue) {
+  const text = getPlaneIssueCombinedText(issue);
+  return extractSsotRefsFromText(text);
+}
+
 function buildSsotSearchNeedles({ parentTaskId, parentIssueName, subIssueNames }) {
   const allText = [parentTaskId, parentIssueName, ...(subIssueNames || [])].filter(Boolean).join('\n');
   const { devIds, comIds } = extractAllIdsFromText(allText);
@@ -663,32 +741,96 @@ function scoreSsotCandidate({ filePath, content, needles }) {
   return score;
 }
 
-function resolveParentSsotPaths({ parentTaskId, parentIssueName, subIssues }) {
+function resolveParentSsotPaths({ parentTaskId, parentIssue, subIssues }) {
   const ssotRoot = path.join(CONFIG.repos.kanri, 'docs/03_ssot');
   const files = listMarkdownFilesRecursive(ssotRoot).filter((p) => path.basename(p).startsWith('SSOT_'));
   const needles = buildSsotSearchNeedles({
     parentTaskId,
-    parentIssueName,
+    parentIssueName: parentIssue?.name,
     subIssueNames: (subIssues || []).map((i) => i?.name).filter(Boolean)
   });
 
-  const scored = [];
+  const explicitRefs = extractSsotRefsFromPlaneIssue(parentIssue);
+  const selectedFromExplicit = [];
+  const invalidRefs = [];
+
+  // fileName index（SSOT_*.md だけ渡された場合に解決）
+  const byBase = new Map();
   for (const filePath of files) {
-    let content = '';
-    try {
-      content = fs.readFileSync(filePath, 'utf8');
-    } catch {
-      continue;
-    }
-    const score = scoreSsotCandidate({ filePath, content, needles });
-    if (score > 0) {
-      scored.push({ filePath, score });
-    }
+    const base = path.basename(filePath);
+    if (!byBase.has(base)) byBase.set(base, []);
+    byBase.get(base).push(filePath);
   }
 
-  scored.sort((a, b) => b.score - a.score);
-  const selected = scored.slice(0, 3).map((x) => x.filePath);
-  return { selected, scoredTop: scored.slice(0, 10), needles };
+  for (const ref of explicitRefs) {
+    const r = String(ref || '').trim();
+    if (!r) continue;
+
+    // 推奨: docs/03_ssot/... を相対で指定（クラウドでも動く）
+    if (/^docs\/03_ssot\/.+\.md$/i.test(r)) {
+      const abs = path.join(CONFIG.repos.kanri, r);
+      if (fs.existsSync(abs)) {
+        selectedFromExplicit.push(abs);
+      } else {
+        invalidRefs.push({ ref: r, reason: 'file_not_found', resolvedPath: abs });
+      }
+      continue;
+    }
+
+    // 互換: SSOT_XXXX.md のみ指定（ファイル名が一意の場合に解決）
+    if (/^SSOT_[A-Z0-9_-]+\.md$/i.test(r)) {
+      const hits = byBase.get(r) || [];
+      if (hits.length === 1) {
+        selectedFromExplicit.push(hits[0]);
+      } else if (hits.length === 0) {
+        invalidRefs.push({ ref: r, reason: 'file_not_found' });
+      } else {
+        invalidRefs.push({ ref: r, reason: 'ambiguous_file_name', candidates: hits.slice(0, 5) });
+      }
+      continue;
+    }
+
+    // 絶対パスは環境依存で壊れやすいので禁止扱い
+    if (r.startsWith('/')) {
+      invalidRefs.push({ ref: r, reason: 'absolute_path_not_allowed' });
+      continue;
+    }
+
+    invalidRefs.push({ ref: r, reason: 'invalid_format' });
+  }
+
+  const selectedExplicitDedup = [...new Set(selectedFromExplicit)];
+
+  // 0170系の実績優先などのスコアリングは「候補提示」用途のみ（リンクが無い時のヒント）
+  const scored = [];
+  const shouldScoreForHints = selectedExplicitDedup.length === 0;
+  if (shouldScoreForHints) {
+    for (const filePath of files) {
+      let content = '';
+      try {
+        content = fs.readFileSync(filePath, 'utf8');
+      } catch {
+        continue;
+      }
+      const score = scoreSsotCandidate({ filePath, content, needles });
+      if (score > 0) {
+        scored.push({ filePath, score });
+      }
+    }
+    scored.sort((a, b) => b.score - a.score);
+  }
+
+  if (CONFIG.requireSsotLink) {
+    return { selected: selectedExplicitDedup, scoredTop: scored.slice(0, 10), needles, explicitRefs, invalidRefs };
+  }
+
+  // 互換モード: 明示があればそれを使い、無ければ推定でトップ3
+  if (selectedExplicitDedup.length > 0) {
+    return { selected: selectedExplicitDedup, scoredTop: scored.slice(0, 10), needles, explicitRefs, invalidRefs };
+  }
+
+  const fallbackSelected = scored.slice(0, 3).map((x) => x.filePath);
+  return { selected: fallbackSelected, scoredTop: scored.slice(0, 10), needles, explicitRefs, invalidRefs };
 }
 
 // ===== サブタスク分類（repo選択）=====
@@ -1555,33 +1697,6 @@ async function main() {
     process.exit(1);
   }
 
-  // タスク開始: PlaneをIn Progressへ（ベストエフォート） + Discord通知
-  if (!dryRun) {
-    logger.step('plane', 'Planeステータス更新（In Progress）…');
-    await updatePlaneIssueStateSafe({
-      logger,
-      issueId: parentIssue?.id,
-      stateId: PLANE_STATES.IN_PROGRESS,
-      label: `parent ${taskId} start`
-    });
-    for (const si of subIssues || []) {
-      await updatePlaneIssueStateSafe({
-        logger,
-        issueId: si?.id,
-        stateId: PLANE_STATES.IN_PROGRESS,
-        label: `subTask start (${extractDevId(si?.name) || si?.id})`
-      });
-    }
-
-    if (CONFIG.discordNotify) {
-      try {
-        await discord.notifyTaskStart(taskId, parentIssue?.name || taskId);
-      } catch {
-        // no-op
-      }
-    }
-  }
-
   if (!state) {
     state = buildInitialState({ taskId, runId, dryRun, parentIssue, subIssues });
     state.artifacts.runDir = runDir;
@@ -1597,20 +1712,24 @@ async function main() {
     logger.step('ssot-resolve', '親SSOTを解決中…');
     const resolved = resolveParentSsotPaths({
       parentTaskId: taskId,
-      parentIssueName: parentIssue?.name,
+      parentIssue,
       subIssues
     });
     state.artifacts.ssotPaths = resolved.selected;
     saveState(runDir, state);
     if (resolved.selected.length === 0) {
+      const topHints = (resolved.scoredTop || []).slice(0, 5).map((x) => x.filePath).join(', ');
+      const invalid = Array.isArray(resolved.invalidRefs) && resolved.invalidRefs.length > 0
+        ? `\n- invalidRefs: ${JSON.stringify(resolved.invalidRefs).slice(0, 800)}`
+        : '';
       await stopAndExit({
         state,
         runDir,
         logger,
         taskId,
         taskName: state.parent.name || taskId,
-        reason: 'SSOT不在',
-        actionRequired: `親タスクに紐づくSSOTが特定できません。\n- 対応: Planeに ssot: を追加する、またはSSOT側に ${taskId} / 子タスクID の参照を追記\n- top候補: ${(resolved.scoredTop || []).slice(0, 5).map((x) => x.filePath).join(', ')}`,
+        reason: 'SSOT未リンク（親タスクにssot:が必要）',
+        actionRequired: `Planeの親タスクDescriptionに ssot: を追加してください（推定で進めると取り違えが起きるため停止します）。\n\n例:\nssot:\n- docs/03_ssot/.../SSOT_XXXX.md\n- docs/03_ssot/.../SSOT_YYYY.md\n\n- task: ${taskId}\n- top候補（ヒント）: ${topHints || '(なし)'}${invalid}`,
         details: { needles: resolved.needles, top10: resolved.scoredTop }
       });
     }
@@ -1618,6 +1737,41 @@ async function main() {
       selected: resolved.selected,
       top10: resolved.scoredTop
     });
+  }
+
+  // タスク開始: PlaneをIn Progressへ（ベストエフォート） + Discord通知
+  // 重要: ssot: 未リンクのタスクは開始しない（Plane状態を動かさない）
+  if (!dryRun) {
+    // 二重通知を避けるため、初回のみ実行
+    if (!state.artifacts?.planeStartedAt) {
+      state.artifacts = state.artifacts || {};
+      state.artifacts.planeStartedAt = nowIso();
+      saveState(runDir, state);
+
+      logger.step('plane', 'Planeステータス更新（In Progress）…');
+      await updatePlaneIssueStateSafe({
+        logger,
+        issueId: parentIssue?.id,
+        stateId: PLANE_STATES.IN_PROGRESS,
+        label: `parent ${taskId} start`
+      });
+      for (const si of subIssues || []) {
+        await updatePlaneIssueStateSafe({
+          logger,
+          issueId: si?.id,
+          stateId: PLANE_STATES.IN_PROGRESS,
+          label: `subTask start (${extractDevId(si?.name) || si?.id})`
+        });
+      }
+
+      if (CONFIG.discordNotify) {
+        try {
+          await discord.notifyTaskStart(taskId, parentIssue?.name || taskId);
+        } catch {
+          // no-op
+        }
+      }
+    }
   }
 
   // サブタスクごとのrepo計画を作成（dry-run/実行共通）
