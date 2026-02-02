@@ -94,7 +94,10 @@ const CONFIG = {
     .map((s) => s.trim())
     .filter(Boolean),
   // SSOT系サブタスクは「SSOTが事前に用意される」前提なら実装をスキップ（PR汚染防止）
-  skipSsotSubTasks: (process.env.AUTODEV_V3_SKIP_SSOT_SUBTASKS || '1') !== '0'
+  skipSsotSubTasks: (process.env.AUTODEV_V3_SKIP_SSOT_SUBTASKS || '1') !== '0',
+  // 標準テストをスキップ（CIに任せる場合）: AUTODEV_V3_SKIP_TESTS=1
+  // Claude Code Web等、サーバー起動が困難な環境向け
+  skipTests: (process.env.AUTODEV_V3_SKIP_TESTS || '0') === '1'
 };
 
 const PLANE_STATES = {
@@ -2025,10 +2028,16 @@ async function main() {
     state.cursor.stage = 'tests';
     saveState(runDir, state);
 
-    logger.step('tests', '標準テスト（admin/guest）→修正→再テスト…');
-    const testTypes = determineTestTypesFromState(state);
-    const reposToFix = [...reposToTouch].filter((r) => r !== 'kanri');
-    state.tests = state.tests || {};
+    // テストスキップ（CIに任せる場合）
+    if (CONFIG.skipTests) {
+      logger.info('tests', 'AUTODEV_V3_SKIP_TESTS=1 のため標準テストをスキップ（CIでテスト）');
+      state.tests = { admin: { skipped: true }, guest: { skipped: true } };
+      saveState(runDir, state);
+    } else {
+      logger.step('tests', '標準テスト（admin/guest）→修正→再テスト…');
+      const testTypes = determineTestTypesFromState(state);
+      const reposToFix = [...reposToTouch].filter((r) => r !== 'kanri');
+      state.tests = state.tests || {};
 
     for (const testType of testTypes) {
       if (state.tests?.[testType]?.passed) {
@@ -2118,6 +2127,7 @@ async function main() {
         });
       }
     }
+    } // end of else (skipTests=false)
 
     state.cursor.stage = 'pr';
     saveState(runDir, state);
