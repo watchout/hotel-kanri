@@ -1,0 +1,85 @@
+name: Claude Auto Dev
+
+on:
+  # 手動トリガー（タスクID指定）
+  workflow_dispatch:
+    inputs:
+      task_id:
+        description: 'Plane Task ID (e.g., DEV-0170)'
+        required: true
+        type: string
+      model:
+        description: 'Model to use'
+        required: false
+        default: 'claude-sonnet-4-5-20250929'
+        type: choice
+        options:
+          - claude-sonnet-4-5-20250929
+          - claude-opus-4-6
+      max_turns:
+        description: 'Max turns'
+        required: false
+        default: '30'
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-dev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout hotel-kanri
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout hotel-common-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-common-rebuild
+          path: .repos/hotel-common-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout hotel-saas-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-saas-rebuild
+          path: .repos/hotel-saas-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            あなたは hotel-kanri プロジェクトの自動開発AIです。
+
+            ## タスク
+            Plane タスク ${{ github.event.inputs.task_id }} を実装してください。
+
+            ## 手順
+            1. CLAUDE.md を読んでプロジェクト構造を理解
+            2. docs/03_ssot/ から該当するSSOTドキュメントを確認
+            3. .repos/hotel-common-rebuild/ でAPI実装（必要な場合）
+            4. .repos/hotel-saas-rebuild/ でUI実装（必要な場合）
+            5. テストを実行して動作確認
+            6. 変更内容をコミット
+
+            ## 絶対禁止
+            - hotel-saas で Prisma 直接使用
+            - hotel-saas で $fetch 直接使用（callHotelCommonAPI を使う）
+            - tenant_id のフォールバック値（|| 'default'）
+            - any 型の使用
+            - 環境分岐（process.env.NODE_ENV）
+
+            ## 品質基準
+            - TypeScript strict モード準拠
+            - SSOT に記載された要件を100%実装
+            - エラーハンドリング必須
+          claude_args: >-
+            --max-turns ${{ github.event.inputs.max_turns }}
+            --model ${{ github.event.inputs.model }}
