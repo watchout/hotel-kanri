@@ -99,6 +99,48 @@ SSOTドキュメントには必ず対象リポジトリを明記すること：
 
 ---
 
+## 📦 Self-Contained Instructions Rule (自己完結型指示ルール)
+
+他リポジトリ（hotel-common-rebuild、hotel-saas-rebuild）に送る実装指示は、**完全自己完結型**でなければならない。
+
+### ルール
+
+1. **SSOT内容を埋め込む**: 指示書内にSSOT内容をすべて含める（他リポのファイル参照禁止）
+2. **Phase分離**: API側（hotel-common）を先に実装、UI側（hotel-saas）を後に実装
+3. **連続実行指示**: 1タスク完了 → 次タスクへ自動進行
+4. **停止条件を明記**: CORE/CONTRACT不明、矛盾、破壊的変更、セキュリティ懸念
+
+### 指示ファイルの配置
+
+```
+docs/04_implementation_instructions/
+├── PHASE1_COMMON_INSTRUCTIONS.md   # hotel-common-rebuild 用
+└── PHASE2_SAAS_INSTRUCTIONS.md     # hotel-saas-rebuild 用
+```
+
+### 指示書テンプレート構成
+
+```markdown
+# Phase N: [リポジトリ名] 連続実行指示
+
+## 実行ルール
+- TDD強制（テスト先行）
+- 停止条件
+
+## タスク1: [タスクID] - [タスク名]
+### 概要
+### データベース設計（Prismaスキーマ埋め込み）
+### API仕様（リクエスト/レスポンス埋め込み）
+### 実装ファイル一覧
+### テスト要件
+
+## タスク2: ...
+
+## 実行チェックリスト
+```
+
+---
+
 ## 🛡️ 絶対禁止パターン
 
 ### hotel-saasで禁止
