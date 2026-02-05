@@ -3,5 +3,8 @@ node_modules
 .output/
 evidence/auto-dev/
 
+# 自動生成レポート
+.cursor/ssot-consistency-report.json
+
 # MCP環境変数（秘密情報）
 .env.mcp
