@@ -1,0 +1,148 @@
+{
+  "ssotName": "SSOT_SAAS_DEVICE_AUTHENTICATION",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_SAAS_DEVICE_AUTHENTICATION.md",
+  "timestamp": "2026-02-01T23:06:53.570Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": "テーブル名がsnake_caseで定義されている"
+        },
+        "T02": {
+          "pass": true,
+          "comment": "カラム名がsnake_caseで定義されている"
+        },
+        "T03": {
+          "pass": true,
+          "comment": "Prisma @mapが正しく使用されている"
+        },
+        "T04": {
+          "pass": true,
+          "comment": "tenant_idのインデックスが設定されている"
+        },
+        "T05": {
+          "pass": true,
+          "comment": "リレーション定義が適切に行われている"
+        },
+        "T06": {
+          "pass": true,
+          "comment": "APIパス形式が適切である"
+        },
+        "T07": {
+          "pass": true,
+          "comment": "APIの深いネストがない"
+        },
+        "T08": {
+          "pass": true,
+          "comment": "HTTPメソッドが適切に使用されている"
+        },
+        "T09": {
+          "pass": true,
+          "comment": "レスポンス形式が統一されている"
+        },
+        "T10": {
+          "pass": true,
+          "comment": "エラーコードが定義されている"
+        },
+        "T11": {
+          "pass": true,
+          "comment": "SessionUser形式が適切である"
+        },
+        "T12": {
+          "pass": true,
+          "comment": "tenant_idが必須であることが明記されている"
+        },
+        "T13": {
+          "pass": true,
+          "comment": "権限チェックの記述がある"
+        },
+        "T14": {
+          "pass": true,
+          "comment": "認証エラーハンドリングが適切に行われている"
+        },
+        "T15": {
+          "pass": true,
+          "comment": "セキュリティ要件が満たされている"
+        }
+      },
+      "issues": [],
+      "score": 50,
+      "summary": "技術的な品質は良好"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": "要件ID体系（XXX-001）が適切に使用されている。"
+        },
+        "I02": {
+          "pass": true,
+          "comment": "全要件にIDが付与されている。"
+        },
+        "I03": {
+          "pass": true,
+          "comment": "全ての要件にAccept条件が明記されている。"
+        },
+        "I04": {
+          "pass": true,
+          "comment": "Accept条件が検証可能である。"
+        },
+        "I05": {
+          "pass": true,
+          "comment": "全ての要件に優先度が明記されている。"
+        },
+        "I06": {
+          "pass": true,
+          "comment": "実装チェックリストが存在する。"
+        },
+        "I07": {
+          "pass": true,
+          "comment": "Phase分けが明確である。"
+        },
+        "I08": {
+          "pass": true,
+          "comment": "各Phaseの完了条件が明記されている。"
+        },
+        "I09": {
+          "pass": true,
+          "comment": "テストケースが定義されている。"
+        },
+        "I10": {
+          "pass": true,
+          "comment": "エラーケースが列挙されている。"
+        },
+        "I11": {
+          "pass": true,
+          "comment": "ユーザー表示メッセージが明記されている。"
+        },
+        "I12": {
+          "pass": true,
+          "comment": "技術視点が考慮されている。"
+        },
+        "I13": {
+          "pass": true,
+          "comment": "ビジネス視点が考慮されている。"
+        },
+        "I14": {
+          "pass": true,
+          "comment": "UX視点が考慮されている。"
+        },
+        "I15": {
+          "pass": true,
+          "comment": "変更履歴が明記されている。"
+        }
+      },
+      "issues": [],
+      "score": 50,
+      "summary": "実装可能性は良好"
+    }
+  },
+  "totalScore": 100,
+  "totalCost": 0.0051579,
+  "issues": {
+    "critical": [],
+    "warning": [],
+    "info": []
+  }
+}

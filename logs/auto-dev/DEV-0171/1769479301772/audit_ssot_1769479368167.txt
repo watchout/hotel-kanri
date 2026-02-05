@@ -1,0 +1,28 @@
+{
+  "score": 85,
+  "passed": false,
+  "issues": [
+    "技術仕様におけるリクエスト/レスポンスの例が一部不足している",
+    "Accept条件が具体的な合格基準としてやや曖昧",
+    "API設計において、削除APIのレスポンス例が不足している。",
+    "Accept条件のチェックリスト形式は良いが、各項目の具体的な検証方法が不明確。",
+    "DB設計において、インデックス設計が不十分。profile_historyテーブルの複合インデックスのみで、単一のuser_idでの検索に対する最適化が不足している可能性がある。"
+  ],
+  "fixes": [
+    "全てのエンドポイントに対してリクエスト/レスポンスの例を追加する",
+    "Accept条件に具体的な数値や基準を明記し、より明確にする",
+    "削除APIに成功時のレスポンス例（204 No Contentなど）を追加する。",
+    "Accept条件の各項目に対して、具体的な検証方法（テストケースへの参照、監視メトリクスなど）を明記する。",
+    "user_idに対する単一インデックスをprofile_historyテーブルに追加することを検討する。"
+  ],
+  "criticalIssues": [],
+  "gptScore": 85,
+  "geminiScore": 85,
+  "breakdown": {
+    "structure": 18,
+    "techSpec": 15,
+    "errorHandling": 17,
+    "testCases": 18,
+    "acceptCriteria": 17
+  }
+}

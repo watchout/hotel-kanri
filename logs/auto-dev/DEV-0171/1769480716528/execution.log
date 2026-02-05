@@ -1,0 +1,6 @@
+[2026-01-27T02:25:16.533Z] 🔄 SSOT生成開始
+[2026-01-27T02:25:16.534Z] 🔍 証跡保存: claude_prompt_1769480716534
+[2026-01-27T02:25:16.534Z] 📋 Claude Code CLI実行中（Opus 4.5）...
+[2026-01-27T03:05:31.810Z] ❌ Claude CLI エラー: spawnSync claude ETIMEDOUT
+[2026-01-27T03:05:32.025Z] 🔍 証跡保存: claude_error_1769483132024
+[2026-01-27T03:05:32.057Z] ❌ SSOT生成生成失敗: spawnSync claude ETIMEDOUT

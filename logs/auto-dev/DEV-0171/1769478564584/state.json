@@ -1,0 +1,13 @@
+{
+  "taskId": "DEV-0171",
+  "startedAt": "2026-01-27T01:49:24.584Z",
+  "currentStep": "ssot",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/02_guest_features/SSOT_DEV-0171.md",
+  "promptPath": null,
+  "attempts": {
+    "ssot": 0,
+    "prompt": 0,
+    "implementation": 0,
+    "test": 0
+  }
+}

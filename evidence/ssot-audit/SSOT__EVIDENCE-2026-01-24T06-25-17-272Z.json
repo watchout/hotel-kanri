@@ -1,0 +1,238 @@
+{
+  "ssotName": "SSOT__EVIDENCE",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT__EVIDENCE.md",
+  "timestamp": "2026-01-24T06:24:59.573Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": false,
+          "comment": "Prisma @map未使用"
+        },
+        "T04": {
+          "pass": true,
+          "comment": ""
+        },
+        "T05": {
+          "pass": true,
+          "comment": ""
+        },
+        "T06": {
+          "pass": true,
+          "comment": ""
+        },
+        "T07": {
+          "pass": true,
+          "comment": ""
+        },
+        "T08": {
+          "pass": true,
+          "comment": ""
+        },
+        "T09": {
+          "pass": true,
+          "comment": ""
+        },
+        "T10": {
+          "pass": true,
+          "comment": ""
+        },
+        "T11": {
+          "pass": true,
+          "comment": ""
+        },
+        "T12": {
+          "pass": true,
+          "comment": ""
+        },
+        "T13": {
+          "pass": true,
+          "comment": ""
+        },
+        "T14": {
+          "pass": true,
+          "comment": ""
+        },
+        "T15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        },
+        {
+          "severity": "warning",
+          "id": "T03",
+          "title": "Prisma @map未使用",
+          "location": "### データベース設計",
+          "description": "Prismaスキーマで@mapを使用していないため、DBカラム名と一致しない可能性がある",
+          "recommendation": "Prismaスキーマに@mapを追加してDBカラム名と一致させる"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり。Prismaスキーマの改善が必要。"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": "要件ID体系が適切に設定されています。"
+        },
+        "I02": {
+          "pass": true,
+          "comment": "全ての要件にIDが付与されています。"
+        },
+        "I03": {
+          "pass": true,
+          "comment": "Accept条件が明記されています。"
+        },
+        "I04": {
+          "pass": true,
+          "comment": "Accept条件は検証可能です。"
+        },
+        "I05": {
+          "pass": false,
+          "comment": "優先度が明記されていません。"
+        },
+        "I06": {
+          "pass": true,
+          "comment": "実装チェックリストがあります。"
+        },
+        "I07": {
+          "pass": true,
+          "comment": "Phase分けが明確です。"
+        },
+        "I08": {
+          "pass": true,
+          "comment": "各Phaseの完了条件が定義されています。"
+        },
+        "I09": {
+          "pass": true,
+          "comment": "テストケースが定義されています。"
+        },
+        "I10": {
+          "pass": true,
+          "comment": "エラーケースが列挙されています。"
+        },
+        "I11": {
+          "pass": false,
+          "comment": "ユーザー表示メッセージが不足しています。"
+        },
+        "I12": {
+          "pass": true,
+          "comment": "技術視点が含まれています。"
+        },
+        "I13": {
+          "pass": true,
+          "comment": "ビジネス視点が含まれています。"
+        },
+        "I14": {
+          "pass": false,
+          "comment": "UX視点が不足しています。"
+        },
+        "I15": {
+          "pass": true,
+          "comment": "変更履歴が記載されています。"
+        }
+      },
+      "issues": [
+        {
+          "severity": "warning",
+          "id": "I05",
+          "title": "優先度の欠如",
+          "location": "### 要件定義セクション",
+          "description": "要件に優先度が定義されていません。",
+          "recommendation": "各要件に優先度を追加してください。"
+        },
+        {
+          "severity": "warning",
+          "id": "I11",
+          "title": "ユーザー表示メッセージ不足",
+          "location": "### エラーハンドリングセクション",
+          "description": "エラー時のユーザー表示メッセージが不足しています。",
+          "recommendation": "ユーザーに対する適切なエラーメッセージを追加してください。"
+        },
+        {
+          "severity": "info",
+          "id": "I14",
+          "title": "UX視点の欠如",
+          "location": "### 多視点セクション",
+          "description": "UX視点が不足しています。",
+          "recommendation": "ユーザー体験を考慮した設計を追加してください。"
+        }
+      ],
+      "score": 42,
+      "summary": "全体的に要件定義は明確であり、Accept条件も適切に定義されていますが、優先度とUX視点に関する改善が必要です。"
+    }
+  },
+  "totalScore": 84,
+  "totalCost": 0.0011856,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      }
+    ],
+    "warning": [
+      {
+        "severity": "warning",
+        "id": "T03",
+        "title": "Prisma @map未使用",
+        "location": "### データベース設計",
+        "description": "Prismaスキーマで@mapを使用していないため、DBカラム名と一致しない可能性がある",
+        "recommendation": "Prismaスキーマに@mapを追加してDBカラム名と一致させる",
+        "audit": "technical"
+      },
+      {
+        "severity": "warning",
+        "id": "I05",
+        "title": "優先度の欠如",
+        "location": "### 要件定義セクション",
+        "description": "要件に優先度が定義されていません。",
+        "recommendation": "各要件に優先度を追加してください。",
+        "audit": "implementability"
+      },
+      {
+        "severity": "warning",
+        "id": "I11",
+        "title": "ユーザー表示メッセージ不足",
+        "location": "### エラーハンドリングセクション",
+        "description": "エラー時のユーザー表示メッセージが不足しています。",
+        "recommendation": "ユーザーに対する適切なエラーメッセージを追加してください。",
+        "audit": "implementability"
+      }
+    ],
+    "info": [
+      {
+        "severity": "info",
+        "id": "I14",
+        "title": "UX視点の欠如",
+        "location": "### 多視点セクション",
+        "description": "UX視点が不足しています。",
+        "recommendation": "ユーザー体験を考慮した設計を追加してください。",
+        "audit": "implementability"
+      }
+    ]
+  }
+}

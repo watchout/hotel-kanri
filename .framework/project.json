@@ -1,0 +1,41 @@
+{
+  "name": "hotel-saas",
+  "type": "app",
+  "version": "1.0.0",
+  "framework": "ai-dev-framework",
+  "frameworkVersion": "3.0.0",
+  "repositories": {
+    "kanri": {
+      "path": "/Users/kaneko/hotel-kanri",
+      "role": "司令塔（SSOT管理）",
+      "hasImplementation": false
+    },
+    "common": {
+      "path": "/Users/kaneko/hotel-common-rebuild",
+      "role": "API基盤 + DB層",
+      "hasImplementation": true,
+      "tddEnforced": true
+    },
+    "saas": {
+      "path": "/Users/kaneko/hotel-saas-rebuild",
+      "role": "フロントエンド + APIプロキシ",
+      "hasImplementation": true,
+      "tddEnforced": false
+    }
+  },
+  "taskManagement": {
+    "tool": "plane",
+    "projectId": "7e187231-3f93-44cd-9892-a9322ebd4312"
+  },
+  "ssotLayers": {
+    "core": "docs/03_ssot/00_foundation/",
+    "contract": "docs/03_ssot/CROSS_CUTTING_API_CONTRACT.md",
+    "detail": "docs/03_ssot/01_admin_features/, docs/03_ssot/02_guest_features/"
+  },
+  "autoDevIntegration": {
+    "enabled": true,
+    "scriptPath": "scripts/auto-dev/",
+    "prRepos": ["common", "saas"],
+    "skipSsotSubtasks": true
+  }
+}

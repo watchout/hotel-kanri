@@ -1,0 +1,251 @@
+# タスク DEV-0171 SSOT
+
+## 概要・目的
+
+### 背景
+ユーザーがプロフィール情報を効率的に管理できるシステムを構築する。現在の手動管理から自動化されたプロフィール管理システムへの移行を目指す。
+
+### 実現内容
+- ユーザープロフィールの作成、更新、取得、削除機能
+- プロフィール画像のアップロード・管理
+- プライバシー設定の管理
+- プロフィールの公開/非公開制御
+- プロフィール変更履歴の記録
+
+### 期待効果
+- ユーザーエクスペリエンスの向上
+- プロフィール管理の自動化
+- データ整合性の確保
+- セキュリティの強化
+
+### 対象ユーザー
+- 一般ユーザー（プロフィール管理）
+- 管理者（ユーザー情報監視）
+
+## スコープ
+
+### 対象範囲
+- ユーザープロフィール基本情報のCRUD操作
+- プロフィール画像の管理（アップロード、削除）
+- プライバシー設定の管理
+- プロフィール公開設定
+- 変更履歴の記録・参照
+
+### 除外範囲
+- ユーザー認証・認可機能
+- メール通知機能
+- SNS連携機能
+- 高度な画像編集機能
+- バックアップ・リストア機能
+
+### 技術制約
+- REST API形式
+- JSON形式でのデータ交換
+- 画像ファイルサイズ上限: 5MB
+- 対応画像形式: JPEG, PNG, WebP
+
+## API設計
+
+### エンドポイント一覧
+
+#### 1. プロフィール取得
+```http
+GET /api/v1/users/{userId}/profile
+```
+
+**レスポンス例:**
+```json
+{
+  "userId": "12345",
+  "displayName": "田中太郎",
+  "bio": "エンジニアです",
+  "avatarUrl": "https://example.com/avatar/12345.jpg",
+  "isPublic": true,
+  "createdAt": "2024-01-01T00:00:00Z",
+  "updatedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+#### 2. プロフィール更新
+```http
+PUT /api/v1/users/{userId}/profile
+Content-Type: application/json
+```
+
+**リクエスト例:**
+```json
+{
+  "displayName": "田中次郎",
+  "bio": "フルスタックエンジニア",
+  "isPublic": false
+}
+```
+
+#### 3. プロフィール画像アップロード
+```http
+POST /api/v1/users/{userId}/profile/avatar
+Content-Type: multipart/form-data
+```
+
+**リクエスト例:**
+```
+file: [画像ファイル]
+```
+
+**レスポンス例:**
+```json
+{
+  "avatarUrl": "https://example.com/avatar/12345.jpg",
+  "uploadedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+#### 4. プロフィール削除
+```http
+DELETE /api/v1/users/{userId}/profile
+```
+
+#### 5. プロフィール履歴取得
+```http
+GET /api/v1/users/{userId}/profile/history?limit=10&offset=0
+```
+
+## DB設計
+
+### user_profiles テーブル
+```sql
+CREATE TABLE user_profiles (
+  user_id VARCHAR(36) PRIMARY KEY,
+  display_name VARCHAR(100) NOT NULL,
+  bio TEXT,
+  avatar_url VARCHAR(500),
+  is_public BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### profile_history テーブル
+```sql
+CREATE TABLE profile_history (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id VARCHAR(36) NOT NULL,
+  field_name VARCHAR(50) NOT NULL,
+  old_value TEXT,
+  new_value TEXT,
+  changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_user_id_changed_at (user_id, changed_at)
+);
+```
+
+## エラー処理
+
+### エラーコード定義
+
+#### 400 Bad Request
+- `INVALID_DISPLAY_NAME`: 表示名が不正（空文字、長すぎる等）
+- `INVALID_BIO`: 自己紹介が不正（長すぎる等）
+- `INVALID_FILE_FORMAT`: 対応していないファイル形式
+- `FILE_TOO_LARGE`: ファイルサイズが上限を超過
+
+#### 401 Unauthorized
+- `AUTHENTICATION_REQUIRED`: 認証が必要
+
+#### 403 Forbidden
+- `INSUFFICIENT_PERMISSION`: 権限不足
+
+#### 404 Not Found
+- `PROFILE_NOT_FOUND`: プロフィールが存在しない
+- `USER_NOT_FOUND`: ユーザーが存在しない
+
+#### 409 Conflict
+- `PROFILE_ALREADY_EXISTS`: プロフィールが既に存在
+
+#### 500 Internal Server Error
+- `DATABASE_ERROR`: データベースエラー
+- `FILE_UPLOAD_ERROR`: ファイルアップロードエラー
+
+### エラーレスポンス形式
+```json
+{
+  "error": {
+    "code": "INVALID_DISPLAY_NAME",
+    "message": "表示名は1文字以上100文字以下で入力してください",
+    "details": {}
+  }
+}
+```
+
+## テストケース
+
+### 正常系テストケース
+
+#### TC-001: プロフィール作成
+- **前提条件**: 新規ユーザー
+- **実行**: 有効なプロフィール情報でPOST
+- **期待結果**: 201 Created、プロフィール作成成功
+
+#### TC-002: プロフィール取得
+- **前提条件**: プロフィール存在
+- **実行**: GET /api/v1/users/{userId}/profile
+- **期待結果**: 200 OK、プロフィール情報取得
+
+#### TC-003: プロフィール更新
+- **前提条件**: プロフィール存在
+- **実行**: 有効な更新データでPUT
+- **期待結果**: 200 OK、更新成功
+
+#### TC-004: 画像アップロード
+- **前提条件**: 有効な画像ファイル（JPEG、2MB）
+- **実行**: POST /api/v1/users/{userId}/profile/avatar
+- **期待結果**: 200 OK、画像URL返却
+
+### 異常系テストケース
+
+#### TC-101: 不正な表示名
+- **実行**: 空文字の表示名でプロフィール作成
+- **期待結果**: 400 Bad Request、INVALID_DISPLAY_NAME
+
+#### TC-102: ファイルサイズ超過
+- **実行**: 6MBの画像ファイルアップロード
+- **期待結果**: 400 Bad Request、FILE_TOO_LARGE
+
+#### TC-103: 存在しないユーザー
+- **実行**: 存在しないユーザーIDでプロフィール取得
+- **期待結果**: 404 Not Found、USER_NOT_FOUND
+
+#### TC-104: 権限不足
+- **実行**: 他ユーザーのプロフィール更新試行
+- **期待結果**: 403 Forbidden、INSUFFICIENT_PERMISSION
+
+#### TC-105: 対応外ファイル形式
+- **実行**: PDF ファイルを画像としてアップロード
+- **期待結果**: 400 Bad Request、INVALID_FILE_FORMAT
+
+## Accept条件
+
+### 機能要件
+- [ ] ユーザープロフィールのCRUD操作が正常に動作する
+- [ ] プロフィール画像のアップロード・削除が正常に動作する
+- [ ] プライバシー設定（公開/非公開）が正常に動作する
+- [ ] プロフィール変更履歴が正しく記録される
+- [ ] 全APIエンドポイントが仕様通りに動作する
+
+### 性能要件
+- [ ] プロフィール取得API：100ms以内
+- [ ] プロフィール更新API：200ms以内
+- [ ] 画像アップロード：5MB画像を3秒以内で処理
+
+### セキュリティ要件
+- [ ] 他ユーザーのプロフィール不正操作を防止
+- [ ] ファイルアップロード時の脆弱性対策実装
+- [ ] 入力値検証が適切に実装されている
+
+### テスト要件
+- [ ] 全正常系テストケースが成功
+- [ ] 全異常系テストケースが期待通りのエラーを返す
+- [ ] APIドキュメントと実装が一致している
+
+### 運用要件
+- [ ] ログ出力が適切に実装されている
+- [ ] エラーハンドリングが適切に実装されている

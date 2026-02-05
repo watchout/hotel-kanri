@@ -1,0 +1,237 @@
+{
+  "ssotName": "SSOT__EVIDENCE",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT__EVIDENCE.md",
+  "timestamp": "2026-01-24T06:27:12.797Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": true,
+          "comment": "@map使用でsnake_caseに対応"
+        },
+        "T04": {
+          "pass": true,
+          "comment": "tenant_idにインデックスが設定されている"
+        },
+        "T05": {
+          "pass": false,
+          "comment": "リレーション定義が不足している"
+        },
+        "T06": {
+          "pass": true,
+          "comment": "パス形式が正しい"
+        },
+        "T07": {
+          "pass": true,
+          "comment": "深いネストなし"
+        },
+        "T08": {
+          "pass": true,
+          "comment": "HTTP Methodが適切"
+        },
+        "T09": {
+          "pass": true,
+          "comment": "レスポンス形式が統一されている"
+        },
+        "T10": {
+          "pass": true,
+          "comment": "エラーコードが定義されている"
+        },
+        "T11": {
+          "pass": false,
+          "comment": "SessionUser形式が記述されていない"
+        },
+        "T12": {
+          "pass": true,
+          "comment": "tenant_idが必須となっている"
+        },
+        "T13": {
+          "pass": false,
+          "comment": "権限チェックの記述が不足している"
+        },
+        "T14": {
+          "pass": true,
+          "comment": "認証エラーハンドリングが適切"
+        },
+        "T15": {
+          "pass": true,
+          "comment": "セキュリティ要件が満たされている"
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        },
+        {
+          "severity": "warning",
+          "id": "T05",
+          "title": "リレーション定義不足",
+          "location": "### データベース設計",
+          "description": "テーブル間のリレーションが定義されていない",
+          "recommendation": "Prismaでリレーションを定義する"
+        },
+        {
+          "severity": "warning",
+          "id": "T11",
+          "title": "SessionUser形式未記述",
+          "location": "### 認証",
+          "description": "SessionUser形式が記述されていない",
+          "recommendation": "SessionUser形式を明確に定義する"
+        },
+        {
+          "severity": "warning",
+          "id": "T13",
+          "title": "権限チェック不足",
+          "location": "### 認証",
+          "description": "権限チェックの記述が不足している",
+          "recommendation": "権限チェックを追加する"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": "要件ID体系が適切に使用されています。"
+        },
+        "I02": {
+          "pass": true,
+          "comment": "全ての要件にIDが付与されています。"
+        },
+        "I03": {
+          "pass": true,
+          "comment": "全ての要件にAccept条件が明記されています。"
+        },
+        "I04": {
+          "pass": true,
+          "comment": "Accept条件は検証可能です。"
+        },
+        "I05": {
+          "pass": true,
+          "comment": "全ての要件に優先度が明記されています。"
+        },
+        "I06": {
+          "pass": true,
+          "comment": "実装チェックリストが存在します。"
+        },
+        "I07": {
+          "pass": true,
+          "comment": "チェックリストはPhaseごとに分けられています。"
+        },
+        "I08": {
+          "pass": true,
+          "comment": "各Phaseに完了条件が定義されています。"
+        },
+        "I09": {
+          "pass": false,
+          "comment": "テストケースの詳細な定義が不足しています。"
+        },
+        "I10": {
+          "pass": true,
+          "comment": "エラーケースが列挙されています。"
+        },
+        "I11": {
+          "pass": true,
+          "comment": "ユーザー表示メッセージが明記されています。"
+        },
+        "I12": {
+          "pass": true,
+          "comment": "技術視点が考慮されています。"
+        },
+        "I13": {
+          "pass": true,
+          "comment": "ビジネス視点が考慮されています。"
+        },
+        "I14": {
+          "pass": true,
+          "comment": "UX視点が考慮されています。"
+        },
+        "I15": {
+          "pass": true,
+          "comment": "変更履歴が記載されています。"
+        }
+      },
+      "issues": [
+        {
+          "severity": "warning",
+          "id": "I09",
+          "title": "テストケースの詳細不足",
+          "location": "### Phase 4: テスト",
+          "description": "テストケースの詳細な定義が不足しており、具体的なテスト項目が明記されていません。",
+          "recommendation": "具体的なテストケースを追加し、各機能の検証方法を明確にすることを推奨します。"
+        }
+      ],
+      "score": 45,
+      "summary": "全体的に要件定義は明確であり、実装可能性は高いですが、テストケースの詳細な定義が不足しています。"
+    }
+  },
+  "totalScore": 87,
+  "totalCost": 0.0021078,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      }
+    ],
+    "warning": [
+      {
+        "severity": "warning",
+        "id": "T05",
+        "title": "リレーション定義不足",
+        "location": "### データベース設計",
+        "description": "テーブル間のリレーションが定義されていない",
+        "recommendation": "Prismaでリレーションを定義する",
+        "audit": "technical"
+      },
+      {
+        "severity": "warning",
+        "id": "T11",
+        "title": "SessionUser形式未記述",
+        "location": "### 認証",
+        "description": "SessionUser形式が記述されていない",
+        "recommendation": "SessionUser形式を明確に定義する",
+        "audit": "technical"
+      },
+      {
+        "severity": "warning",
+        "id": "T13",
+        "title": "権限チェック不足",
+        "location": "### 認証",
+        "description": "権限チェックの記述が不足している",
+        "recommendation": "権限チェックを追加する",
+        "audit": "technical"
+      },
+      {
+        "severity": "warning",
+        "id": "I09",
+        "title": "テストケースの詳細不足",
+        "location": "### Phase 4: テスト",
+        "description": "テストケースの詳細な定義が不足しており、具体的なテスト項目が明記されていません。",
+        "recommendation": "具体的なテストケースを追加し、各機能の検証方法を明確にすることを推奨します。",
+        "audit": "implementability"
+      }
+    ],
+    "info": []
+  }
+}

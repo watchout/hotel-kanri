@@ -1,0 +1,221 @@
+{
+  "ssotName": "SSOT__EVIDENCE",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT__EVIDENCE.md",
+  "timestamp": "2026-01-24T01:41:07.010Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": true,
+          "comment": ""
+        },
+        "T04": {
+          "pass": true,
+          "comment": ""
+        },
+        "T05": {
+          "pass": true,
+          "comment": ""
+        },
+        "T06": {
+          "pass": true,
+          "comment": ""
+        },
+        "T07": {
+          "pass": true,
+          "comment": ""
+        },
+        "T08": {
+          "pass": true,
+          "comment": ""
+        },
+        "T09": {
+          "pass": true,
+          "comment": ""
+        },
+        "T10": {
+          "pass": true,
+          "comment": ""
+        },
+        "T11": {
+          "pass": true,
+          "comment": ""
+        },
+        "T12": {
+          "pass": true,
+          "comment": ""
+        },
+        "T13": {
+          "pass": true,
+          "comment": ""
+        },
+        "T14": {
+          "pass": true,
+          "comment": ""
+        },
+        "T15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": ""
+        },
+        "I02": {
+          "pass": true,
+          "comment": ""
+        },
+        "I03": {
+          "pass": true,
+          "comment": ""
+        },
+        "I04": {
+          "pass": true,
+          "comment": ""
+        },
+        "I05": {
+          "pass": false,
+          "comment": "要件に優先度が明記されていない"
+        },
+        "I06": {
+          "pass": true,
+          "comment": ""
+        },
+        "I07": {
+          "pass": true,
+          "comment": ""
+        },
+        "I08": {
+          "pass": true,
+          "comment": ""
+        },
+        "I09": {
+          "pass": true,
+          "comment": ""
+        },
+        "I10": {
+          "pass": true,
+          "comment": ""
+        },
+        "I11": {
+          "pass": false,
+          "comment": "エラーメッセージのユーザー表示が明記されていない"
+        },
+        "I12": {
+          "pass": true,
+          "comment": ""
+        },
+        "I13": {
+          "pass": true,
+          "comment": ""
+        },
+        "I14": {
+          "pass": true,
+          "comment": ""
+        },
+        "I15": {
+          "pass": false,
+          "comment": "ドキュメントに変更履歴が含まれていない"
+        }
+      },
+      "issues": [
+        {
+          "severity": "warning",
+          "id": "I05",
+          "title": "要件の優先度が明記されていない",
+          "location": "### 要件ID一覧",
+          "description": "要件に優先度が設定されていないため、実装の優先順位が不明確です。",
+          "recommendation": "各要件に優先度を設定し、実装順序を明確にすることを推奨します。"
+        },
+        {
+          "severity": "warning",
+          "id": "I11",
+          "title": "ユーザー表示メッセージが不足",
+          "location": "### エラーハンドリング",
+          "description": "エラーメッセージのユーザー表示が明記されていないため、UXに影響を与える可能性があります。",
+          "recommendation": "ユーザーに表示されるエラーメッセージを明記し、UXを向上させることを推奨します。"
+        },
+        {
+          "severity": "info",
+          "id": "I15",
+          "title": "変更履歴が不足",
+          "location": "### ドキュメント",
+          "description": "ドキュメントに変更履歴が含まれていないため、変更の追跡が困難です。",
+          "recommendation": "ドキュメントに変更履歴セクションを追加し、変更内容を記録することを推奨します。"
+        }
+      ],
+      "score": 42,
+      "summary": "全体として要件定義は明確であり、Accept条件も適切に定義されていますが、いくつかの改善点があります。優先度の明記、ユーザー表示メッセージの追加、変更履歴の記録を行うことで、さらに品質を向上させることができます。"
+    }
+  },
+  "totalScore": 84,
+  "totalCost": 0.0011082,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      }
+    ],
+    "warning": [
+      {
+        "severity": "warning",
+        "id": "I05",
+        "title": "要件の優先度が明記されていない",
+        "location": "### 要件ID一覧",
+        "description": "要件に優先度が設定されていないため、実装の優先順位が不明確です。",
+        "recommendation": "各要件に優先度を設定し、実装順序を明確にすることを推奨します。",
+        "audit": "implementability"
+      },
+      {
+        "severity": "warning",
+        "id": "I11",
+        "title": "ユーザー表示メッセージが不足",
+        "location": "### エラーハンドリング",
+        "description": "エラーメッセージのユーザー表示が明記されていないため、UXに影響を与える可能性があります。",
+        "recommendation": "ユーザーに表示されるエラーメッセージを明記し、UXを向上させることを推奨します。",
+        "audit": "implementability"
+      }
+    ],
+    "info": [
+      {
+        "severity": "info",
+        "id": "I15",
+        "title": "変更履歴が不足",
+        "location": "### ドキュメント",
+        "description": "ドキュメントに変更履歴が含まれていないため、変更の追跡が困難です。",
+        "recommendation": "ドキュメントに変更履歴セクションを追加し、変更内容を記録することを推奨します。",
+        "audit": "implementability"
+      }
+    ]
+  }
+}

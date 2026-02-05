@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "description": "Claude.ai バックグラウンドタスク用キュー",
+  "queue": [],
+  "processing": null,
+  "completed": [],
+  "failed": [],
+  "config": {
+    "maxRetries": 3,
+    "ssotRequired": false,
+    "autoPlaneSync": true
+  }
+}

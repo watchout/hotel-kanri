@@ -1,0 +1,380 @@
+
+以下の問題を修正してください。
+
+## 問題点
+1. テストケースの詳細が不完全で、異常系のカバレッジが不明確。
+2. 技術仕様におけるリクエスト/レスポンス例が一部欠けている。
+3. テストケースが未完である
+4. Accept条件が定義されていない
+
+## 修正方法
+1. テストケースのセクションを拡充し、異常系のシナリオを詳細に記述する。
+2. 技術仕様において、全てのエンドポイントに対するリクエスト/レスポンス例を追加する。
+3. テストケースを網羅的に記述する（正常系、異常系）
+4. Accept条件を具体的に記述する（例：APIレスポンスタイム、データ整合性）
+
+## 現在の内容
+# SSOT_DEV-0171
+
+**タスクID**: DEV-0171  
+**タイトル**: [COM-246] ハンドオフ要件・運用フロー整理 / SSOT整合チェック  
+**バージョン**: 2.0.0  
+**最終更新**: 2026-01-27  
+**ステータス**: ✅ 確定
+
+---
+
+## 1. 概要・目的
+
+### 1.1 目的
+AIチャットが対応困難な場合、ゲストからスタッフへのハンドオフ機能を実装するための要件定義・設計を完了し、DEV-0172～DEV-0174の実装準備を整える。
+
+### 1.2 背景
+ゲストAIチャットボットが複雑な要求や緊急対応に直面した際、人間のスタッフへシームレスに引き継ぐ機能が必要。本タスクでは、ゲスト/スタッフ双方のユースケース、API設計、DB設計、エラー処理を定義する。
+
+### 1.3 システム構成
+| システム | 役割 | ポート |
+|:---------|:-----|:-------|
+| hotel-common-rebuild | API実装（/api/v1/guest, /api/v1/admin） | 3401 |
+| hotel-saas-rebuild | UI実装（ゲスト/管理画面） | 3101 |
+| PostgreSQL | データ永続化 | 5432 |
+| Redis | セッション管理 | 6379 |
+
+### 1.4 関連SSOT
+| ドキュメント | 参照目的 |
+|:------------|:---------|
+| `SSOT_SAAS_DEVICE_AUTHENTICATION.md` | ゲスト認証方式確認 |
+| `SSOT_SAAS_ADMIN_AUTHENTICATION.md` | スタッフ認証方式確認 |
+| `SSOT_SAAS_MULTITENANT.md` | テナント分離ルール準拠 |
+| `SSOT_API_REGISTRY.md` | API命名規則準拠 |
+
+### 1.5 タスク依存関係
+```
+DEV-0171（要件定義） → DEV-0172（API実装） → DEV-0173（UI実装） → DEV-0174（テスト・Evidence）
+```
+
+---
+
+## 2. スコープ
+
+### 2.1 IN SCOPE
+- [x] API設計（全5エンドポイント、データ型、バリデーション）
+- [x] DB設計（テーブル定義、インデックス、制約）
+- [x] エラー処理設計（エラーコード、ハンドリング方針）
+- [x] テストケース設計（28件）
+- [x] Accept条件定義
+
+### 2.2 OUT OF SCOPE
+- [ ] コード実装（DEV-0172）
+- [ ] UI実装（DEV-0173）
+- [ ] テスト実施（DEV-0174）
+- [ ] WebSocket実装（Phase 2）
+
+### 2.3 機能要件
+| ID | 説明 | 優先度 |
+|:---|:-----|:-------|
+| HDF-REQ-001 | ゲストがハンドオフリクエスト作成 | 🔴 必須 |
+| HDF-REQ-002 | スタッフがリクエスト一覧取得（フィルタ可） | 🔴 必須 |
+| HDF-REQ-003 | スタッフがステータス更新（PENDING→ACCEPTED→COMPLETED） | 🔴 必須 |
+| HDF-REQ-004 | タイムアウト時自動遷移（PENDING→TIMEOUT、60秒） | 🔴 必須 |
+
+### 2.4 非機能要件
+| ID | 説明 | 検証方法 |
+|:---|:-----|:---------|
+| HDF-NFR-001 | APIレスポンスタイム200ms以内 | パフォーマンステスト（TC-401） |
+| HDF-NFR-002 | 全クエリに`tenant_id`必須 | 静的解析（TC-305） |
+| HDF-NFR-003 | 列挙耐性（他テナント→404） | セキュリティテスト（TC-306） |
+
+---
+
+## 3. API設計
+
+### 3.1 エンドポイント一覧
+| Method | Path | 認証 | 説明 |
+|:-------|:-----|:-----|:-----|
+| POST | `/api/v1/guest/handoff/requests` | デバイス認証 | リクエスト作成 |
+| GET | `/api/v1/guest/handoff/requests/:id` | デバイス認証 | 自分のリクエスト詳細 |
+| GET | `/api/v1/admin/handoff/requests` | Session認証 | リクエスト一覧 |
+| GET | `/api/v1/admin/handoff/requests/:id` | Session認証 | リクエスト詳細 |
+| PATCH | `/api/v1/admin/handoff/requests/:id/status` | Session認証 | ステータス更新 |
+
+### 3.2 データ型定義
+
+#### POST /api/v1/guest/handoff/requests
+**Request Body**:
+```typescript
+interface CreateHandoffRequest {
+  sessionId: string;       // 必須、1～255文字、AIチャットセッションID
+  channel: 'front_desk' | 'concierge'; // 必須、enum
+  context: {
+    lastMessages: Array<{  // 必須、1～10件
+      role: 'user' | 'assistant';
+      content: string;     // 1～1000文字
+      timestamp: string;   // ISO 8601形式
+    }>;
+    currentTopic?: string; // 任意、1～100文字
+  };
+}
+```
+
+**Response (201)**:
+```typescript
+interface CreateHandoffResponse {
+  success: true;
+  data: {
+    id: string;            // cuid形式
+    status: 'PENDING';
+    createdAt: string;     // ISO 8601
+    estimatedWaitTime: 60; // 秒
+    fallbackPhoneNumber: string; // 例: "内線100"
+  };
+}
+```
+
+**バリデーションルール**:
+| フィールド | ルール | エラーコード |
+|:----------|:-------|:------------|
+| sessionId | 必須、1～255文字 | VALIDATION_ERROR |
+| channel | enum値（front_desk/concierge） | VALIDATION_ERROR |
+| context.lastMessages | 配列、1～10件 | VALIDATION_ERROR |
+| context.lastMessages[].content | 1～1000文字 | VALIDATION_ERROR |
+
+#### GET /api/v1/admin/handoff/requests
+**Query Parameters**:
+```typescript
+interface GetHandoffRequestsQuery {
+  status?: 'PENDING' | 'ACCEPTED' | 'COMPLETED' | 'TIMEOUT' | 'CANCELLED';
+  roomId?: string;       // UUID形式
+  staffId?: string;      // UUID形式
+  fromDate?: string;     // ISO 8601、デフォルト: 30日前
+  toDate?: string;       // ISO 8601、デフォルト: 現在時刻
+  limit?: number;        // 1～100、デフォルト: 50
+  offset?: number;       // 0以上、デフォルト: 0
+}
+```
+
+**Response (200)**:
+```typescript
+interface GetHandoffRequestsResponse {
+  success: true;
+  data: {
+    requests: Array<{
+      id: string;
+      tenantId: string;
+      sessionId: string;
+      roomId: string;
+      channel: 'front_desk' | 'concierge';
+      status: HandoffStatus;
+      context: object;
+      staffId: string | null;
+      createdAt: string;
+      acceptedAt: string | null;
+      completedAt: string | null;
+      timeoutAt: string;
+      notes: string | null;
+    }>;
+    total: number;
+    limit: number;
+    offset: number;
+  };
+}
+```
+
+#### PATCH /api/v1/admin/handoff/requests/:id/status
+**Request Body**:
+```typescript
+interface UpdateHandoffStatusRequest {
+  status: 'ACCEPTED' | 'COMPLETED' | 'CANCELLED'; // 必須、enum
+  notes?: string; // 任意、0～1000文字
+}
+```
+
+**Response (200)**:
+```typescript
+interface UpdateHandoffStatusResponse {
+  success: true;
+  data: {
+    id: string;
+    status: HandoffStatus;
+    acceptedAt: string | null;
+    completedAt: string | null;
+    staffId: string | null;
+    notes: string | null;
+  };
+}
+```
+
+### 3.3 ステータス遷移ルール
+```
+PENDING → [ACCEPTED, CANCELLED, TIMEOUT]
+ACCEPTED → [COMPLETED, CANCELLED]
+TIMEOUT → (終端状態)
+COMPLETED → (終端状態)
+CANCELLED → (終端状態)
+```
+
+**実装**: `src/services/handoffService.ts`内で遷移マトリクスを定義（セクション5.4参照）
+
+---
+
+## 4. DB設計
+
+### 4.1 handoff_requests テーブル
+| カラム名 | 型 | NULL | デフォルト | 制約 | 説明 |
+|:---------|:---|:-----|:-----------|:-----|:-----|
+| id | STRING | NO | cuid() | PRIMARY KEY | 主キー |
+| tenant_id | STRING | NO | - | FOREIGN KEY (tenants.id), INDEX | テナントID |
+| session_id | STRING | NO | - | INDEX | AIチャットセッションID |
+| room_id | STRING | NO | - | FOREIGN KEY (rooms.id), INDEX | 部屋ID |
+| channel | STRING | NO | 'front_desk' | CHECK (channel IN ('front_desk', 'concierge')) | チャネル |
+| status | ENUM | NO | 'PENDING' | - | ステータス |
+| context | JSON | NO | - | - | チャット履歴（最大10件） |
+| staff_id | STRING | YES | NULL | FOREIGN KEY (users.id), INDEX | 対応スタッフID |
+| created_at | TIMESTAMP | NO | now() | INDEX | 作成日時 |
+| accepted_at | TIMESTAMP | YES | NULL | - | 対応開始日時 |
+| completed_at | TIMESTAMP | YES | NULL | - | 対応完了日時 |
+| timeout_at | TIMESTAMP | NO | created_at + 60s | INDEX | タイムアウト日時 |
+| notes | STRING | YES | NULL | - | スタッフメモ（最大1000文字） |
+
+**Indexes**:
+```sql
+CREATE INDEX idx_handoff_requests_tenant_status ON handoff_requests(tenant_id, status);
+CREATE INDEX idx_handoff_requests_created_at ON handoff_requests(created_at);
+CREATE INDEX idx_handoff_requests_timeout_at ON handoff_requests(timeout_at) WHERE status = 'PENDING';
+CREATE INDEX idx_handoff_requests_room_id ON handoff_requests(room_id);
+CREATE INDEX idx_handoff_requests_staff_id ON handoff_requests(staff_id);
+```
+
+**Unique Constraints**: なし（同一セッションから複数リクエスト可能）
+
+**Foreign Keys**:
+```sql
+FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE;
+FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE;
+FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE SET NULL;
+```
+
+### 4.2 handoff_notification_logs テーブル
+| カラム名 | 型 | NULL | デフォルト | 制約 | 説明 |
+|:---------|:---|:-----|:-----------|:-----|:-----|
+| id | STRING | NO | cuid() | PRIMARY KEY | 主キー |
+| tenant_id | STRING | NO | - | FOREIGN KEY (tenants.id), INDEX | テナントID |
+| handoff_id | STRING | NO | - | FOREIGN KEY (handoff_requests.id), INDEX | ハンドオフID |
+| channel | ENUM | NO | - | - | 通知チャネル |
+| status | STRING | NO | - | - | 送信ステータス |
+| sent_at | TIMESTAMP | NO | now() | INDEX | 送信日時 |
+| delivered_at | TIMESTAMP | YES | NULL | - | 配信完了日時 |
+| error_message | STRING | YES | NULL | - | エラーメッセージ |
+
+**Indexes**:
+```sql
+CREATE INDEX idx_handoff_notification_logs_tenant ON handoff_notification_logs(tenant_id);
+CREATE INDEX idx_handoff_notification_logs_handoff ON handoff_notification_logs(handoff_id);
+CREATE INDEX idx_handoff_notification_logs_sent_at ON handoff_notification_logs(sent_at);
+```
+
+### 4.3 Enum定義
+```prisma
+enum HandoffStatus {
+  PENDING
+  ACCEPTED
+  COMPLETED
+  TIMEOUT
+  CANCELLED
+}
+
+enum NotificationChannel {
+  WEBSOCKET  // Phase 2
+  POLLING
+  EMAIL      // Phase 3
+  SMS        // Phase 3
+}
+```
+
+---
+
+## 5. エラー処理
+
+### 5.1 エラーコード一覧
+| コード | HTTP | 発生状況 | クライアント対応 | ログレベル |
+|:-------|:-----|:---------|:----------------|:----------|
+| VALIDATION_ERROR | 400 | 入力検証失敗（sessionId未指定など） | バリデーションメッセージ表示 | WARN |
+| UNAUTHORIZED | 401 | 認証失敗（セッション期限切れなど） | ログイン画面へリダイレクト | INFO |
+| FORBIDDEN | 403 | 権限不足（スタッフロール未保持など） | エラーメッセージ表示 | WARN |
+| NOT_FOUND | 404 | リソース不在または他テナント（列挙耐性） | エラーメッセージ表示 | INFO |
+| TIMEOUT | 408 | API応答タイムアウト（10秒超過） | 自動リトライ（最大3回、指数バックオフ） | ERROR |
+| INVALID_STATUS_TRANSITION | 422 | 不正なステータス遷移（COMPLETED→PENDING） | 画面リフレッシュ | WARN |
+| INTERNAL_SERVER_ERROR | 500 | DB接続失敗、予期しない例外 | エラーメッセージ + 電話CTA | ERROR |
+
+### 5.2 エラーレスポンス形式
+```typescript
+interface ErrorResponse {
+  success: false;
+  error: {
+    code: string;        // 例: "VALIDATION_ERROR"
+    message: string;     // ユーザー向けメッセージ
+    details?: string | object; // 詳細情報（任意）
+  };
+}
+```
+
+### 5.3 発生状況詳細
+
+#### VALIDATION_ERROR (400)
+**発生箇所**: リクエストボディ検証（Zodスキーマ）
+**トリガー**: 必須フィールド欠落、型不一致、範囲外の値
+**例**: `sessionId`が空文字列、`channel`が"invalid"、`context.lastMessages`が空配列
+
+#### UNAUTHORIZED (401)
+**発生箇所**: 認証ミドルウェア（`sessionAuthMiddleware`, `deviceAuthMiddleware`）
+**トリガー**: セッションCookie不在、デバイスセッションID不在、期限切れ
+**例**: ゲストがデバイスセッションなしでPOST、スタッフがログアウト後にGET
+
+#### NOT_FOUND (404)
+**発生箇所**: Prismaクエリ結果がnull、または`tenant_id`不一致
+**トリガー**: 存在しないID指定、他テナントのリソースアクセス
+**例**: `GET /api/v1/admin/handoff/requests/invalid_id`、他テナントのhandoff_id指定
+
+#### INVALID_STATUS_TRANSITION (422)
+**発生箇所**: ステータス遷移検証ロジック
+**トリガー**: 不正な遷移（COMPLETED→ACCEPTED）、終端状態の更新試行
+**例**: TIMEOUT状態のリクエストをACCEPTEDに変更
+
+### 5.4 ハンドリング方針と実装例
+
+#### バリデーションエラー（400）
+```typescript
+import { z } from 'zod';
+
+const createHandoffSchema = z.object({
+  sessionId: z.string().min(1).max(255),
+  channel: z.enum(['front_desk', 'concierge']),
+  context: z.object({
+    lastMessages: z.array(z.object({
+      role: z.enum(['user', 'assistant']),
+      content: z.string().min(1).max(1000),
+      timestamp: z.string().datetime()
+    })).min(1).max(10),
+    currentTopic: z.string().max(100).optional()
+  })
+});
+
+try {
+  const validatedData = createHandoffSchema.parse(requestBody);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    logger.warn('入力検証エラー', { errors: error.flatten().fieldErrors });
+    return res.status(400).json({
+      success: false,
+      er
+
+修正後の完全な内容を出力してください。
+
+
+【重要】回答は以下の形式で出力してください：
+
+---BEGIN_CONTENT---
+（ここに内容をMarkdown形式で出力）
+---END_CONTENT---
+
+余計な説明は不要です。

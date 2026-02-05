@@ -1,0 +1,184 @@
+{
+  "ssotName": "SSOT__EVIDENCE",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT__EVIDENCE.md",
+  "timestamp": "2026-01-24T06:34:19.001Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": true,
+          "comment": ""
+        },
+        "T04": {
+          "pass": true,
+          "comment": ""
+        },
+        "T05": {
+          "pass": true,
+          "comment": ""
+        },
+        "T06": {
+          "pass": true,
+          "comment": ""
+        },
+        "T07": {
+          "pass": true,
+          "comment": ""
+        },
+        "T08": {
+          "pass": true,
+          "comment": ""
+        },
+        "T09": {
+          "pass": true,
+          "comment": ""
+        },
+        "T10": {
+          "pass": true,
+          "comment": ""
+        },
+        "T11": {
+          "pass": true,
+          "comment": ""
+        },
+        "T12": {
+          "pass": true,
+          "comment": ""
+        },
+        "T13": {
+          "pass": true,
+          "comment": ""
+        },
+        "T14": {
+          "pass": true,
+          "comment": ""
+        },
+        "T15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        },
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "updatedAtはupdated_atにすべき",
+          "recommendation": "@map(\"updated_at\")を追加"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": "要件ID体系が適切に使用されています"
+        },
+        "I02": {
+          "pass": true,
+          "comment": "すべての要件にIDが付与されています"
+        },
+        "I03": {
+          "pass": true,
+          "comment": "すべての要件にAccept条件が明記されています"
+        },
+        "I04": {
+          "pass": true,
+          "comment": "Accept条件が検証可能です"
+        },
+        "I05": {
+          "pass": true,
+          "comment": "要件に優先度が明記されています"
+        },
+        "I06": {
+          "pass": true,
+          "comment": "実装チェックリストが存在します"
+        },
+        "I07": {
+          "pass": true,
+          "comment": "Phase分けが明確です"
+        },
+        "I08": {
+          "pass": true,
+          "comment": "各Phaseに完了条件が設定されています"
+        },
+        "I09": {
+          "pass": true,
+          "comment": "テストケースが詳細に定義されています"
+        },
+        "I10": {
+          "pass": true,
+          "comment": "エラーケースが列挙されています"
+        },
+        "I11": {
+          "pass": true,
+          "comment": "ユーザー表示メッセージが適切に設定されています"
+        },
+        "I12": {
+          "pass": true,
+          "comment": "技術視点での考慮がされています"
+        },
+        "I13": {
+          "pass": true,
+          "comment": "ビジネス視点での考慮がされています"
+        },
+        "I14": {
+          "pass": true,
+          "comment": "UX視点での考慮がされています"
+        },
+        "I15": {
+          "pass": true,
+          "comment": "変更履歴が明記されています"
+        }
+      },
+      "issues": [],
+      "score": 50,
+      "summary": "要件定義は明確で、すべてのチェック項目を満たしています。実装可能性に問題はありません。"
+    }
+  },
+  "totalScore": 92,
+  "totalCost": 0.0033558,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      },
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "updatedAtはupdated_atにすべき",
+        "recommendation": "@map(\"updated_at\")を追加",
+        "audit": "technical"
+      }
+    ],
+    "warning": [],
+    "info": []
+  }
+}

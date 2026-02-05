@@ -1,0 +1,280 @@
+name: Auto Fix Notification
+
+# CI失敗時にPRにコメントを追加し、Claude.aiによる自動修正をトリガー
+
+on:
+  workflow_run:
+    workflows: ["CI - Quality Gate", "Critical Gates"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  notify-failure:
+    name: Notify CI Failure
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Get PR information
+        id: pr-info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // workflow_runからPR情報を取得
+            const run = context.payload.workflow_run;
+            
+            // PRを検索
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${run.head_branch}`,
+              state: 'open'
+            });
+            
+            if (prs.data.length === 0) {
+              console.log('No open PR found for this branch');
+              return { hasPR: false };
+            }
+            
+            const pr = prs.data[0];
+            return {
+              hasPR: true,
+              prNumber: pr.number,
+              prTitle: pr.title,
+              branch: run.head_branch
+            };
+            
+      - name: Get failed job logs
+        id: failed-logs
+        if: ${{ fromJson(steps.pr-info.outputs.result).hasPR }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            
+            // ジョブ一覧を取得
+            const jobs = await github.rest.actions.listJobsForWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: run.id
+            });
+            
+            // 失敗したジョブを抽出
+            const failedJobs = jobs.data.jobs.filter(job => job.conclusion === 'failure');
+            
+            let summary = '## CI失敗サマリー\n\n';
+            
+            for (const job of failedJobs) {
+              summary += `### ${job.name}\n`;
+              summary += `- ステータス: ${job.conclusion}\n`;
+              summary += `- 開始時刻: ${job.started_at}\n`;
+              summary += `- [ログを確認](${job.html_url})\n\n`;
+            }
+            
+            return summary;
+            
+      - name: Check retry count
+        id: retry-count
+        if: ${{ fromJson(steps.pr-info.outputs.result).hasPR }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }};
+            
+            // 既存のコメントを確認してリトライ回数をカウント
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prInfo.prNumber
+            });
+            
+            const retryComments = comments.data.filter(c => 
+              c.body.includes('🔄 CI修正リクエスト') && 
+              c.user.login === 'github-actions[bot]'
+            );
+            
+            return {
+              count: retryComments.length,
+              maxRetries: 3
+            };
+            
+      - name: Post fix request comment
+        if: ${{ fromJson(steps.pr-info.outputs.result).hasPR && fromJson(steps.retry-count.outputs.result).count < 3 }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }};
+            const retryInfo = ${{ steps.retry-count.outputs.result }};
+            const failedLogs = ${{ steps.failed-logs.outputs.result }};
+            
+            const comment = `## 🔄 CI修正リクエスト (${retryInfo.count + 1}/${retryInfo.maxRetries})
+            
+            CIが失敗しました。以下の内容を確認して修正してください。
+            
+            ${failedLogs}
+            
+            ### 修正手順
+            
+            1. 失敗したジョブのログを確認
+            2. エラー原因を特定
+            3. 修正をコミット・プッシュ
+            4. CIが再実行されます
+            
+            ### Claude.ai バックグラウンドタスクで修正する場合
+            
+            \`\`\`
+            このPRのCI失敗を修正してください。
+            
+            PR: #${prInfo.prNumber}
+            ブランチ: ${prInfo.branch}
+            
+            失敗したワークフロー: ${context.payload.workflow_run.name}
+            ログURL: ${context.payload.workflow_run.html_url}
+            \`\`\`
+            
+            ---
+            *このコメントは自動生成されました。リトライ ${retryInfo.count + 1}/${retryInfo.maxRetries}*
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prInfo.prNumber,
+              body: comment
+            });
+            
+      - name: Post escalation comment
+        if: ${{ fromJson(steps.pr-info.outputs.result).hasPR && fromJson(steps.retry-count.outputs.result).count >= 3 }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }};
+            const failedLogs = ${{ steps.failed-logs.outputs.result }};
+            
+            const comment = `## ⚠️ 人間のレビューが必要です
+            
+            CIが3回連続で失敗しました。自動修正では解決できない問題がある可能性があります。
+            
+            ${failedLogs}
+            
+            ### 対応が必要な項目
+            
+            - [ ] 失敗原因の調査
+            - [ ] アーキテクチャレベルの問題の確認
+            - [ ] SSOT定義の見直し（必要な場合）
+            
+            ---
+            *このPRは人間によるレビューが必要です。*
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prInfo.prNumber,
+              body: comment
+            });
+            
+            // ラベルを追加
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prInfo.prNumber,
+              labels: ['needs-human-review']
+            });
+
+  notify-success:
+    name: Notify CI Success
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Get PR information
+        id: pr-info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:${run.head_branch}`,
+              state: 'open'
+            });
+            
+            if (prs.data.length === 0) {
+              return { hasPR: false };
+            }
+            
+            return {
+              hasPR: true,
+              prNumber: prs.data[0].number
+            };
+            
+      - name: Check if was failing before
+        id: was-failing
+        if: ${{ fromJson(steps.pr-info.outputs.result).hasPR }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }};
+            
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prInfo.prNumber
+            });
+            
+            const hasFailureComment = comments.data.some(c => 
+              c.body.includes('🔄 CI修正リクエスト') && 
+              c.user.login === 'github-actions[bot]'
+            );
+            
+            return { wasFailing: hasFailureComment };
+            
+      - name: Post success comment
+        if: ${{ fromJson(steps.pr-info.outputs.result).hasPR && fromJson(steps.was-failing.outputs.result).wasFailing }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }};
+            
+            const comment = `## ✅ CI修正完了
+            
+            CIが成功しました。修正が正常に適用されました。
+            
+            ### 次のステップ
+            
+            - [ ] コードレビュー
+            - [ ] マージ
+            
+            ---
+            *このPRはマージ可能な状態です。*
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prInfo.prNumber,
+              body: comment
+            });
+            
+            // needs-human-reviewラベルを削除（もしあれば）
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prInfo.prNumber,
+                name: 'needs-human-review'
+              });
+            } catch (e) {
+              // ラベルがない場合は無視
+            }

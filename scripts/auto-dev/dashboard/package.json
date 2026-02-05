@@ -1,0 +1,9 @@
+{
+  "name": "hotel-kanri-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.cjs",
+    "vercel-build": "echo 'No build required'"
+  }
+}

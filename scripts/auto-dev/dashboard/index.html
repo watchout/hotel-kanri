@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hotel-kanri 自動開発ダッシュボード</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; font-size: 13px; }
+    .container { max-width: 1600px; margin: 0 auto; padding: 12px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 10px 16px; background: #161b22; border-radius: 8px; }
+    h1 { color: #58a6ff; font-size: 1.3em; }
+    .controls { display: flex; gap: 12px; align-items: center; }
+    .toggle-btn { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em; }
+    .toggle-btn.active { background: #238636; border-color: #238636; color: #fff; }
+    .toggle-btn:hover { background: #30363d; }
+    .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .tab { padding: 6px 14px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; cursor: pointer; color: #c9d1d9; font-size: 0.85em; }
+    .tab.active { background: #238636; border-color: #238636; color: #fff; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; margin-bottom: 12px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; border-bottom: 1px solid #21262d; color: #8b949e; font-weight: 500; font-size: 0.9em; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #21262d; }
+    th { background: #21262d; color: #8b949e; font-weight: 500; font-size: 0.8em; position: sticky; top: 0; }
+    tr:hover { background: #1c2128; }
+    .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.75em; font-weight: 500; }
+    .badge-done { background: #238636; color: #fff; }
+    .badge-progress { background: #1f6feb; color: #fff; }
+    .badge-backlog { background: #6e7681; color: #fff; }
+    .badge-todo { background: #9e6a03; color: #fff; }
+    .link { color: #58a6ff; text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+    .no-data { color: #484f58; font-style: italic; }
+    .task-id { font-family: monospace; color: #7ee787; font-weight: 600; }
+    .task-name { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .priority { font-size: 0.7em; padding: 1px 5px; border-radius: 3px; margin-left: 6px; }
+    .priority-urgent { background: #da3633; color: #fff; }
+    .priority-high { background: #db6d28; color: #fff; }
+    .priority-medium { background: #9e6a03; color: #fff; }
+    .priority-low { background: #484f58; color: #fff; }
+    .date { color: #8b949e; font-size: 0.8em; white-space: nowrap; }
+    .scroll-table { max-height: 75vh; overflow-y: auto; }
+    .stats { display: flex; gap: 16px; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 1.3em; font-weight: bold; color: #58a6ff; }
+    .stat-label { color: #8b949e; font-size: 0.75em; }
+    .refresh-btn { background: #238636; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em; }
+    .refresh-btn:hover { background: #2ea043; }
+    .refresh-btn:disabled { background: #21262d; cursor: not-allowed; }
+    .updated { color: #8b949e; font-size: 0.8em; }
+    .info-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; text-align: center; color: #8b949e; }
+    .ssot-guessed { opacity: 0.6; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏨 hotel-kanri 自動開発ダッシュボード</h1>
+      <div class="controls">
+        <button class="toggle-btn" id="toggle-done">✓ 完了済みを表示</button>
+        <span class="updated" id="updated"></span>
+        <button class="refresh-btn" id="refresh-btn">🔄 更新</button>
+      </div>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" data-panel="tasks">📋 タスク一覧</div>
+      <div class="tab" data-panel="github">🔀 Git履歴</div>
+      <div class="tab" data-panel="prs">📦 PR/CI</div>
+      <div class="tab" data-panel="stats">📊 統計</div>
+    </div>
+    
+    <div class="panel active" id="panel-tasks">
+      <div class="card">
+        <div class="card-header">
+          <span>タスク一覧</span>
+          <div class="stats">
+            <div class="stat"><span class="stat-value" id="stat-total">-</span><span class="stat-label"> Total</span></div>
+            <div class="stat"><span class="stat-value" id="stat-done">-</span><span class="stat-label"> Done</span></div>
+            <div class="stat"><span class="stat-value" id="stat-progress">-</span><span class="stat-label"> In Progress</span></div>
+            <div class="stat"><span class="stat-value" id="stat-backlog">-</span><span class="stat-label"> Backlog</span></div>
+          </div>
+        </div>
+        <div class="scroll-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>タスク名</th>
+                <th>優先度</th>
+                <th>状態</th>
+                <th>SSOT</th>
+                <th>更新日時</th>
+              </tr>
+            </thead>
+            <tbody id="tasks-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel" id="panel-github">
+      <div class="card">
+        <div class="card-header">Git コミット履歴</div>
+        <div class="scroll-table">
+          <table>
+            <thead><tr><th>Repo</th><th>Hash</th><th>メッセージ</th><th>日時</th><th>タスク</th></tr></thead>
+            <tbody id="git-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel" id="panel-prs">
+      <div class="card">
+        <div class="card-header">Pull Requests & CI</div>
+        <div class="scroll-table">
+          <table>
+            <thead><tr><th>Repo</th><th>#</th><th>タイトル</th><th>ブランチ</th><th>状態</th><th>CI</th></tr></thead>
+            <tbody id="prs-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel" id="panel-stats">
+      <div class="card">
+        <div class="card-header">📊 進捗サマリー</div>
+        <div style="padding: 20px;">
+          <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div class="info-box" style="flex: 1; min-width: 200px;">
+              <div style="font-size: 3em; font-weight: bold; color: #238636;" id="progress-pct">0%</div>
+              <div>完了率</div>
+            </div>
+            <div class="info-box" style="flex: 1; min-width: 200px;">
+              <div style="font-size: 3em; font-weight: bold; color: #1f6feb;" id="progress-done">0</div>
+              <div>完了タスク</div>
+            </div>
+            <div class="info-box" style="flex: 1; min-width: 200px;">
+              <div style="font-size: 3em; font-weight: bold; color: #9e6a03;" id="progress-remaining">0</div>
+              <div>残りタスク</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">ℹ️ 備考</div>
+        <div style="padding: 16px; color: #8b949e;">
+          <p>• 監査スコアはローカル版（localhost:3500）で確認できます</p>
+          <p>• Plane API + GitHub API でデータを取得しています</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const GITHUB_BASE = 'https://github.com/watchout/hotel-kanri/blob/main/';
+    let showDone = false;
+    let allTasks = [];
+    let allData = null;
+    
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+      });
+    });
+    
+    function getStateBadge(state) {
+      const l = state.toLowerCase();
+      if (l === 'done') return '<span class="badge badge-done">Done</span>';
+      if (l === 'in progress') return '<span class="badge badge-progress">In Progress</span>';
+      if (l === 'backlog') return '<span class="badge badge-backlog">Backlog</span>';
+      if (l === 'todo') return '<span class="badge badge-todo">Todo</span>';
+      return '<span class="badge">' + state + '</span>';
+    }
+    
+    function getPriorityBadge(p) {
+      if (!p) return '';
+      const l = p.toLowerCase();
+      if (l === 'urgent') return '<span class="priority priority-urgent">緊急</span>';
+      if (l === 'high') return '<span class="priority priority-high">高</span>';
+      if (l === 'medium') return '<span class="priority priority-medium">中</span>';
+      if (l === 'low') return '<span class="priority priority-low">低</span>';
+      return '<span class="priority">' + p + '</span>';
+    }
+    
+    function formatDate(d) { 
+      if (!d) return '-';
+      const date = new Date(d);
+      return date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    
+    function getSSOTLink(task) {
+      if (task.ssotPath) {
+        const url = GITHUB_BASE + task.ssotPath;
+        const name = task.ssotPath.split('/').pop().replace('SSOT_', '').replace('.md', '');
+        return '<a href="' + url + '" target="_blank" class="link">📄 ' + name.substring(0, 20) + '</a>';
+      }
+      if (task.ssotGuessed) {
+        const name = task.ssotGuessed.replace('SSOT_', '');
+        return '<span class="link ssot-guessed" title="タスク名から推測">📄 ' + name.substring(0, 20) + ' (推測)</span>';
+      }
+      return '<span class="no-data">未定義</span>';
+    }
+    
+    function renderTasks() {
+      const filtered = showDone ? allTasks : allTasks.filter(t => t.state.toLowerCase() !== 'done');
+      
+      const done = allTasks.filter(t => t.state.toLowerCase() === 'done').length;
+      const progress = allTasks.filter(t => t.state.toLowerCase() === 'in progress').length;
+      const backlog = allTasks.filter(t => t.state.toLowerCase() === 'backlog').length;
+      const total = allTasks.length;
+      
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-done').textContent = done;
+      document.getElementById('stat-progress').textContent = progress;
+      document.getElementById('stat-backlog').textContent = backlog;
+      
+      // 統計パネル
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('progress-pct').textContent = pct + '%';
+      document.getElementById('progress-done').textContent = done;
+      document.getElementById('progress-remaining').textContent = total - done;
+      
+      const html = filtered.map(task => `
+        <tr>
+          <td class="task-id">${task.id}</td>
+          <td class="task-name" title="${task.name}">${task.name}</td>
+          <td>${getPriorityBadge(task.priority)}</td>
+          <td>${getStateBadge(task.state)}</td>
+          <td>${getSSOTLink(task)}</td>
+          <td class="date">${formatDate(task.updatedAt)}</td>
+        </tr>
+      `).join('');
+      
+      document.getElementById('tasks-body').innerHTML = html;
+    }
+    
+    function getRepoBadge(r) {
+      if (r === 'C') return '<span style="background:#1f6feb;color:#fff;padding:1px 5px;border-radius:3px;font-size:0.7em;">C</span>';
+      if (r === 'S') return '<span style="background:#a371f7;color:#fff;padding:1px 5px;border-radius:3px;font-size:0.7em;">S</span>';
+      return '<span style="background:#238636;color:#fff;padding:1px 5px;border-radius:3px;font-size:0.7em;">K</span>';
+    }
+    
+    function getCheckBadge(state) {
+      const s = (state || '').toLowerCase();
+      if (s === 'success') return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#238636;" title="success"></span>';
+      if (s === 'failure') return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#da3633;" title="failure"></span>';
+      return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#9e6a03;" title="pending"></span>';
+    }
+    
+    function renderGitHistory() {
+      if (!allData || !allData.gitHistory) {
+        document.getElementById('git-body').innerHTML = '<tr><td colspan="5" class="no-data" style="text-align:center;">GitHub Token未設定</td></tr>';
+        return;
+      }
+      const html = allData.gitHistory.map(c => `
+        <tr>
+          <td>${getRepoBadge(c.repo)}</td>
+          <td style="font-family:monospace;color:#7ee787;">${c.hash}</td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.message}</td>
+          <td class="date">${formatDate(c.date)}</td>
+          <td>${c.devId ? '<span class="task-id">' + c.devId + '</span>' : '-'}</td>
+        </tr>
+      `).join('');
+      document.getElementById('git-body').innerHTML = html || '<tr><td colspan="5" class="no-data" style="text-align:center;">履歴なし</td></tr>';
+    }
+    
+    function renderPRs() {
+      if (!allData || !allData.prs) {
+        document.getElementById('prs-body').innerHTML = '<tr><td colspan="6" class="no-data" style="text-align:center;">GitHub Token未設定</td></tr>';
+        return;
+      }
+      let html = '';
+      for (const [repo, prs] of Object.entries(allData.prs)) {
+        for (const pr of prs) {
+          const checks = pr.checks.map(c => getCheckBadge(c.state)).join(' ');
+          html += `
+            <tr>
+              <td>${getRepoBadge(repo)}</td>
+              <td><a href="${pr.url}" target="_blank" class="link">#${pr.number}</a></td>
+              <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${pr.title}</td>
+              <td style="font-size:0.85em;color:#8b949e;">${pr.branch}</td>
+              <td><span class="badge ${pr.state === 'open' ? 'badge-progress' : 'badge-done'}">${pr.state}</span></td>
+              <td>${checks || '-'}</td>
+            </tr>
+          `;
+        }
+      }
+      document.getElementById('prs-body').innerHTML = html || '<tr><td colspan="6" class="no-data" style="text-align:center;">PRなし</td></tr>';
+    }
+    
+    async function loadData() {
+      const btn = document.getElementById('refresh-btn');
+      btn.disabled = true;
+      btn.textContent = '読み込み中...';
+      
+      try {
+        const res = await fetch('/api/dashboard');
+        const data = await res.json();
+        
+        if (data.success) {
+          allData = data;
+          allTasks = data.tasks;
+          document.getElementById('updated').textContent = '更新: ' + new Date(data.timestamp).toLocaleTimeString('ja-JP');
+          renderTasks();
+          renderGitHistory();
+          renderPRs();
+        } else {
+          document.getElementById('tasks-body').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f85149;">エラー: ' + data.error + '</td></tr>';
+        }
+      } catch (e) {
+        document.getElementById('tasks-body').innerHTML = '<tr><td colspan="6" style="text-align:center;color:#f85149;">読み込み失敗: ' + e.message + '</td></tr>';
+      }
+      
+      btn.disabled = false;
+      btn.textContent = '🔄 更新';
+    }
+    
+    document.getElementById('toggle-done').addEventListener('click', function() {
+      showDone = !showDone;
+      this.classList.toggle('active', showDone);
+      renderTasks();
+    });
+    
+    document.getElementById('refresh-btn').addEventListener('click', loadData);
+    
+    loadData();
+  </script>
+</body>
+</html>
