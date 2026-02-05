@@ -1,8 +1,8 @@
 # SSOT: 客室端末セッションリセット機能（DEV-0181 / COM-247）
 
 **作成日**: 2026-01-24
-**最終更新**: 2026-01-24
-**バージョン**: v1.0.0
+**最終更新**: 2026-02-05（3層構造タグ追加）
+**バージョン**: v1.1.0
 **ステータス**: ✅ 確定
 **優先度**: 🔴 最高（Phase 2）
 
@@ -11,6 +11,23 @@
 - [SSOT_GUEST_DEVICE_APP.md](../02_guest_features/SSOT_GUEST_DEVICE_APP.md) - 客室端末WebViewアプリ（必読）
 - [SSOT_SAAS_ROOM_MANAGEMENT.md](./SSOT_SAAS_ROOM_MANAGEMENT.md) - 客室管理システム
 - [SSOT_SAAS_FRONT_DESK_OPERATIONS.md](./SSOT_SAAS_FRONT_DESK_OPERATIONS.md) - フロント業務
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| §1-§4 概要・スコープ・要件・ユースケース | [CORE] | - |
+| §5 データベース設計 | [CONTRACT] | MUST |
+| §6 API設計 | [CONTRACT] | MUST |
+| §7 UI設計 | [DETAIL] | SHOULD |
+| §8 QRコード設計 | [CONTRACT] | MUST |
+| §9 セキュリティ | [CORE] | MUST |
+| §10 システム間連携 | [CONTRACT] | MUST |
+| §11-§12 実装ガイド・Accept条件 | [DETAIL] | MAY |
+
+---
 
 **注**: 本SSOTは **管理画面とQRコードから客室端末のセッションをリセットする機能** を定義します。
 
