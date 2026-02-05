@@ -1,0 +1,48 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            このPRをレビューしてください。以下の観点で確認：
+
+            ## チェック項目
+            1. **SSOT準拠**: docs/03_ssot/ のSSOTドキュメントに準拠しているか
+            2. **禁止パターン**: 以下が含まれていないか
+               - hotel-saas での Prisma 直接使用
+               - hotel-saas での $fetch 直接使用
+               - tenant_id フォールバック値（|| 'default', ?? 'default'）
+               - any 型の使用
+               - 環境分岐（process.env.NODE_ENV）
+            3. **セキュリティ**: 認証チェック漏れ、tenant_id 未フィルタリング
+            4. **TypeScript**: 型安全性、エラーハンドリング
+            5. **API設計**: /api/v1/admin/ 形式の準拠、深いネスト禁止
+
+            ## レビュー形式
+            - 問題がある場合: 具体的な修正提案を含める
+            - 問題がない場合: 簡潔にApproveコメント
+
+            CLAUDE.md のルールに従ってレビューしてください。
+          claude_args: >-
+            --max-turns 10
+            --model claude-sonnet-4-5-20250929
