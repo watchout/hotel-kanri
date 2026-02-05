@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${WORKSPACE_ROOT}/hotel-kanri",
+        "${WORKSPACE_ROOT}/hotel-common-rebuild",
+        "${WORKSPACE_ROOT}/hotel-saas-rebuild"
+      ]
+    }
+  },
+  "_comments": {
+    "usage": "hotel-saas-rebuild/.claude/settings.json にコピー",
+    "note": "${WORKSPACE_ROOT} は実際のパスに置換すること",
+    "example_mac": "/Users/kaneko",
+    "example_linux": "/home/user"
+  }
+}
