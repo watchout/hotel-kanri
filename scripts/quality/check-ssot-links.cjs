@@ -11,8 +11,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// パス設定
-const HOTEL_KANRI = '/Users/kaneko/hotel-kanri';
+// パス設定 - ポータブルなパス解決
+const HOTEL_KANRI = process.env.AUTODEV_KANRI_DIR || path.resolve(__dirname, '../..');
 const SSOT_DIR = path.join(HOTEL_KANRI, 'docs/03_ssot');
 const PAGE_REGISTRY_PATH = path.join(SSOT_DIR, '00_foundation/SSOT_GUEST_PAGE_REGISTRY.md');
 

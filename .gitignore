@@ -1,4 +1,7 @@
 node_modules
+.nuxt/
+.output/
+evidence/auto-dev/
 
 # MCP環境変数（秘密情報）
 .env.mcp
