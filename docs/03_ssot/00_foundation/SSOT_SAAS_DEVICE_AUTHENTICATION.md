@@ -1,15 +1,31 @@
 # SSOT: 客室端末デバイス認証システム
 
-**作成日**: 2025-10-02  
-**バージョン**: 1.0.0  
-**ステータス**: ✅ 確定  
+**作成日**: 2025-10-02
+**バージョン**: 1.1.0
+**ステータス**: ✅ 確定
 **優先度**: 🔴 最優先（Phase 1）
+**最終更新**: 2026-02-05（3層構造タグ追加）
 
 **関連SSOT**:
 - [SSOT_SAAS_AUTHENTICATION.md](./SSOT_SAAS_AUTHENTICATION.md) - 親SSOT（認証システム全体）
 - [SSOT_SAAS_ADMIN_AUTHENTICATION.md](./SSOT_SAAS_ADMIN_AUTHENTICATION.md) - 兄弟SSOT（管理画面認証）
 - [SSOT_SAAS_MULTITENANT.md](./SSOT_SAAS_MULTITENANT.md) - マルチテナント基盤
 - [SSOT_TEST_ENVIRONMENT.md](./SSOT_TEST_ENVIRONMENT.md) - テスト環境・テストアカウント情報
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| §1-§3 概要・スコープ・技術スタック | [CORE] | - |
+| §4 認証方式 | [CORE] | MUST |
+| §5 データベース設計 | [CONTRACT] | MUST |
+| §6 認証フロー | [CONTRACT] | MUST |
+| §7 API仕様 | [CONTRACT] | MUST |
+| §8 システム間連携 | [CONTRACT] | SHOULD |
+| §9 セキュリティ | [CORE] | MUST |
+| §10-§11 実装状況 | [DETAIL] | MAY |
 
 ---
 

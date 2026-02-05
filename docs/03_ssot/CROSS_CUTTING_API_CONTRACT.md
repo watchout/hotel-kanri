@@ -151,10 +151,46 @@ interface ErrorResponse {
 |------|-------------|------|
 | `AUTH_REQUIRED` | 401 | 認証が必要 |
 | `AUTH_INVALID` | 401 | 認証情報が無効 |
+| `SESSION_EXPIRED` | 401 | セッション期限切れ |
 | `FORBIDDEN` | 403 | 権限不足 |
+| `PERMISSION_DENIED` | 403 | 操作権限なし |
 | `NOT_FOUND` | 404 | リソースが存在しない |
 | `VALIDATION_ERROR` | 400 | 入力値が不正 |
+| `CONFLICT` | 409 | リソース競合 |
+| `RATE_LIMIT_EXCEEDED` | 429 | レート制限超過 |
 | `INTERNAL_ERROR` | 500 | サーバーエラー |
+| `SERVICE_UNAVAILABLE` | 503 | サービス一時停止 |
+
+### Domain-Specific Error Codes
+
+#### 認証・セッション系
+| Code | HTTP Status | 説明 | 発生箇所 |
+|------|-------------|------|----------|
+| `INVALID_CREDENTIALS` | 401 | メールまたはパスワードが不正 | `/admin/auth/login` |
+| `ACCOUNT_LOCKED` | 401 | アカウントロック中 | `/admin/auth/login` |
+| `TENANT_NOT_FOUND` | 404 | テナントが存在しない | テナント切替時 |
+| `DEVICE_NOT_REGISTERED` | 401 | デバイス未登録 | Guest API |
+
+#### 注文系
+| Code | HTTP Status | 説明 | 発生箇所 |
+|------|-------------|------|----------|
+| `ORDER_NOT_FOUND` | 404 | 注文が存在しない | `/admin/orders/:id` |
+| `INVALID_STATUS_TRANSITION` | 400 | 不正なステータス遷移 | 注文ステータス更新時 |
+| `MENU_ITEM_UNAVAILABLE` | 400 | メニュー品切れ | 注文作成時 |
+
+#### デバイス・リセット系
+| Code | HTTP Status | 説明 | 発生箇所 |
+|------|-------------|------|----------|
+| `DEVICE_NOT_FOUND` | 404 | デバイスが見つからない | デバイスリセット |
+| `WEBSOCKET_ERROR` | 500 | リセット指示送信失敗 | デバイスリセット |
+| `TOKEN_INVALID` | 401 | リセットトークン無効 | QRリセット |
+| `TOKEN_EXPIRED` | 401 | リセットトークン期限切れ | QRリセット |
+
+#### ハンドオフ系
+| Code | HTTP Status | 説明 | 発生箇所 |
+|------|-------------|------|----------|
+| `HANDOFF_NOT_FOUND` | 404 | ハンドオフリクエスト不存在 | `/admin/handoff/:id` |
+| `HANDOFF_ALREADY_ACCEPTED` | 409 | 既に対応中 | ステータス更新時 |
 
 ---
 
@@ -195,15 +231,70 @@ interface PaginatedResponse<T> {
 
 ---
 
-## [CONTRACT] WebSocket Events (Future)
+## [CONTRACT] WebSocket Events
 
-将来のリアルタイム通知用：
+リアルタイム通知用WebSocketイベント定義。
+
+### 接続情報
+
+| 項目 | 値 |
+|------|------|
+| ポート | 3402 |
+| プロトコル | WebSocket (ws/wss) |
+| 認証 | Session Cookie / Device Token |
+
+### 注文イベント
 
 | Event | Direction | Payload | 用途 |
 |-------|-----------|---------|------|
-| `order:created` | Server→Client | `{ orderId, ... }` | 新規注文通知 |
-| `order:updated` | Server→Client | `{ orderId, status }` | 注文ステータス更新 |
-| `handoff:requested` | Server→Client | `{ requestId, ... }` | ハンドオフリクエスト |
+| `order:created` | Server→Client | `{ orderId, roomId, items[], tenantId }` | 新規注文通知 |
+| `order:updated` | Server→Client | `{ orderId, status, previousStatus }` | 注文ステータス更新 |
+| `order:cancelled` | Server→Client | `{ orderId, reason }` | 注文キャンセル通知 |
+| `order:subscribe` | Client→Server | `{ tenantId }` | 注文イベント購読 |
+| `order:unsubscribe` | Client→Server | `{ tenantId }` | 注文イベント購読解除 |
+
+### ハンドオフイベント
+
+| Event | Direction | Payload | 用途 |
+|-------|-----------|---------|------|
+| `handoff:new` | Server→Client | `{ handoffRequest: HandoffRequest }` | 新規ハンドオフリクエスト |
+| `handoff:updated` | Server→Client | `{ handoffRequest: HandoffRequest }` | ステータス更新 |
+| `handoff:subscribe` | Client→Server | `{ tenantId }` | ハンドオフイベント購読 |
+| `handoff:unsubscribe` | Client→Server | `{ tenantId }` | ハンドオフイベント購読解除 |
+
+### デバイスイベント
+
+| Event | Direction | Payload | 用途 |
+|-------|-----------|---------|------|
+| `device:reset` | Server→Client | `{ deviceId, roomId, reason, resetMethod }` | デバイスリセット指示 |
+| `device:connected` | Client→Server | `{ deviceId, roomId }` | デバイス接続通知 |
+| `device:disconnected` | Server→Client | `{ deviceId }` | デバイス切断通知 |
+
+### メッセージ形式
+
+```typescript
+// クライアント→サーバー
+interface ClientMessage {
+  type: string;      // イベント名
+  payload: object;   // イベントデータ
+}
+
+// サーバー→クライアント
+interface ServerMessage {
+  type: string;      // イベント名
+  payload: object;   // イベントデータ
+  timestamp: string; // ISO 8601
+}
+```
+
+### 再接続ポリシー
+
+| 項目 | 値 |
+|------|------|
+| 初回再接続待機 | 1秒 |
+| 最大再接続待機 | 30秒 |
+| バックオフ係数 | 2倍 |
+| 最大再接続試行 | 10回 |
 
 ---
 

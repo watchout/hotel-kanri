@@ -1,9 +1,22 @@
 # SSOT_ADMIN_HANDOFF_NOTIFICATION.md
 
-**バージョン**: 1.0.0
-**最終更新**: 2026-01-24
+**バージョン**: 1.1.0
+**最終更新**: 2026-02-05（3層構造タグ追加）
 **ドキュメントID**: SSOT-ADMIN-HANDOFF-001
 **ステータス**: ✅ 確定
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| 概要・要件ID一覧 | [CORE] | - |
+| データベース設計 | [CONTRACT] | MUST |
+| API仕様 | [CONTRACT] | MUST |
+| WebSocketイベント定義 | [CONTRACT] | SHOULD |
+| UI仕様 | [DETAIL] | MAY |
+| 実装フェーズ | [DETAIL] | MAY |
 
 ---
 

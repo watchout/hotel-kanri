@@ -1,10 +1,10 @@
 # SSOT: メニュー管理システム（管理画面専用）
 
-**作成日**: 2025-10-02  
-**バージョン**: 2.2.0  
-**ステータス**: ✅ 確定  
-**優先度**: 🔴 最高（Phase 1）  
-**最終更新**: 2025-10-03（APIパスを/admin/menu/*に統一）
+**作成日**: 2025-10-02
+**バージョン**: 2.3.0
+**ステータス**: ✅ 確定
+**優先度**: 🔴 最高（Phase 1）
+**最終更新**: 2026-02-05（3層構造タグ追加）
 
 **対象ユーザー**: 🔐 **スタッフのみ（管理画面）**
 
@@ -13,6 +13,18 @@
 - [SSOT_SAAS_ORDER_MANAGEMENT.md](./SSOT_SAAS_ORDER_MANAGEMENT.md) - 注文管理（メニュー参照）
 - [SSOT_SAAS_DATABASE_SCHEMA.md](../00_foundation/SSOT_SAAS_DATABASE_SCHEMA.md) - DBスキーマ
 - [SSOT_SAAS_MULTITENANT.md](../00_foundation/SSOT_SAAS_MULTITENANT.md) - マルチテナント基盤
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| §1-§3 概要・スコープ・技術スタック | [CORE] | - |
+| §4 データモデル | [CONTRACT] | MUST |
+| §5 API仕様 | [CONTRACT] | MUST |
+| §6 システム間連携 | [CONTRACT] | SHOULD |
+| §7-§9 実装詳細・実装状況 | [DETAIL] | MAY |
 
 ---
 

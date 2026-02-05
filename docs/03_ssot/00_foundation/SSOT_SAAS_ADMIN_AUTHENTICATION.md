@@ -1,17 +1,35 @@
 # 🔐 SSOT: hotel-saas 管理画面認証システム
 
-**Doc-ID**: SSOT-SAAS-AUTH-ADMIN-001  
-**バージョン**: 1.3.0  
-**作成日**: 2025年10月2日  
-**最終更新**: 2025年10月5日（Staff テーブルから tenant_id 削除、完全な複数テナント所属対応）  
-**ステータス**: 🔴 承認済み（最高権威）  
+**Doc-ID**: SSOT-SAAS-AUTH-ADMIN-001
+**バージョン**: 1.4.0
+**作成日**: 2025年10月2日
+**最終更新**: 2026-02-05（3層構造タグ追加）
+**ステータス**: 🔴 承認済み（最高権威）
 **所有者**: Sun（hotel-saas担当AI）
 
 **関連SSOT**:
 - [SSOT_SAAS_AUTHENTICATION.md](./SSOT_SAAS_AUTHENTICATION.md) - 認証システム全体
-- [SSOT_SAAS_MULTITENANT.md](./SSOT_SAAS_MULTITENANT.md) - マルチテナント基盤  
+- [SSOT_SAAS_MULTITENANT.md](./SSOT_SAAS_MULTITENANT.md) - マルチテナント基盤
 - [SSOT_SAAS_DATABASE_SCHEMA.md](./SSOT_SAAS_DATABASE_SCHEMA.md) - DBスキーマ（`staff`テーブル）
 - [SSOT_TEST_ENVIRONMENT.md](./SSOT_TEST_ENVIRONMENT.md) - テスト環境・テストアカウント情報
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| §1 概要 | [CORE] | - |
+| §2 必須要件（CRITICAL） | [CORE] | MUST |
+| §3 SSOTに準拠しないと発生する問題 | [CORE] | - |
+| §4 認証フロー | [CONTRACT] | MUST |
+| §5 フロントエンド認証状態管理 | [CONTRACT] | MUST |
+| §6 クライアント側ミドルウェア仕様 | [CONTRACT] | MUST |
+| §7 hotel-common認証API仕様 | [CONTRACT] | MUST |
+| §8 テナント切り替え | [CONTRACT] | SHOULD |
+| §9 エラーハンドリング | [CONTRACT] | MUST |
+| §10 セキュリティ | [CORE] | MUST |
+| §11-§12 テスト・トラブルシューティング | [DETAIL] | MAY |
 
 ---
 

@@ -1,9 +1,9 @@
 # SSOT: 客室管理システム
 
-**作成日**: 2025-10-02  
-**最終更新**: 2025-10-04  
-**バージョン**: 3.1.0  
-**ステータス**: ✅ 確定  
+**作成日**: 2025-10-02
+**最終更新**: 2026-02-05（3層構造タグ追加）
+**バージョン**: 3.2.0
+**ステータス**: ✅ 確定
 **優先度**: 🔴 最高（Phase 1）
 
 **関連SSOT**:
@@ -14,7 +14,20 @@
 **注**: 客室端末のUI・デバイス認証については [SSOT_GUEST_DEVICE_APP.md](../02_guest_features/SSOT_GUEST_DEVICE_APP.md) を参照
 
 **関連設計書**:
-- [ROOM_GRADE_UNIFIED_DESIGN.md](/Users/kaneko/hotel-common/docs/ROOM_GRADE_UNIFIED_DESIGN.md) - 部屋グレード統一設計書
+- [ROOM_GRADE_UNIFIED_DESIGN.md](../../hotel-common/docs/ROOM_GRADE_UNIFIED_DESIGN.md) - 部屋グレード統一設計書
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| §1-§3 概要・スコープ・技術スタック | [CORE] | - |
+| §4 データモデル | [CONTRACT] | MUST |
+| §5 room_grade統一方針 | [CONTRACT] | MUST |
+| §6 API仕様 | [CONTRACT] | MUST |
+| §7 システム間連携 | [CONTRACT] | SHOULD |
+| §8-§10 実装詳細・修正箇所 | [DETAIL] | MAY |
 
 ---
 

@@ -1,9 +1,9 @@
 # SSOT: 注文管理システム
 
-**作成日**: 2025-10-02  
-**最終更新**: 2025-10-04  
-**バージョン**: 2.1.0  
-**ステータス**: ✅ 確定  
+**作成日**: 2025-10-02
+**最終更新**: 2026-02-05（3層構造タグ追加）
+**バージョン**: 2.2.0
+**ステータス**: ✅ 確定
 **優先度**: 🔴 最高（Phase 1）
 
 **関連SSOT**:
@@ -13,6 +13,20 @@
 - [SSOT_SAAS_MULTITENANT.md](../00_foundation/SSOT_SAAS_MULTITENANT.md) - マルチテナント基盤
 
 **注**: 客室端末からの注文フローについては [SSOT_GUEST_ORDER_FLOW.md](../02_guest_features/SSOT_GUEST_ORDER_FLOW.md) を参照
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| §1-§3 概要・スコープ・技術スタック | [CORE] | - |
+| §4 注文ライフサイクル | [CORE] | MUST |
+| §5 データモデル | [CONTRACT] | MUST |
+| §6 運用/ログ二重管理戦略 | [CONTRACT] | MUST |
+| §7 API仕様 | [CONTRACT] | MUST |
+| §8 システム間連携 | [CONTRACT] | SHOULD |
+| §9-§11 実装詳細・未実装機能 | [DETAIL] | MAY |
 
 ---
 

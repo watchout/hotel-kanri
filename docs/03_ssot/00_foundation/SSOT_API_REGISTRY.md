@@ -1,9 +1,21 @@
 # SSOT: API Registry（APIエンドポイント一元管理）
 
-**バージョン**: 1.0.0  
-**最終更新**: 2025-12-19  
-**ステータス**: ✅ 確定  
+**バージョン**: 1.1.0
+**最終更新**: 2026-02-05（3層構造タグ追加）
+**ステータス**: ✅ 確定
 **管理者**: Luna (hotel-kanri統合管理)
+
+---
+
+## 層構造 (Layer Structure)
+
+| セクション | 層 | RFC 2119 |
+|-----------|-----|----------|
+| 概要・必須ルール | [CORE] | MUST |
+| Admin API定義 | [CONTRACT] | MUST |
+| Guest API定義 | [CONTRACT] | MUST |
+| AI API定義 | [CONTRACT] | MUST |
+| ルーター登録 | [DETAIL] | MUST |
 
 ---
 
