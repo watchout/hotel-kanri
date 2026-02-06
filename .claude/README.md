@@ -20,19 +20,21 @@
 ### 1. エージェントを使う
 
 ```bash
-# SSOT作成
-/ssot ユーザー管理
+# === 計画フェーズ ===
+/ssot ユーザー管理         # SSOT作成
+/plan DEV-0170            # 実装計画立案
 
-# 実装計画
-/plan DEV-0170
+# === 実装フェーズ（推奨順序）===
+/api DEV-0181             # API実装（hotel-common）
+/ui DEV-0181              # UI実装（hotel-saas）
+/impl SSOT_GUEST_AI_HANDOFF  # 汎用実装
 
-# 実装開始
-/impl SSOT_GUEST_AI_HANDOFF
+# === 検証フェーズ ===
+/integrate DEV-0181       # 3リポ統合確認
+/gate                     # 品質ゲートチェック
+/review src/routes/       # コードレビュー
 
-# コードレビュー
-/review src/routes/
-
-# TDD開始
+# === TDD ===
 /tdd 注文作成API
 ```
 
@@ -51,13 +53,22 @@ cp .claude/mcp-configs/hotel-kanri.json ~/.claude/
 
 ## エージェント一覧
 
-| エージェント | 役割 |
-|:------------|:-----|
-| ssot-writer | SSOT作成 |
-| planner | 実装計画立案 |
-| code-reviewer | コードレビュー |
-| security-reviewer | セキュリティ監査 |
-| tdd-guide | テスト駆動開発 |
+### 基盤エージェント
+| エージェント | 役割 | コマンド |
+|:------------|:-----|:--------|
+| ssot-writer | SSOT作成 | `/ssot` |
+| planner | 実装計画立案 | `/plan` |
+| code-reviewer | コードレビュー | `/review` |
+| security-reviewer | セキュリティ監査 | - |
+| tdd-guide | テスト駆動開発 | `/tdd` |
+
+### 3リポジトリ開発エージェント
+| エージェント | 役割 | コマンド |
+|:------------|:-----|:--------|
+| api-implementer | hotel-common API実装 | `/api` |
+| ui-implementer | hotel-saas UI実装 | `/ui` |
+| integration-coordinator | 3リポ横断統合 | `/integrate` |
+| quality-gate | 品質ゲートチェック | `/gate` |
 
 ## スキル一覧
 
