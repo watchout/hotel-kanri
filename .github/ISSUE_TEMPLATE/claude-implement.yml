@@ -1,0 +1,73 @@
+name: "Claude Code 実装依頼"
+description: "Claude Code に実装を依頼する（自動トリガー）"
+title: "[IMPL] "
+labels: ["claude-implement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Claude Code 自動実装依頼
+        このIssueを作成すると、Claude Code が自動的に実装を開始します。
+        `@claude` メンションは自動挿入されます。
+
+  - type: input
+    id: task_id
+    attributes:
+      label: タスクID（Plane）
+      description: "Plane上のタスクID（例: DEV-0170）"
+      placeholder: "DEV-0170"
+    validations:
+      required: true
+
+  - type: input
+    id: ssot_path
+    attributes:
+      label: 参照SSOT
+      description: "実装の根拠となるSSOTファイルパス"
+      placeholder: "docs/03_ssot/01_admin_features/SSOT_XXXX.md"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target_repo
+    attributes:
+      label: 対象リポジトリ
+      options:
+        - hotel-common-rebuild（API実装）
+        - hotel-saas-rebuild（UI実装）
+        - both（API + UI）
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirements
+    attributes:
+      label: 実装要件
+      description: "具体的な実装内容を記述してください"
+      placeholder: |
+        ## 実装内容
+        - エンドポイント: POST /api/v1/admin/xxx
+        - 機能: XXXの作成
+        
+        ## Accept条件
+        - [ ] APIが正常に動作する
+        - [ ] テストが通る
+        - [ ] SSOT準拠
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: 追加コンテキスト（任意）
+      description: "関連する既存実装、注意点など"
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 確認事項
+      options:
+        - label: SSOTドキュメントが最新であることを確認した
+          required: true
+        - label: 依存タスクが完了していることを確認した
+          required: true

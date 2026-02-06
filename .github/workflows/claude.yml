@@ -1,12 +1,14 @@
 name: Claude Code
 
 on:
+  # PR/Issue コメントで @claude メンション
   issue_comment:
     types: [created]
   pull_request_review_comment:
     types: [created]
+  # claude-implement / claude-fix ラベル付き Issue 作成時
   issues:
-    types: [opened, assigned]
+    types: [opened, labeled]
 
 permissions:
   contents: write
@@ -14,15 +16,15 @@ permissions:
   issues: write
 
 jobs:
-  claude:
-    # @claude メンション時のみ実行
+  # ─────────────────────────────────────────────
+  # Job 1: @claude メンション対応
+  # ─────────────────────────────────────────────
+  claude-mention:
     if: |
       (github.event_name == 'issue_comment' &&
        contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' &&
-       contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'issues' &&
-       contains(github.event.issue.body, '@claude'))
+       contains(github.event.comment.body, '@claude'))
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -37,4 +39,142 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_args: >-
             --max-turns 25
+            --model claude-sonnet-4-5-20250929
+
+  # ─────────────────────────────────────────────
+  # Job 2: claude-implement ラベル付き Issue 自動実装
+  # ─────────────────────────────────────────────
+  claude-implement:
+    if: |
+      github.event_name == 'issues' &&
+      (github.event.action == 'opened' || github.event.action == 'labeled') &&
+      contains(toJSON(github.event.issue.labels.*.name), 'claude-implement')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout hotel-kanri
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout hotel-common-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-common-rebuild
+          path: .repos/hotel-common-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout hotel-saas-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-saas-rebuild
+          path: .repos/hotel-saas-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            あなたは hotel-kanri プロジェクトの自動実装AIです。
+            このIssueの内容に基づいて実装を行ってください。
+
+            ## 必須手順
+            1. CLAUDE.md を読んでプロジェクト構造を理解
+            2. .claude/rules/auto-implementation.md を読んで実装ルールを理解
+            3. Issue本文から「参照SSOT」のパスを取得し、SSOTを全文読む
+            4. SSOTの要件IDとAccept条件を全て抽出
+            5. 既存実装を調査（同ディレクトリの既存ファイル3つ以上）
+            6. 実装計画をIssueコメントに投稿
+            7. hotel-common-rebuild でAPI実装（必要な場合）
+            8. hotel-saas-rebuild でUI実装（必要な場合）
+            9. テスト実行・型チェック
+            10. 変更をコミットしてPR作成
+            11. 完了報告をIssueコメントに投稿
+
+            ## リポジトリ構造
+            - hotel-kanri（このリポジトリ）: SSOT管理
+            - .repos/hotel-common-rebuild/: API基盤 (Express + Prisma)
+            - .repos/hotel-saas-rebuild/: フロントエンド (Nuxt 3 + Vue 3)
+
+            ## 絶対禁止
+            - hotel-saas で Prisma 直接使用
+            - hotel-saas で $fetch 直接使用（callHotelCommonAPI を使う）
+            - tenant_id のフォールバック値（|| 'default'）
+            - any 型の使用
+            - 環境分岐（process.env.NODE_ENV）
+            - tenant_id なしのDBクエリ
+
+            ## 中断条件
+            以下の場合は実装を中止し、Issueにコメントで報告:
+            - SSOT不在
+            - 矛盾検出
+            - Prismaスキーマ変更が必要
+            - セキュリティ懸念
+          claude_args: >-
+            --max-turns 50
+            --model claude-sonnet-4-5-20250929
+
+  # ─────────────────────────────────────────────
+  # Job 3: claude-fix ラベル付き Issue バグ修正
+  # ─────────────────────────────────────────────
+  claude-fix:
+    if: |
+      github.event_name == 'issues' &&
+      (github.event.action == 'opened' || github.event.action == 'labeled') &&
+      contains(toJSON(github.event.issue.labels.*.name), 'claude-fix')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout hotel-kanri
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout hotel-common-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-common-rebuild
+          path: .repos/hotel-common-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout hotel-saas-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-saas-rebuild
+          path: .repos/hotel-saas-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            あなたは hotel-kanri プロジェクトのバグ修正AIです。
+            このIssueに報告されたバグを修正してください。
+
+            ## 必須手順
+            1. CLAUDE.md を読んでプロジェクト構造を理解
+            2. .claude/rules/auto-implementation.md を読んで実装ルールを理解
+            3. Issue本文からバグの内容を理解
+            4. エラーログがあれば分析
+            5. 関連するSSOTを確認（記載がある場合）
+            6. 原因を特定
+            7. 修正を実装
+            8. テスト実行・型チェック
+            9. 変更をコミットしてPR作成
+            10. 修正内容をIssueコメントに報告
+
+            ## リポジトリ構造
+            - hotel-kanri（このリポジトリ）: SSOT管理
+            - .repos/hotel-common-rebuild/: API基盤 (Express + Prisma)
+            - .repos/hotel-saas-rebuild/: フロントエンド (Nuxt 3 + Vue 3)
+
+            ## 絶対禁止
+            - hotel-saas で Prisma 直接使用
+            - hotel-saas で $fetch 直接使用（callHotelCommonAPI を使う）
+            - tenant_id のフォールバック値
+            - any 型の使用
+          claude_args: >-
+            --max-turns 30
             --model claude-sonnet-4-5-20250929

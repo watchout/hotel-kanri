@@ -1,0 +1,42 @@
+name: "Claude Code バグ修正"
+description: "Claude Code にバグ修正を依頼する（自動トリガー）"
+title: "[FIX] "
+labels: ["claude-fix"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Claude Code バグ修正依頼
+        このIssueを作成すると、Claude Code が自動的にバグ修正を開始します。
+
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: バグの内容
+      description: "何が起きているか、期待される動作は何か"
+      placeholder: |
+        ## 現象
+        - XXX画面で「保存」ボタンを押すと500エラーが発生する
+        
+        ## 期待される動作
+        - データが保存され、成功メッセージが表示される
+        
+        ## 再現手順
+        1. /admin/xxx にアクセス
+        2. フォームを入力
+        3. 「保存」をクリック
+    validations:
+      required: true
+
+  - type: input
+    id: ssot_path
+    attributes:
+      label: 関連SSOT（任意）
+      placeholder: "docs/03_ssot/01_admin_features/SSOT_XXXX.md"
+
+  - type: textarea
+    id: error_log
+    attributes:
+      label: エラーログ（任意）
+      description: "コンソールやサーバーログのエラー出力"
+      render: shell
