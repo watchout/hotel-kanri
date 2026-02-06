@@ -1,0 +1,9 @@
+{
+  "_comment": "このファイルを settings.local.json にコピーして秘密情報を設定",
+  "_note": "settings.local.json は .gitignore に追加済み",
+  "env": {
+    "GITHUB_TOKEN": "ghp_xxxxxxxxxxxxxxxxxxxx",
+    "DATABASE_URL": "postgresql://user:password@localhost:5432/hotel_common",
+    "REDIS_URL": "redis://localhost:6379"
+  }
+}

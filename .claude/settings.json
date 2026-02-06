@@ -1,4 +1,10 @@
 {
+  "env": {
+    "AUTODEV_BASE_DIR": "/home/user",
+    "AUTODEV_COMMON_DIR": "/home/user/hotel-common-rebuild",
+    "AUTODEV_SAAS_DIR": "/home/user/hotel-saas-rebuild",
+    "AUTODEV_INSTALL_DEPS": "0"
+  },
   "hooks": {
     "SessionStart": [
       {
