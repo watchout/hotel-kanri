@@ -100,8 +100,9 @@ jobs:
       - name: Check for sensitive data
         run: |
           # .envファイルやAPIキーの誤コミット検出
+          # sk- の後に20文字以上の英数字が続く場合のみ（短い一致を除外）
           FOUND=0
-          if grep -r "sk-[a-zA-Z0-9]" --include="*.ts" --include="*.js" --include="*.cjs" . 2>/dev/null | grep -v node_modules; then
+          if grep -rE "sk-[a-zA-Z0-9]{20,}" --include="*.ts" --include="*.js" --include="*.cjs" . 2>/dev/null | grep -v node_modules; then
             echo "❌ APIキーが検出されました"
             FOUND=1
           fi
