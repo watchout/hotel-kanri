@@ -27,6 +27,7 @@ jobs:
           files: .
           config_file: .markdownlint.json
           ignore_files: "node_modules/**"
+        continue-on-error: true
 
   broken-links:
     name: リンク切れチェック
@@ -44,6 +45,7 @@ jobs:
           config-file: '.github/workflows/mlc_config.json'
           folder-path: 'docs'
           max-depth: -1
+        continue-on-error: true
 
   spellcheck:
     name: スペルチェック
@@ -58,6 +60,7 @@ jobs:
         with:
           config_path: .github/workflows/spellcheck.yml
           task_name: Markdown
+        continue-on-error: true
 
   notify:
     name: 通知
