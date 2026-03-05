@@ -1,6 +1,6 @@
 {
   "gateA": {
-    "status": "failed",
+    "status": "passed",
     "checks": [
       {
         "name": "package.json exists",
@@ -9,18 +9,18 @@
       },
       {
         "name": "Dependencies installed (node_modules/)",
-        "passed": false,
-        "message": "node_modules/ not found. Run 'npm install' or 'pnpm install'."
+        "passed": true,
+        "message": "Dependencies installed (node_modules/): found"
       },
       {
         "name": "Environment config (.env or .env.example)",
-        "passed": false,
-        "message": ".env or .env.example not found. Create environment config."
+        "passed": true,
+        "message": "Environment config found"
       },
       {
         "name": "Docker Compose config",
-        "passed": false,
-        "message": "docker-compose.yml not found. DB/Redis may not be available."
+        "passed": true,
+        "message": "Docker Compose config found"
       },
       {
         "name": "CI configuration (.github/workflows/)",
@@ -33,7 +33,7 @@
         "message": "Framework management (.framework/): found"
       }
     ],
-    "checkedAt": "2026-03-05T08:06:28.782Z"
+    "checkedAt": "2026-03-05T08:08:37.997Z"
   },
   "gateB": {
     "status": "passed",
@@ -54,16 +54,28 @@
         "message": "Project profile found"
       }
     ],
-    "checkedAt": "2026-03-05T08:06:28.782Z"
+    "checkedAt": "2026-03-05T08:08:37.998Z"
   },
   "gateC": {
     "status": "failed",
     "checks": [
       {
-        "name": "docs/SSOT_CHECKIN_SESSIONS.md",
+        "name": "docs/SSOT_FEATURE_CATALOG.md",
         "passed": false,
-        "message": "docs/SSOT_CHECKIN_SESSIONS.md: Missing §3-E, §3-F, §3-G, §3-H",
-        "filePath": "docs/SSOT_CHECKIN_SESSIONS.md",
+        "message": "docs/SSOT_FEATURE_CATALOG.md: Missing §3-E, §3-F, §3-G, §3-H",
+        "filePath": "docs/SSOT_FEATURE_CATALOG.md",
+        "missingSections": [
+          "§3-E",
+          "§3-F",
+          "§3-G",
+          "§3-H"
+        ]
+      },
+      {
+        "name": "docs/SSOT_PRD.md",
+        "passed": false,
+        "message": "docs/SSOT_PRD.md: Missing §3-E, §3-F, §3-G, §3-H",
+        "filePath": "docs/SSOT_PRD.md",
         "missingSections": [
           "§3-E",
           "§3-F",
@@ -72,7 +84,7 @@
         ]
       }
     ],
-    "checkedAt": "2026-03-05T08:06:28.783Z"
+    "checkedAt": "2026-03-05T08:08:37.999Z"
   },
-  "updatedAt": "2026-03-05T08:06:28.783Z"
+  "updatedAt": "2026-03-05T08:08:37.999Z"
 }
