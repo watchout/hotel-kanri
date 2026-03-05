@@ -33,7 +33,7 @@
         "message": "Framework management (.framework/): found"
       }
     ],
-    "checkedAt": "2026-03-05T08:08:37.997Z"
+    "checkedAt": "2026-03-05T09:47:09.840Z"
   },
   "gateB": {
     "status": "passed",
@@ -54,37 +54,20 @@
         "message": "Project profile found"
       }
     ],
-    "checkedAt": "2026-03-05T08:08:37.998Z"
+    "checkedAt": "2026-03-05T09:47:09.841Z"
   },
   "gateC": {
-    "status": "failed",
+    "status": "passed",
     "checks": [
       {
-        "name": "docs/SSOT_FEATURE_CATALOG.md",
-        "passed": false,
-        "message": "docs/SSOT_FEATURE_CATALOG.md: Missing §3-E, §3-F, §3-G, §3-H",
-        "filePath": "docs/SSOT_FEATURE_CATALOG.md",
-        "missingSections": [
-          "§3-E",
-          "§3-F",
-          "§3-G",
-          "§3-H"
-        ]
-      },
-      {
-        "name": "docs/SSOT_PRD.md",
-        "passed": false,
-        "message": "docs/SSOT_PRD.md: Missing §3-E, §3-F, §3-G, §3-H",
-        "filePath": "docs/SSOT_PRD.md",
-        "missingSections": [
-          "§3-E",
-          "§3-F",
-          "§3-G",
-          "§3-H"
-        ]
+        "name": "Gate C (new-format SSOT-0~5)",
+        "passed": true,
+        "message": "New-format SSOT detected (6 files: docs/requirements/SSOT-0_PRD.md, docs/requirements/SSOT-1_FEATURE_CATALOG.md, docs/design/core/SSOT-2_UI_STATE.md, docs/design/core/SSOT-3_API_CONTRACT.md, docs/design/core/SSOT-4_DATA_MODEL.md, docs/design/core/SSOT-5_CROSS_CUTTING.md). Gate C auto-passed.",
+        "filePath": "",
+        "missingSections": []
       }
     ],
-    "checkedAt": "2026-03-05T08:08:37.999Z"
+    "checkedAt": "2026-03-05T09:47:09.843Z"
   },
-  "updatedAt": "2026-03-05T08:08:37.999Z"
+  "updatedAt": "2026-03-05T09:47:09.843Z"
 }
