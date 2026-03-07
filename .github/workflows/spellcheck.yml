@@ -18,3 +18,7 @@ matrix:
   sources:
   - "**/*.md"
   default_encoding: utf-8
+  excludes:
+  - "backups/**/*.md"
+  - ".nuxt/**/*.md"
+  - "node_modules/**/*.md"

@@ -11,6 +11,18 @@
     },
     {
       "pattern": "^https://example.com"
+    },
+    {
+      "pattern": "^file:///github/workspace/Users/"
+    },
+    {
+      "pattern": "^file:///Users/"
+    },
+    {
+      "pattern": "path/to/SSOT"
+    },
+    {
+      "pattern": "path/to/DOC"
     }
   ],
   "timeout": "20s",
