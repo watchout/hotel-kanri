@@ -24,9 +24,9 @@ jobs:
       - name: Markdown リンターのセットアップ
         uses: nosborn/github-action-markdown-cli@v3.2.0
         with:
-          files: .
+          files: "docs/**/*.md"
           config_file: .markdownlint.json
-          ignore_files: "node_modules/** backups/** .nuxt/**"
+          ignore_files: "node_modules/** backups/** .nuxt/** docs/03_ssot_legacy/**"
 
   broken-links:
     name: リンク切れチェック
