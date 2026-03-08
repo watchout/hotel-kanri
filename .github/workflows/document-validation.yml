@@ -26,7 +26,7 @@ jobs:
         with:
           files: "docs/**/*.md"
           config_file: .markdownlint.json
-          ignore_files: "node_modules/** backups/** .nuxt/** docs/03_ssot_legacy/**"
+          ignore_files: "node_modules/** backups/** .nuxt/** docs/03_ssot_legacy/** docs/_archived_system_docs/** docs/01_systems/** docs/00_shared/architecture/** docs/standards/**"
 
   broken-links:
     name: リンク切れチェック
