@@ -291,8 +291,17 @@ function evaluateTestCase(testCase, mockResponse = null) {
  */
 function generateMockResponse(testCase) {
   // 実際の実装では、ここでAI APIを呼び出します
-  // 今回はテストケースの期待回答を返します
-  return testCase.expectedAnswer;
+  // モックレスポンスは expectedAnswer + expectedKeywords を結合して
+  // 全キーワードが含まれる正しい回答を生成します
+  const parts = [testCase.expectedAnswer];
+  if (testCase.expectedKeywords) {
+    for (const kw of testCase.expectedKeywords) {
+      if (!testCase.expectedAnswer.includes(kw)) {
+        parts.push(kw);
+      }
+    }
+  }
+  return parts.join(' ');
 }
 
 /**
