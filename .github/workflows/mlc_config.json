@@ -11,10 +11,7 @@
     { "pattern": "^file:///github/workspace/Users/" },
     { "pattern": "^file:///Users/" },
     { "pattern": "path/to/SSOT" },
-    { "pattern": "path/to/DOC" },
-    { "pattern": "01_systems/" },
-    { "pattern": "temp-" },
-    { "pattern": "\\.cursor/" }
+    { "pattern": "path/to/DOC" }
   ],
   "timeout": "20s",
   "retryOn429": true,
