@@ -16,7 +16,5 @@ matrix:
       - code
       - pre
   sources:
-  - "docs/README.md"
-  - "docs/requirements/**/*.md"
-  - "docs/design/core/**/*.md"
+  - "docs/en/**/*.md"
   default_encoding: utf-8
