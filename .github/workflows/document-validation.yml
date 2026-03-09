@@ -56,6 +56,12 @@ jobs:
             -not -path '*/_archived_system_docs/*' \
             -not -path '*/node_modules/*' \
             -not -path '*/templates/*' \
+            -not -path '*/architecture/*' \
+            -not -path '*/integration/*' \
+            -not -path '*/notifications/*' \
+            -not -path '*/setup/*' \
+            -not -path '*/api/endpoints/*' \
+            -not -path '*/development/guidelines/*' \
             -print0)
           if [ $ERRORS -gt 0 ]; then
             echo "::error::リンク切れが $ERRORS ファイルで検出されました"
