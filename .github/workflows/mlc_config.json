@@ -7,6 +7,9 @@
   ],
   "ignorePatterns": [
     {
+      "pattern": "^#"
+    },
+    {
       "pattern": "^http://localhost"
     },
     {

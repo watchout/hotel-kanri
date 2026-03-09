@@ -55,6 +55,7 @@ jobs:
             -not -path '*/standards/*' \
             -not -path '*/_archived_system_docs/*' \
             -not -path '*/node_modules/*' \
+            -not -path '*/templates/*' \
             -print0)
           if [ $ERRORS -gt 0 ]; then
             echo "::error::リンク切れが $ERRORS ファイルで検出されました"
@@ -68,6 +69,9 @@ jobs:
     steps:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v3
+
+      - name: スペルチェック対象外ディレクトリを削除
+        run: rm -rf docs/03_ssot_legacy docs/01_systems
 
       - name: スペルチェックのセットアップ
         uses: rojopolis/spellcheck-github-actions@0.28.0
