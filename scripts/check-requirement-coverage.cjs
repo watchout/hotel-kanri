@@ -13,8 +13,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const MAP_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/requirements.md');
-const OPENAPI_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/openapi/staff-management.yaml');
+const MAP_FILE = path.resolve(__dirname, '..', 'docs/03_ssot_legacy/requirements.md');
+const OPENAPI_FILE = path.resolve(__dirname, '..', 'docs/03_ssot_legacy/openapi/staff-management.yaml');
 
 function readText(filePath) {
   if (!fs.existsSync(filePath)) {

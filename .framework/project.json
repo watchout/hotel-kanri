@@ -1,0 +1,22 @@
+{
+  "name": "nuxt-app",
+  "version": "0.1.0",
+  "profileType": "app",
+  "createdAt": "2026-03-03T11:34:34.759Z",
+  "updatedAt": "2026-03-03T11:34:34.759Z",
+  "phase": -1,
+  "status": "initialized",
+  "techStack": {
+    "framework": "next.js",
+    "language": "typescript",
+    "ui": "react",
+    "testing": "vitest",
+    "hosting": "vercel"
+  },
+  "config": {
+    "aiProvider": "anthropic",
+    "aiModel": "claude-sonnet-4-20250514",
+    "autoCommit": false,
+    "escalationMode": "strict"
+  }
+}
