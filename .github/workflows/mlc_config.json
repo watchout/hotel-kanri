@@ -59,6 +59,33 @@
     },
     {
       "pattern": "01_systems/"
+    },
+    {
+      "pattern": "SSOT_[A-Z]"
+    },
+    {
+      "pattern": "\\.cursor/prompts/"
+    },
+    {
+      "pattern": "standards/DATABASE_NAMING_STANDARD"
+    },
+    {
+      "pattern": "prisma\\.io/docs/guides/migrate/troubleshooting"
+    },
+    {
+      "pattern": "patterns\\.dev/typescript"
+    },
+    {
+      "pattern": "vue-react-wrapper"
+    },
+    {
+      "pattern": "komoju\\.com/blog"
+    },
+    {
+      "pattern": "meti\\.go\\.jp"
+    },
+    {
+      "pattern": "omotenasu-ai\\.com"
     }
   ],
   "timeout": "20s",

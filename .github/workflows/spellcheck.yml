@@ -20,4 +20,5 @@ matrix:
       - pre
   sources:
   - "docs/**/*.md"
+  - "!docs/03_ssot_legacy/**/*.md"
   default_encoding: utf-8
