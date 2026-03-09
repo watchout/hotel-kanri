@@ -1544,3 +1544,5 @@ zip
 zookeeper
 zshrc
 zstd
+Tiếng
+Việt
