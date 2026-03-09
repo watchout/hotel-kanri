@@ -89,6 +89,18 @@
     },
     {
       "pattern": "omotenasu-ai\\.com"
+    },
+    {
+      "pattern": "\\.\\./.*/systems/common/"
+    },
+    {
+      "pattern": "\\.\\./.*/systems/pms/"
+    },
+    {
+      "pattern": "\\.\\./.*/systems/saas/"
+    },
+    {
+      "pattern": "\\.\\./.*/tech-debt/"
     }
   ],
   "timeout": "20s",
