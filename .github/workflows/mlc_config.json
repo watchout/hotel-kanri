@@ -8,10 +8,18 @@
   "ignorePatterns": [
     { "pattern": "^http://localhost" },
     { "pattern": "^https://example.com" },
-    { "pattern": "^file:///github/workspace/Users/" },
-    { "pattern": "^file:///Users/" },
+    { "pattern": "^https://stg.example.com" },
+    { "pattern": "^file:///" },
     { "pattern": "path/to/SSOT" },
-    { "pattern": "path/to/DOC" }
+    { "pattern": "path/to/DOC" },
+    { "pattern": "^https://dev[-\\.]" },
+    { "pattern": "^https://app\\.datadoghq\\.com" },
+    { "pattern": "^https://console\\.aws\\.amazon\\.com" },
+    { "pattern": "^https://github\\.com/example/" },
+    { "pattern": "^https://github\\.com/<org>" },
+    { "pattern": "^https://common\\.hotel-system\\.com" },
+    { "pattern": "^https://docs/" },
+    { "pattern": "omotenasuai\\.com" }
   ],
   "timeout": "20s",
   "retryOn429": true,
