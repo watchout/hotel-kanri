@@ -91,16 +91,19 @@
       "pattern": "omotenasu-ai\\.com"
     },
     {
-      "pattern": "\\.\\./.*/systems/common/"
+      "pattern": "\\.\\./.*systems/"
     },
     {
-      "pattern": "\\.\\./.*/systems/pms/"
+      "pattern": "\\.\\./.*features/"
     },
     {
-      "pattern": "\\.\\./.*/systems/saas/"
+      "pattern": "\\.\\./.*tech-debt/"
     },
     {
-      "pattern": "\\.\\./.*/tech-debt/"
+      "pattern": "\\.\\./.*00_shared/"
+    },
+    {
+      "pattern": "\\.\\./.*unify-dev/"
     }
   ],
   "timeout": "20s",
