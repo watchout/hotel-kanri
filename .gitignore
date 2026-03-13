@@ -6,3 +6,9 @@ node_modules
 # Nuxt generated files
 .nuxt/
 .output/
+
+# AI Development Framework artifacts
+.framework/audits/
+.framework/feedback/
+docs/audits/
+.github/workflows/eval-results.json
