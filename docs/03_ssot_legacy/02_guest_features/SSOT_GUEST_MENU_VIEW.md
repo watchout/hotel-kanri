@@ -1177,32 +1177,63 @@ Sora 2 API統合による動画自動生成
 
 ### デバイス自動認証
 
-**実装場所**: `middleware/01-device-auth.ts`
+**実装場所**: `middleware/device-guard.ts`
 
 **認証フロー**:
 ```typescript
 // IPアドレス取得
 const clientIp = getClientIp(event)
 
-// checkin_sessionsから部屋情報取得
-const session = await prisma.checkinSessions.findFirst({
-  where: {
-    deviceIp: clientIp,
-    status: 'active'
+// device_roomsテーブルでデバイス検証
+const response = await callHotelCommonAPI(event, '/api/v1/devices/check-status', {
+  method: 'POST',
+  body: {
+    ipAddress: clientIp,
+    userAgent: event.node.req.headers['user-agent'],
+    pagePath: event.path
   }
 })
 
-// セッション検証
-if (!session || !session.roomId) {
-  throw createError({
-    statusCode: 401,
-    message: 'デバイス認証が必要です'
-  })
+// デバイス検証
+if (!response.found || !response.isActive) {
+  return sendRedirect(event, '/unauthorized-device', 302)
 }
 
 // コンテキストに設定
-event.context.session = session
-event.context.roomId = session.roomId
+event.context.roomId = response.roomId
+event.context.tenantId = response.tenantId
+```
+
+**hotel-common側API**:
+```typescript
+// POST /api/v1/devices/check-status
+const device = await prisma.device_rooms.findFirst({
+  where: {
+    OR: [
+      { mac_address: body.macAddress },
+      { ip_address: body.ipAddress }
+    ],
+    is_active: true
+  }
+})
+
+if (!device) {
+  return { found: false, isActive: false }
+}
+
+// 最終使用日時を更新
+await prisma.device_rooms.update({
+  where: { id: device.id },
+  data: { last_used_at: new Date() }
+})
+
+return {
+  found: true,
+  isActive: true,
+  roomId: device.room_id,
+  tenantId: device.tenant_id,
+  deviceId: device.device_id
+}
 ```
 
 ### XSS対策
@@ -1268,6 +1299,24 @@ event.context.roomId = session.roomId
 | AIパーソナライズ学習 | ❌ 未実装 | hotel-member API |
 | スタンプラリー | ❌ 未実装 | hotel-member API |
 | 会員ランク別メニュー | ❌ 未実装 | hotel-member API |
+
+---
+
+## 🆕 MVP機能対応（追記）
+
+### F02: 在庫・時間帯コンテキスト連携
+- 関連COM: COM-241（[MVP] TVメニュー閲覧）
+- 概要: 提供不可商品はマスク表示 or 非表示。提供可否は在庫・提供時間帯で判定。
+- Accept:
+  - [ ] 提供不可商品の「選択」ボタンを表示しない（または無効化＋理由表示）
+  - [ ] 現在時刻が提供外の商品のカードに半透明マスク＋バッジ
+
+### F05: Top3レコメンド（Stage 1）
+- 関連COM: COM-257（[Stage 1] 時間帯Top3レコメンド）
+- 概要: 初期は静的Top3枠をメニュートップに表示（時間帯/在庫反映はStage 1で強化）
+- Accept:
+  - [ ] メニュートップ上部にTop3セクションが表示される
+  - [ ] 枠は在庫切れ商品を除外して3件を表示（不足時は埋め草テキスト）
 
 ---
 

@@ -51,8 +51,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_PR_BODY: ${{ github.event.pull_request.body }}
-        run: node scripts/check-ssot-citations.cjs
+        run: |
+          # 最新のPR本文を取得（再実行時も最新を取得）
+          export GITHUB_PR_BODY="$(gh pr view $PR_NUMBER --json body --jq .body)"
+          node scripts/check-ssot-citations.cjs
       
       - name: SSOT整合性チェック
         run: |

@@ -316,7 +316,47 @@ grep -r "checkPermission" /Users/kaneko/hotel-common/src/routes/api/v1/admin/*.t
 
 ---
 
-### 2-5. UI構成の実装可能性
+### 2-5. ページ遷移・リンク整合性確認
+
+**必須参照**:
+- `/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_GUEST_PAGE_REGISTRY.md`
+
+**チェック項目**:
+
+- [ ] **SSOTで参照するURLがPage Registryに存在するか？**
+  - [ ] `deeplink`タイプのURL
+  - [ ] `info`タイプのURL
+  - [ ] その他の内部遷移URL
+
+- [ ] **新規ページを定義する場合、Page Registryに追加したか？**
+  - [ ] 実装済みページセクションに追加
+  - [ ] または計画中ページセクションに追加
+
+- [ ] **アクションのurlフィールドが有効なパスか？**
+  - [ ] 存在しないパスを指定していないか
+  - [ ] パス形式が正しいか（`/`から始まる）
+
+- [ ] **deeplink/info/externalの遷移先が実在するか？**
+  - [ ] deeplink → 実装済みページ
+  - [ ] info → 実装済みページ
+  - [ ] external → 有効な外部URL
+
+**対応方法（未実装ページを参照する場合）**:
+```markdown
+1. Page Registryの「計画中ページ」に追加
+2. SSOTでは暫定的に `handoff` タイプを使用
+3. ページ実装後に `info` または `deeplink` に変更
+```
+
+**確認コマンド**:
+```bash
+# リンク整合性自動チェック（DEV-0179実装後）
+node scripts/quality/check-ssot-links.cjs
+```
+
+---
+
+### 2-6. UI構成の実装可能性
 
 **チェック項目**:
 
@@ -339,7 +379,7 @@ ls -la /Users/kaneko/hotel-saas/pages/admin/
 
 ---
 
-### 2-6. 管理画面用と客室端末用の分離
+### 2-7. 管理画面用と客室端末用の分離
 
 **重要ルール**:
 

@@ -1,0 +1,255 @@
+{
+  "ssotName": "SSOT_API",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_API.md",
+  "timestamp": "2026-01-24T01:18:19.715Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": true,
+          "comment": ""
+        },
+        "T04": {
+          "pass": true,
+          "comment": ""
+        },
+        "T05": {
+          "pass": true,
+          "comment": ""
+        },
+        "T06": {
+          "pass": true,
+          "comment": ""
+        },
+        "T07": {
+          "pass": true,
+          "comment": ""
+        },
+        "T08": {
+          "pass": true,
+          "comment": ""
+        },
+        "T09": {
+          "pass": true,
+          "comment": ""
+        },
+        "T10": {
+          "pass": true,
+          "comment": ""
+        },
+        "T11": {
+          "pass": true,
+          "comment": ""
+        },
+        "T12": {
+          "pass": true,
+          "comment": ""
+        },
+        "T13": {
+          "pass": true,
+          "comment": ""
+        },
+        "T14": {
+          "pass": true,
+          "comment": ""
+        },
+        "T15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": "要件ID体系はXXX-001形式で整っている"
+        },
+        "I02": {
+          "pass": true,
+          "comment": "全ての要件にIDが付与されている"
+        },
+        "I03": {
+          "pass": true,
+          "comment": "Accept条件が明記されている"
+        },
+        "I04": {
+          "pass": true,
+          "comment": "Accept条件は検証可能である"
+        },
+        "I05": {
+          "pass": false,
+          "comment": "要件に優先度が明記されていない"
+        },
+        "I06": {
+          "pass": false,
+          "comment": "実装チェックリストが存在しない"
+        },
+        "I07": {
+          "pass": true,
+          "comment": "Phase分けが明確にされている"
+        },
+        "I08": {
+          "pass": true,
+          "comment": "各Phaseの完了条件が定義されている"
+        },
+        "I09": {
+          "pass": true,
+          "comment": "テストケースが定義されている"
+        },
+        "I10": {
+          "pass": false,
+          "comment": "エラーケースが列挙されていない"
+        },
+        "I11": {
+          "pass": false,
+          "comment": "ユーザー表示メッセージが定義されていない"
+        },
+        "I12": {
+          "pass": true,
+          "comment": "技術視点が考慮されている"
+        },
+        "I13": {
+          "pass": true,
+          "comment": "ビジネス視点が考慮されている"
+        },
+        "I14": {
+          "pass": true,
+          "comment": "UX視点が考慮されている"
+        },
+        "I15": {
+          "pass": false,
+          "comment": "変更履歴が記載されていない"
+        }
+      },
+      "issues": [
+        {
+          "severity": "warning",
+          "id": "I05",
+          "title": "優先度の明記不足",
+          "location": "要件定義セクション",
+          "description": "要件に優先度が明記されていないため、実装の優先順位が不明確",
+          "recommendation": "各要件に優先度を追加"
+        },
+        {
+          "severity": "warning",
+          "id": "I06",
+          "title": "実装チェックリストの欠如",
+          "location": "ドキュメント全体",
+          "description": "実装チェックリストが存在しないため、進捗管理が困難",
+          "recommendation": "実装チェックリストを作成"
+        },
+        {
+          "severity": "warning",
+          "id": "I10",
+          "title": "エラーケースの不足",
+          "location": "エラーハンドリングセクション",
+          "description": "エラーケースが列挙されていないため、エラーハンドリングが不十分",
+          "recommendation": "考えられるエラーケースを列挙し、対応策を定義"
+        },
+        {
+          "severity": "warning",
+          "id": "I11",
+          "title": "ユーザー表示メッセージの不足",
+          "location": "UI設計セクション",
+          "description": "ユーザーに表示されるメッセージが定義されていない",
+          "recommendation": "ユーザーに表示されるメッセージを定義"
+        },
+        {
+          "severity": "info",
+          "id": "I15",
+          "title": "変更履歴の欠如",
+          "location": "ドキュメント全体",
+          "description": "変更履歴が記載されていないため、ドキュメントの更新履歴が追跡できない",
+          "recommendation": "変更履歴を追加"
+        }
+      ],
+      "score": 42,
+      "summary": "SSOTは全体的に明確であり、要件定義も整っているが、優先度やエラーハンドリングに関する詳細が不足している。これらの改善が推奨される。"
+    }
+  },
+  "totalScore": 84,
+  "totalCost": 0.0011918999999999999,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      }
+    ],
+    "warning": [
+      {
+        "severity": "warning",
+        "id": "I05",
+        "title": "優先度の明記不足",
+        "location": "要件定義セクション",
+        "description": "要件に優先度が明記されていないため、実装の優先順位が不明確",
+        "recommendation": "各要件に優先度を追加",
+        "audit": "implementability"
+      },
+      {
+        "severity": "warning",
+        "id": "I06",
+        "title": "実装チェックリストの欠如",
+        "location": "ドキュメント全体",
+        "description": "実装チェックリストが存在しないため、進捗管理が困難",
+        "recommendation": "実装チェックリストを作成",
+        "audit": "implementability"
+      },
+      {
+        "severity": "warning",
+        "id": "I10",
+        "title": "エラーケースの不足",
+        "location": "エラーハンドリングセクション",
+        "description": "エラーケースが列挙されていないため、エラーハンドリングが不十分",
+        "recommendation": "考えられるエラーケースを列挙し、対応策を定義",
+        "audit": "implementability"
+      },
+      {
+        "severity": "warning",
+        "id": "I11",
+        "title": "ユーザー表示メッセージの不足",
+        "location": "UI設計セクション",
+        "description": "ユーザーに表示されるメッセージが定義されていない",
+        "recommendation": "ユーザーに表示されるメッセージを定義",
+        "audit": "implementability"
+      }
+    ],
+    "info": [
+      {
+        "severity": "info",
+        "id": "I15",
+        "title": "変更履歴の欠如",
+        "location": "ドキュメント全体",
+        "description": "変更履歴が記載されていないため、ドキュメントの更新履歴が追跡できない",
+        "recommendation": "変更履歴を追加",
+        "audit": "implementability"
+      }
+    ]
+  }
+}
