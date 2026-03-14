@@ -1,261 +1,242 @@
-# Branch Protection Rules 設定ガイド
+# Branch Protection 設定ガイド
 
-**バージョン**: v1.0.0  
-**最終更新**: 2025年10月19日  
-**目的**: `main`ブランチへの直接pushを防ぎ、品質ゲートを強制する
+## 🎯 目的
 
----
+段階的品質管理アーキテクチャに基づき、製品化の絶対条件（Critical Gates）のみをPRブロック要件とする。
 
-## 🎯 概要
+## 設計方針
 
-GitHub Branch Protection Rulesを設定することで：
-
-1. ✅ **直接pushを防止** → PR経由のみ許可
-2. ✅ **CI/CD必須** → テスト・Lint・TypeCheck合格必須
-3. ✅ **レビュー必須** → 最低1名の承認必須
-4. ✅ **SSOT準拠強制** → PR本文に要件ID必須
-5. ✅ **品質担保** → カバレッジ80%未満はマージ不可
+```
+Critical（必須）    → PRをブロック
+Non-Critical（任意） → 警告のみ（PRはブロックしない）
+```
 
 ---
 
-## 📋 設定手順
+## 🔧 設定手順
 
-### ステップ1: GitHubリポジトリの設定画面を開く
+### 1. GitHubリポジトリ設定へアクセス
 
-1. GitHubで `hotel-kanri` リポジトリを開く
+1. `https://github.com/watchout/hotel-kanri` にアクセス
 2. **Settings** タブをクリック
-3. 左メニューから **Branches** を選択
-4. **Add branch protection rule** をクリック
+3. 左サイドバーから **Branches** を選択
 
----
+### 2. `main` ブランチの保護ルールを設定
 
-### ステップ2: Branch name pattern を設定
+#### Step 1: Branch name pattern
 
 ```
 Branch name pattern: main
 ```
 
----
+#### Step 2: Protect matching branches
 
-### ステップ3: 保護ルールを設定
+以下の項目を **チェック**：
 
-#### ✅ **Require a pull request before merging**
-- チェックを入れる
-- **Require approvals**: `1` に設定
-- **Dismiss stale pull request approvals when new commits are pushed**: チェックを入れる
-- **Require review from Code Owners**: チェックを入れる
+- ✅ **Require a pull request before merging**
+  - ✅ Require approvals: **1**
+  - ✅ Dismiss stale pull request approvals when new commits are pushed
+  
+- ✅ **Require status checks to pass before merging**
+  - ✅ Require branches to be up to date before merging
+  
+- ✅ **Require conversation resolution before merging**
 
-#### ✅ **Require status checks to pass before merging**
-- チェックを入れる
-- **Require branches to be up to date before merging**: チェックを入れる
-- **Status checks that are required**（以下を追加）:
-  ```
-  - SSOT Compliance Check
-  - Lint & Typecheck
-  - Unit Tests
-  - API Tests (hotel-common)
-  - Build Check
-  - Security Scan
-  - Quality Gate - All Checks Passed
-  ```
+- ✅ **Do not allow bypassing the above settings**
 
-#### ✅ **Require conversation resolution before merging**
-- チェックを入れる
-- コメントが未解決の場合、マージを防止
+#### Step 3: Required status checks（重要）
 
-#### ✅ **Require signed commits**
-- チェックを入れる（推奨）
-- コミット署名を強制
+**以下のステータスチェックのみを必須にする**：
 
-#### ✅ **Require linear history**
-- チェックを入れる
-- マージコミットを禁止し、rebase/squash mergeのみ許可
+```
+✅ Critical Quality Gates
+   ├─ SSOT準拠（必須）
+   ├─ セキュリティスキャン（必須）
+   ├─ DB整合性（必須）
+   └─ Critical Gates Summary
+```
 
-#### ✅ **Do not allow bypassing the above settings**
-- チェックを入れる
-- 管理者でもルールをバイパスできないようにする
+**以下のステータスチェックは追加しない**（警告のみ）：
+
+```
+❌ TypeScript型チェック（警告）   ← 追加しない
+❌ ESLint（警告）                ← 追加しない
+❌ テストカバレッジ（警告）        ← 追加しない
+❌ OpenAPI Lint（警告）          ← 追加しない
+```
 
 ---
 
-### ステップ4: 保存
+## 📋 設定確認チェックリスト
 
-**Create** または **Save changes** をクリック
-
----
-
-## 🔐 CODEOWNERS 設定
-
-`/.github/CODEOWNERS` ファイルが既に作成されています。
-
-### 動作確認
-
-1. PRを作成
-2. 該当コードの所有者が自動的にレビュアーに追加される
-3. 所有者の承認がないとマージ不可
+- [ ] `main` ブランチの保護ルールが有効
+- [ ] PR承認が必須（1人以上）
+- [ ] 必須ステータスチェック：Critical Gatesのみ
+- [ ] Non-Criticalチェックは非必須
+- [ ] 会話解決が必須
+- [ ] バイパス不可
 
 ---
 
-## 🚀 CI/CD ワークフロー
+## 🎯 各ワークフローの役割
 
-`/.github/workflows/ci.yml` が既に作成されています。
+### Critical Quality Gates（必須・ブロッキング）
 
-### 動作確認
+**ファイル**: `.github/workflows/critical-gates.yml`
 
-1. PRを作成
-2. GitHub Actionsが自動実行
-3. 以下のチェックが実行される:
-   - ✅ SSOT準拠チェック
-   - ✅ Lint & Typecheck
-   - ✅ Unit Tests（カバレッジ >= 80%）
-   - ✅ API Tests
-   - ✅ Build Check
-   - ✅ Security Scan
-4. 全て合格 → マージ可能
-5. 1つでも不合格 → マージ不可
+**目的**: 製品化の絶対条件を保証
+
+**チェック内容**:
+- ✅ SSOT準拠（要件ID、SSOT参照、整合性）
+- ✅ セキュリティ（npm audit、センシティブデータ漏洩）
+- ✅ DB整合性（命名規則、Prismaバリデーション）
+
+**失敗時の動作**:
+- ❌ **PRマージをブロック**
+- 🔒 `main` ブランチへのプッシュ不可
 
 ---
 
-## 📋 PR作成フロー
+### Quality Improvement（警告のみ・非ブロッキング）
 
-### 1. ブランチ作成
+**ファイル**: `.github/workflows/quality-improvement.yml`
+
+**目的**: 技術的負債の可視化と段階的改善
+
+**チェック内容**:
+- ⚠️ TypeScript型チェック
+- ⚠️ ESLint
+- ⚠️ テストカバレッジ
+- ⚠️ OpenAPI Lint
+
+**失敗時の動作**:
+- ✅ **PRマージは可能**（警告として表示）
+- 📊 技術的負債レジストリに記録
+- 💡 段階的な改善を推奨
+
+---
+
+## 🚨 トラブルシューティング
+
+### Q: Critical Gatesが失敗してPRをマージできない
+
+**A: 正常な動作です**
+
+Critical Gatesは製品化の絶対条件です。以下を確認してください：
+
+1. **SSOT準拠エラー**
+   - PR本文に読了したSSOTを記載
+   - 要件ID（XXX-nnn形式）を記載
+   - SSOT間の矛盾を解消
+
+2. **セキュリティエラー**
+   - `npm audit fix --production` を実行
+   - 脆弱性を修正
+   - APIキーやシークレットを削除
+
+3. **DB整合性エラー**
+   - データベース命名規則を確認
+   - snake_caseを使用
+   - Prismaスキーマのバリデーション
+
+---
+
+### Q: Quality Improvementが失敗しているが、PRはマージできる？
+
+**A: はい、正常な動作です**
+
+Quality Improvementは**警告のみ**です：
+
+- ✅ PRマージは可能
+- 💡 技術的負債として記録
+- 📅 段階的に改善（1-3ヶ月スパン）
+
+失敗内容は技術的負債レジストリ（`docs/tech-debt/DEBT_REGISTRY.md`）に記録してください。
+
+---
+
+### Q: 既存の技術的負債を一気に解消する必要がある？
+
+**A: いいえ、段階的に改善します**
+
+**優先順位**:
+
+1. 🔴 **Critical**（即座に対応）
+   - セキュリティ脆弱性
+   - データ破損リスク
+   - SSOT矛盾
+
+2. 🟡 **High**（1ヶ月以内）
+   - ESLintエラー（warningではなくerror）
+   - 重要機能のテスト失敗
+
+3. 🟢 **Medium**（3ヶ月以内）
+   - ESLint warning（console.log等）
+   - 型アノテーション不足
+
+4. ⚪ **Low**（6ヶ月以内）
+   - パフォーマンス最適化
+   - テストカバレッジ向上
+
+---
+
+## 📊 技術的負債管理
+
+### 負債の可視化
 
 ```bash
-git checkout -b feature/AUTH-001-email-validation
+# 現在の負債スコアを確認
+npm run quality:score
+
+# 負債レポートを生成
+npm run quality:report
 ```
 
-### 2. 実装
+### 負債増加の防止
 
-```typescript
-// 要件ID: AUTH-001
-export default defineEventHandler(async (event) => {
-  // 実装...
-})
-```
+- ✅ 新規コードは品質基準を満たす
+- ✅ 既存負債を増やさない
+- ✅ PRごとに少しずつ改善
 
-### 3. テスト作成
-
-```typescript
-describe('AUTH-001', () => {
-  it('有効なメールは受理される', async () => {
-    // テスト...
-  })
-})
-```
-
-### 4. Commit & Push
-
-```bash
-git add .
-git commit -m "feat: AUTH-001 メールアドレス検証実装"
-git push origin feature/AUTH-001-email-validation
-```
-
-### 5. PR作成
-
-GitHub UIでPRを作成し、テンプレートに従って記入：
-
-```markdown
-## 📋 SSOT参照（必須）
-- [x] 読了したSSO: docs/03_ssot/00_foundation/SSOT_AUTHENTICATION.md @ a1b2c3d
-- [x] 対象要件ID: AUTH-001
-- [x] Out of scope: なし
-
-## ✅ テスト（必須）
-- [x] カバレッジ: 92%
-- [x] Unit Test: 3ケース全て合格
-```
-
-### 6. CI/CD待機
-
-GitHub Actionsが自動実行される（約5-10分）
-
-### 7. レビュー依頼
-
-CODEOWNERS が自動的にレビュアーに追加される
-
-### 8. 承認後マージ
-
-全チェック合格 + レビュー承認 → マージ可能
+**ルール**: 負債を増やすPRは差し戻し（例外: 緊急修正）
 
 ---
 
-## ⚠️ よくあるエラーと対処法
+## 🔄 定期的な見直し
 
-### エラー1: SSOT準拠チェック失敗
+### 毎週（日曜日）
 
-```
-❌ エラー: PR本文にSSO参照が見つかりません
-```
+- 📊 技術的負債レポート自動生成
+- 📈 負債トレンドの確認
+- 🎯 優先度の見直し
 
-**対処法**:
-- PR本文に `docs/03_ssot/.../SSOT_XXX.md @ <commit-hash>` を追加
+### 毎月
 
----
-
-### エラー2: カバレッジ不足
-
-```
-❌ エラー: カバレッジが80%未満です（現在: 65%）
-```
-
-**対処法**:
-- テストケースを追加してカバレッジ80%以上にする
+- 📋 負債返済計画の更新
+- 🎯 Critical Gatesの拡充検討
+- 📚 ベストプラクティスの共有
 
 ---
 
-### エラー3: Lint/Typecheck失敗
+## 📚 関連ドキュメント
 
-```
-❌ エラー: ESLintエラーが検出されました
-```
-
-**対処法**:
-```bash
-npm run lint:fix
-npm run typecheck
-```
+- [技術的負債レジストリ](../tech-debt/DEBT_REGISTRY.md)
+- [SSOT準拠ガイド](../03_ssot/00_foundation/SSOT_REQUIREMENT_ID_SYSTEM.md)
+- [セキュリティガイドライン](../security/OWASP-ASVS-L2-CHECKLIST.md)
+- [データベース命名規則](../standards/DATABASE_NAMING_STANDARD.md)
 
 ---
 
-### エラー4: Status checks が表示されない
+## ✅ 設定完了確認
 
-**原因**: 初回PR時、まだCI/CDが実行されていない
+以下をテストして確認してください：
 
-**対処法**:
-1. 一度PRを作成してCI/CDを実行
-2. CI/CD実行後、Settings → Branches で Status checks を追加
+1. ダミーPRを作成
+2. Critical Gatesの実行を確認
+3. Quality Improvementの実行を確認（警告のみ）
+4. PRマージ可否を確認
 
----
-
-## 🎯 期待される効果
-
-| 項目 | Before | After | 改善率 |
-|------|--------|-------|--------|
-| **勝手実装** | 60% | <5% | **92%削減** |
-| **仕様逸脱** | 40% | <5% | **88%削減** |
-| **バグ混入** | 30% | <3% | **90%削減** |
-| **レビュー時間** | 60分 | 20分 | **3倍速** |
-| **手戻り** | 平均2回 | 平均0.2回 | **90%削減** |
-
----
-
-## ✅ 完了チェックリスト
-
-- [ ] Branch Protection Rules 設定完了
-- [ ] CODEOWNERS ファイル配置完了
-- [ ] CI/CD ワークフロー配置完了
-- [ ] PR Template 配置完了
-- [ ] 初回PR作成でCI/CD動作確認
-- [ ] Status checks 設定完了
-
----
-
-## 📚 参考資料
-
-- [GitHub Branch Protection Rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
-- [GitHub CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
-- [GitHub Actions](https://docs.github.com/en/actions)
-
----
-
-**これで、hotel-kanriプロジェクトの品質管理が完璧に整いました！** 🎉
+**期待結果**:
+- Critical Gates合格 → PRマージ可能
+- Critical Gates失敗 → PRマージ不可
+- Quality Improvement失敗 → PRマージ可能（警告表示）

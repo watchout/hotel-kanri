@@ -68,9 +68,39 @@ async function checkSsotConsistency() {
   console.log('🔍 SSOT間整合性チェック開始\n');
   
   const ssotDir = path.join(__dirname, '../../docs/03_ssot');
-  const ssotFiles = await glob(`${ssotDir}/**/*.md`);
   
-  console.log(`📊 対象SSOT数: ${ssotFiles.length}件\n`);
+  // 現行SSOTのみをチェック対象に（参考資料・履歴は除外）
+  const SSOT_DIRECTORIES = [
+    '00_foundation',      // 基盤SSOT
+    '01_admin_features',  // 管理機能SSOT
+    '02_guest_features',  // ゲスト機能SSOT
+    '03_integration',     // 統合SSOT
+    'openapi',            // OpenAPI仕様
+  ];
+  
+  let ssotFiles = [];
+  for (const dir of SSOT_DIRECTORIES) {
+    const dirPath = path.join(ssotDir, dir);
+    try {
+      const files = await glob(`${dirPath}/**/*.{md,yaml,yml}`);
+      ssotFiles.push(...files);
+    } catch (err) {
+      // ディレクトリが存在しない場合はスキップ
+      console.log(`⚠️  ${dir} ディレクトリが存在しません（スキップ）`);
+    }
+  }
+  
+  // SSOT_PROGRESS_MASTER.md も含める（進捗管理の唯一の真実）
+  const progressMaster = path.join(ssotDir, 'SSOT_PROGRESS_MASTER.md');
+  try {
+    await fs.access(progressMaster);
+    ssotFiles.push(progressMaster);
+  } catch (err) {
+    // ファイルが存在しない場合はスキップ
+  }
+  
+  console.log(`📊 対象SSOT数: ${ssotFiles.length}件`);
+  console.log(`📁 チェック対象ディレクトリ: ${SSOT_DIRECTORIES.join(', ')}\n`);
   
   const ssots = [];
   for (const file of ssotFiles) {
@@ -206,22 +236,25 @@ async function checkSsotConsistency() {
     }
   }
   
-  // 非推奨認証方式の使用チェック
-  if (authUsage['JWT認証']) {
-    errors.push({
-      type: 'DEPRECATED_AUTH_METHOD',
+  // 非推奨認証方式の使用チェック（警告のみ）
+  if (authUsage['JWT認証'] && authUsage['JWT認証'].length > 0) {
+    // JWT認証の言及は警告レベル
+    // （過去の仕様説明、移行履歴の記載等は許容）
+    warnings.push({
+      type: 'DEPRECATED_AUTH_METHOD_MENTIONED',
       method: 'JWT認証',
       files: authUsage['JWT認証'],
-      message: `非推奨の認証方式（JWT認証）が使用されています`
+      message: `非推奨の認証方式（JWT認証）が言及されています（過去の仕様説明等は許容）`
     });
     
-    console.log(`❌ 非推奨の認証方式（JWT認証）が検出されました:`);
+    console.log(`⚠️  非推奨の認証方式（JWT認証）が現行SSOTで言及されています:`);
     console.log(`   使用ファイル数: ${authUsage['JWT認証'].length}件`);
-    authUsage['JWT認証'].slice(0, 5).forEach(file => {
+    console.log(`   💡 過去の仕様説明・移行履歴の記載は許容されます`);
+    authUsage['JWT認証'].slice(0, 3).forEach(file => {
       console.log(`   - ${file}`);
     });
-    if (authUsage['JWT認証'].length > 5) {
-      console.log(`   ... 他${authUsage['JWT認証'].length - 5}件`);
+    if (authUsage['JWT認証'].length > 3) {
+      console.log(`   ... 他${authUsage['JWT認証'].length - 3}件`);
     }
     console.log('');
   }

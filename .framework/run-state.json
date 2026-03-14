@@ -1,0 +1,2891 @@
+{
+  "status": "idle",
+  "currentTaskId": null,
+  "tasks": [
+    {
+      "taskId": "C-001-DB",
+      "featureId": "C-001",
+      "taskKind": "db",
+      "name": "Authentication System - Database",
+      "status": "done",
+      "blockedBy": [],
+      "files": [
+        "../hotel-common/prisma/schema.prisma",
+        "../hotel-common/prisma/migrations/20260305000000_c001_auth_system_database/migration.sql"
+      ]
+    },
+    {
+      "taskId": "C-001-API",
+      "featureId": "C-001",
+      "taskKind": "api",
+      "name": "Authentication System - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-001-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-001-UI",
+      "featureId": "C-001",
+      "taskKind": "ui",
+      "name": "Authentication System - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-001-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-001-INTEGRATION",
+      "featureId": "C-001",
+      "taskKind": "integration",
+      "name": "Authentication System - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-001-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-001-REVIEW",
+      "featureId": "C-001",
+      "taskKind": "review",
+      "name": "Authentication System - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-001-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-001-TEST",
+      "featureId": "C-001",
+      "taskKind": "test",
+      "name": "Authentication System - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-001-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-002-DB",
+      "featureId": "C-002",
+      "taskKind": "db",
+      "name": "Admin Authentication - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-002-API",
+      "featureId": "C-002",
+      "taskKind": "api",
+      "name": "Admin Authentication - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-002-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-002-UI",
+      "featureId": "C-002",
+      "taskKind": "ui",
+      "name": "Admin Authentication - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-002-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-002-INTEGRATION",
+      "featureId": "C-002",
+      "taskKind": "integration",
+      "name": "Admin Authentication - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-002-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-002-REVIEW",
+      "featureId": "C-002",
+      "taskKind": "review",
+      "name": "Admin Authentication - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-002-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-002-TEST",
+      "featureId": "C-002",
+      "taskKind": "test",
+      "name": "Admin Authentication - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-002-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-003-DB",
+      "featureId": "C-003",
+      "taskKind": "db",
+      "name": "Device Authentication - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-003-API",
+      "featureId": "C-003",
+      "taskKind": "api",
+      "name": "Device Authentication - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-003-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-003-UI",
+      "featureId": "C-003",
+      "taskKind": "ui",
+      "name": "Device Authentication - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-003-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-003-INTEGRATION",
+      "featureId": "C-003",
+      "taskKind": "integration",
+      "name": "Device Authentication - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-003-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-003-REVIEW",
+      "featureId": "C-003",
+      "taskKind": "review",
+      "name": "Device Authentication - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-003-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-003-TEST",
+      "featureId": "C-003",
+      "taskKind": "test",
+      "name": "Device Authentication - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-003-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-004-DB",
+      "featureId": "C-004",
+      "taskKind": "db",
+      "name": "Multi-tenant Architecture - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-004-API",
+      "featureId": "C-004",
+      "taskKind": "api",
+      "name": "Multi-tenant Architecture - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-004-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-004-UI",
+      "featureId": "C-004",
+      "taskKind": "ui",
+      "name": "Multi-tenant Architecture - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-004-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-004-INTEGRATION",
+      "featureId": "C-004",
+      "taskKind": "integration",
+      "name": "Multi-tenant Architecture - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-004-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-004-REVIEW",
+      "featureId": "C-004",
+      "taskKind": "review",
+      "name": "Multi-tenant Architecture - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-004-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-004-TEST",
+      "featureId": "C-004",
+      "taskKind": "test",
+      "name": "Multi-tenant Architecture - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-004-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-005-DB",
+      "featureId": "C-005",
+      "taskKind": "db",
+      "name": "Database Schema - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-005-API",
+      "featureId": "C-005",
+      "taskKind": "api",
+      "name": "Database Schema - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-005-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-005-UI",
+      "featureId": "C-005",
+      "taskKind": "ui",
+      "name": "Database Schema - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-005-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-005-INTEGRATION",
+      "featureId": "C-005",
+      "taskKind": "integration",
+      "name": "Database Schema - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-005-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-005-REVIEW",
+      "featureId": "C-005",
+      "taskKind": "review",
+      "name": "Database Schema - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-005-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-005-TEST",
+      "featureId": "C-005",
+      "taskKind": "test",
+      "name": "Database Schema - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-005-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-006-DB",
+      "featureId": "C-006",
+      "taskKind": "db",
+      "name": "Permission System (RBAC) - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-006-API",
+      "featureId": "C-006",
+      "taskKind": "api",
+      "name": "Permission System (RBAC) - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-006-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-006-UI",
+      "featureId": "C-006",
+      "taskKind": "ui",
+      "name": "Permission System (RBAC) - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-006-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-006-INTEGRATION",
+      "featureId": "C-006",
+      "taskKind": "integration",
+      "name": "Permission System (RBAC) - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-006-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-006-REVIEW",
+      "featureId": "C-006",
+      "taskKind": "review",
+      "name": "Permission System (RBAC) - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-006-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-006-TEST",
+      "featureId": "C-006",
+      "taskKind": "test",
+      "name": "Permission System (RBAC) - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-006-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-007-DB",
+      "featureId": "C-007",
+      "taskKind": "db",
+      "name": "DB Migration Operations - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-007-API",
+      "featureId": "C-007",
+      "taskKind": "api",
+      "name": "DB Migration Operations - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-007-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-007-UI",
+      "featureId": "C-007",
+      "taskKind": "ui",
+      "name": "DB Migration Operations - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-007-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-007-INTEGRATION",
+      "featureId": "C-007",
+      "taskKind": "integration",
+      "name": "DB Migration Operations - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-007-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-007-REVIEW",
+      "featureId": "C-007",
+      "taskKind": "review",
+      "name": "DB Migration Operations - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-007-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-007-TEST",
+      "featureId": "C-007",
+      "taskKind": "test",
+      "name": "DB Migration Operations - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-007-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-008-DB",
+      "featureId": "C-008",
+      "taskKind": "db",
+      "name": "Operational Log Architecture - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-008-API",
+      "featureId": "C-008",
+      "taskKind": "api",
+      "name": "Operational Log Architecture - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-008-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-008-UI",
+      "featureId": "C-008",
+      "taskKind": "ui",
+      "name": "Operational Log Architecture - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-008-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-008-INTEGRATION",
+      "featureId": "C-008",
+      "taskKind": "integration",
+      "name": "Operational Log Architecture - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-008-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-008-REVIEW",
+      "featureId": "C-008",
+      "taskKind": "review",
+      "name": "Operational Log Architecture - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-008-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-008-TEST",
+      "featureId": "C-008",
+      "taskKind": "test",
+      "name": "Operational Log Architecture - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-008-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-013-DB",
+      "featureId": "C-013",
+      "taskKind": "db",
+      "name": "Production Parity Rules - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-013-API",
+      "featureId": "C-013",
+      "taskKind": "api",
+      "name": "Production Parity Rules - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-013-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-013-UI",
+      "featureId": "C-013",
+      "taskKind": "ui",
+      "name": "Production Parity Rules - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-013-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-013-INTEGRATION",
+      "featureId": "C-013",
+      "taskKind": "integration",
+      "name": "Production Parity Rules - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-013-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-013-REVIEW",
+      "featureId": "C-013",
+      "taskKind": "review",
+      "name": "Production Parity Rules - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-013-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-013-TEST",
+      "featureId": "C-013",
+      "taskKind": "test",
+      "name": "Production Parity Rules - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-013-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-014-DB",
+      "featureId": "C-014",
+      "taskKind": "db",
+      "name": "Staff Management (Common) - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-014-API",
+      "featureId": "C-014",
+      "taskKind": "api",
+      "name": "Staff Management (Common) - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-014-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-014-UI",
+      "featureId": "C-014",
+      "taskKind": "ui",
+      "name": "Staff Management (Common) - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-014-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-014-INTEGRATION",
+      "featureId": "C-014",
+      "taskKind": "integration",
+      "name": "Staff Management (Common) - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-014-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-014-REVIEW",
+      "featureId": "C-014",
+      "taskKind": "review",
+      "name": "Staff Management (Common) - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-014-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-014-TEST",
+      "featureId": "C-014",
+      "taskKind": "test",
+      "name": "Staff Management (Common) - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-014-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-001-DB",
+      "featureId": "F-001",
+      "taskKind": "db",
+      "name": "Dashboard - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-001-API",
+      "featureId": "F-001",
+      "taskKind": "api",
+      "name": "Dashboard - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-001-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-001-UI",
+      "featureId": "F-001",
+      "taskKind": "ui",
+      "name": "Dashboard - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-001-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-001-INTEGRATION",
+      "featureId": "F-001",
+      "taskKind": "integration",
+      "name": "Dashboard - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-001-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-001-REVIEW",
+      "featureId": "F-001",
+      "taskKind": "review",
+      "name": "Dashboard - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-001-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-001-TEST",
+      "featureId": "F-001",
+      "taskKind": "test",
+      "name": "Dashboard - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-001-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-002-DB",
+      "featureId": "F-002",
+      "taskKind": "db",
+      "name": "Menu Management - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-002-API",
+      "featureId": "F-002",
+      "taskKind": "api",
+      "name": "Menu Management - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-002-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-002-UI",
+      "featureId": "F-002",
+      "taskKind": "ui",
+      "name": "Menu Management - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-002-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-002-INTEGRATION",
+      "featureId": "F-002",
+      "taskKind": "integration",
+      "name": "Menu Management - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-002-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-002-REVIEW",
+      "featureId": "F-002",
+      "taskKind": "review",
+      "name": "Menu Management - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-002-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-002-TEST",
+      "featureId": "F-002",
+      "taskKind": "test",
+      "name": "Menu Management - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-002-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-003-DB",
+      "featureId": "F-003",
+      "taskKind": "db",
+      "name": "Order Management - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-003-API",
+      "featureId": "F-003",
+      "taskKind": "api",
+      "name": "Order Management - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-003-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-003-UI",
+      "featureId": "F-003",
+      "taskKind": "ui",
+      "name": "Order Management - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-003-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-003-INTEGRATION",
+      "featureId": "F-003",
+      "taskKind": "integration",
+      "name": "Order Management - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-003-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-003-REVIEW",
+      "featureId": "F-003",
+      "taskKind": "review",
+      "name": "Order Management - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-003-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-003-TEST",
+      "featureId": "F-003",
+      "taskKind": "test",
+      "name": "Order Management - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-003-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-004-DB",
+      "featureId": "F-004",
+      "taskKind": "db",
+      "name": "Room Management - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-004-API",
+      "featureId": "F-004",
+      "taskKind": "api",
+      "name": "Room Management - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-004-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-004-UI",
+      "featureId": "F-004",
+      "taskKind": "ui",
+      "name": "Room Management - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-004-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-004-INTEGRATION",
+      "featureId": "F-004",
+      "taskKind": "integration",
+      "name": "Room Management - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-004-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-004-REVIEW",
+      "featureId": "F-004",
+      "taskKind": "review",
+      "name": "Room Management - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-004-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-004-TEST",
+      "featureId": "F-004",
+      "taskKind": "test",
+      "name": "Room Management - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-004-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-005-DB",
+      "featureId": "F-005",
+      "taskKind": "db",
+      "name": "Front Desk Operations - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-005-API",
+      "featureId": "F-005",
+      "taskKind": "api",
+      "name": "Front Desk Operations - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-005-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-005-UI",
+      "featureId": "F-005",
+      "taskKind": "ui",
+      "name": "Front Desk Operations - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-005-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-005-INTEGRATION",
+      "featureId": "F-005",
+      "taskKind": "integration",
+      "name": "Front Desk Operations - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-005-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-005-REVIEW",
+      "featureId": "F-005",
+      "taskKind": "review",
+      "name": "Front Desk Operations - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-005-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-005-TEST",
+      "featureId": "F-005",
+      "taskKind": "test",
+      "name": "Front Desk Operations - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-005-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-006-DB",
+      "featureId": "F-006",
+      "taskKind": "db",
+      "name": "Staff Management (Admin) - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-006-API",
+      "featureId": "F-006",
+      "taskKind": "api",
+      "name": "Staff Management (Admin) - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-006-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-006-UI",
+      "featureId": "F-006",
+      "taskKind": "ui",
+      "name": "Staff Management (Admin) - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-006-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-006-INTEGRATION",
+      "featureId": "F-006",
+      "taskKind": "integration",
+      "name": "Staff Management (Admin) - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-006-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-006-REVIEW",
+      "featureId": "F-006",
+      "taskKind": "review",
+      "name": "Staff Management (Admin) - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-006-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-006-TEST",
+      "featureId": "F-006",
+      "taskKind": "test",
+      "name": "Staff Management (Admin) - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-006-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-007-DB",
+      "featureId": "F-007",
+      "taskKind": "db",
+      "name": "Basic Settings - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-007-API",
+      "featureId": "F-007",
+      "taskKind": "api",
+      "name": "Basic Settings - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-007-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-007-UI",
+      "featureId": "F-007",
+      "taskKind": "ui",
+      "name": "Basic Settings - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-007-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-007-INTEGRATION",
+      "featureId": "F-007",
+      "taskKind": "integration",
+      "name": "Basic Settings - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-007-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-007-REVIEW",
+      "featureId": "F-007",
+      "taskKind": "review",
+      "name": "Basic Settings - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-007-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-007-TEST",
+      "featureId": "F-007",
+      "taskKind": "test",
+      "name": "Basic Settings - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-007-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-021-DB",
+      "featureId": "F-021",
+      "taskKind": "db",
+      "name": "Permission System UI - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-021-API",
+      "featureId": "F-021",
+      "taskKind": "api",
+      "name": "Permission System UI - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-021-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-021-UI",
+      "featureId": "F-021",
+      "taskKind": "ui",
+      "name": "Permission System UI - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-021-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-021-INTEGRATION",
+      "featureId": "F-021",
+      "taskKind": "integration",
+      "name": "Permission System UI - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-021-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-021-REVIEW",
+      "featureId": "F-021",
+      "taskKind": "review",
+      "name": "Permission System UI - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-021-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-021-TEST",
+      "featureId": "F-021",
+      "taskKind": "test",
+      "name": "Permission System UI - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-021-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-001-DB",
+      "featureId": "G-001",
+      "taskKind": "db",
+      "name": "Room Service UI - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-001-API",
+      "featureId": "G-001",
+      "taskKind": "api",
+      "name": "Room Service UI - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-001-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-001-UI",
+      "featureId": "G-001",
+      "taskKind": "ui",
+      "name": "Room Service UI - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-001-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-001-INTEGRATION",
+      "featureId": "G-001",
+      "taskKind": "integration",
+      "name": "Room Service UI - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-001-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-001-REVIEW",
+      "featureId": "G-001",
+      "taskKind": "review",
+      "name": "Room Service UI - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-001-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-001-TEST",
+      "featureId": "G-001",
+      "taskKind": "test",
+      "name": "Room Service UI - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-001-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-002-DB",
+      "featureId": "G-002",
+      "taskKind": "db",
+      "name": "Order Flow - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-002-API",
+      "featureId": "G-002",
+      "taskKind": "api",
+      "name": "Order Flow - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-002-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-002-UI",
+      "featureId": "G-002",
+      "taskKind": "ui",
+      "name": "Order Flow - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-002-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-002-INTEGRATION",
+      "featureId": "G-002",
+      "taskKind": "integration",
+      "name": "Order Flow - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-002-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-002-REVIEW",
+      "featureId": "G-002",
+      "taskKind": "review",
+      "name": "Order Flow - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-002-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-002-TEST",
+      "featureId": "G-002",
+      "taskKind": "test",
+      "name": "Order Flow - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-002-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-003-DB",
+      "featureId": "G-003",
+      "taskKind": "db",
+      "name": "Menu View - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-003-API",
+      "featureId": "G-003",
+      "taskKind": "api",
+      "name": "Menu View - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-003-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-003-UI",
+      "featureId": "G-003",
+      "taskKind": "ui",
+      "name": "Menu View - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-003-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-003-INTEGRATION",
+      "featureId": "G-003",
+      "taskKind": "integration",
+      "name": "Menu View - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-003-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-003-REVIEW",
+      "featureId": "G-003",
+      "taskKind": "review",
+      "name": "Menu View - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-003-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-003-TEST",
+      "featureId": "G-003",
+      "taskKind": "test",
+      "name": "Menu View - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-003-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-004-DB",
+      "featureId": "G-004",
+      "taskKind": "db",
+      "name": "Device App (Capacitor) - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-004-API",
+      "featureId": "G-004",
+      "taskKind": "api",
+      "name": "Device App (Capacitor) - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-004-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-004-UI",
+      "featureId": "G-004",
+      "taskKind": "ui",
+      "name": "Device App (Capacitor) - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-004-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-004-INTEGRATION",
+      "featureId": "G-004",
+      "taskKind": "integration",
+      "name": "Device App (Capacitor) - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-004-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-004-REVIEW",
+      "featureId": "G-004",
+      "taskKind": "review",
+      "name": "Device App (Capacitor) - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-004-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-004-TEST",
+      "featureId": "G-004",
+      "taskKind": "test",
+      "name": "Device App (Capacitor) - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-004-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-009-DB",
+      "featureId": "C-009",
+      "taskKind": "db",
+      "name": "Multilingual System - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-009-API",
+      "featureId": "C-009",
+      "taskKind": "api",
+      "name": "Multilingual System - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-009-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-009-UI",
+      "featureId": "C-009",
+      "taskKind": "ui",
+      "name": "Multilingual System - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-009-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-009-INTEGRATION",
+      "featureId": "C-009",
+      "taskKind": "integration",
+      "name": "Multilingual System - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-009-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-009-REVIEW",
+      "featureId": "C-009",
+      "taskKind": "review",
+      "name": "Multilingual System - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-009-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-009-TEST",
+      "featureId": "C-009",
+      "taskKind": "test",
+      "name": "Multilingual System - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-009-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-010-DB",
+      "featureId": "C-010",
+      "taskKind": "db",
+      "name": "Multicultural AI - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-010-API",
+      "featureId": "C-010",
+      "taskKind": "api",
+      "name": "Multicultural AI - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-010-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-010-UI",
+      "featureId": "C-010",
+      "taskKind": "ui",
+      "name": "Multicultural AI - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-010-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-010-INTEGRATION",
+      "featureId": "C-010",
+      "taskKind": "integration",
+      "name": "Multicultural AI - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-010-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-010-REVIEW",
+      "featureId": "C-010",
+      "taskKind": "review",
+      "name": "Multicultural AI - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-010-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-010-TEST",
+      "featureId": "C-010",
+      "taskKind": "test",
+      "name": "Multicultural AI - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-010-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-011-DB",
+      "featureId": "C-011",
+      "taskKind": "db",
+      "name": "Media Management - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-011-API",
+      "featureId": "C-011",
+      "taskKind": "api",
+      "name": "Media Management - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-011-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-011-UI",
+      "featureId": "C-011",
+      "taskKind": "ui",
+      "name": "Media Management - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-011-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-011-INTEGRATION",
+      "featureId": "C-011",
+      "taskKind": "integration",
+      "name": "Media Management - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-011-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-011-REVIEW",
+      "featureId": "C-011",
+      "taskKind": "review",
+      "name": "Media Management - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-011-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-011-TEST",
+      "featureId": "C-011",
+      "taskKind": "test",
+      "name": "Media Management - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-011-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-012-DB",
+      "featureId": "C-012",
+      "taskKind": "db",
+      "name": "Email System - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-012-API",
+      "featureId": "C-012",
+      "taskKind": "api",
+      "name": "Email System - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-012-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-012-UI",
+      "featureId": "C-012",
+      "taskKind": "ui",
+      "name": "Email System - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-012-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-012-INTEGRATION",
+      "featureId": "C-012",
+      "taskKind": "integration",
+      "name": "Email System - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-012-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-012-REVIEW",
+      "featureId": "C-012",
+      "taskKind": "review",
+      "name": "Email System - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-012-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-012-TEST",
+      "featureId": "C-012",
+      "taskKind": "test",
+      "name": "Email System - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-012-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-008-DB",
+      "featureId": "F-008",
+      "taskKind": "db",
+      "name": "AI Concierge Overview - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-008-API",
+      "featureId": "F-008",
+      "taskKind": "api",
+      "name": "AI Concierge Overview - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-008-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-008-UI",
+      "featureId": "F-008",
+      "taskKind": "ui",
+      "name": "AI Concierge Overview - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-008-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-008-INTEGRATION",
+      "featureId": "F-008",
+      "taskKind": "integration",
+      "name": "AI Concierge Overview - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-008-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-008-REVIEW",
+      "featureId": "F-008",
+      "taskKind": "review",
+      "name": "AI Concierge Overview - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-008-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-008-TEST",
+      "featureId": "F-008",
+      "taskKind": "test",
+      "name": "AI Concierge Overview - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-008-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-009-DB",
+      "featureId": "F-009",
+      "taskKind": "db",
+      "name": "AI Knowledge Base - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-009-API",
+      "featureId": "F-009",
+      "taskKind": "api",
+      "name": "AI Knowledge Base - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-009-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-009-UI",
+      "featureId": "F-009",
+      "taskKind": "ui",
+      "name": "AI Knowledge Base - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-009-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-009-INTEGRATION",
+      "featureId": "F-009",
+      "taskKind": "integration",
+      "name": "AI Knowledge Base - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-009-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-009-REVIEW",
+      "featureId": "F-009",
+      "taskKind": "review",
+      "name": "AI Knowledge Base - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-009-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-009-TEST",
+      "featureId": "F-009",
+      "taskKind": "test",
+      "name": "AI Knowledge Base - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-009-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-011-DB",
+      "featureId": "F-011",
+      "taskKind": "db",
+      "name": "AI Character Settings - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-011-API",
+      "featureId": "F-011",
+      "taskKind": "api",
+      "name": "AI Character Settings - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-011-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-011-UI",
+      "featureId": "F-011",
+      "taskKind": "ui",
+      "name": "AI Character Settings - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-011-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-011-INTEGRATION",
+      "featureId": "F-011",
+      "taskKind": "integration",
+      "name": "AI Character Settings - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-011-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-011-REVIEW",
+      "featureId": "F-011",
+      "taskKind": "review",
+      "name": "AI Character Settings - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-011-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-011-TEST",
+      "featureId": "F-011",
+      "taskKind": "test",
+      "name": "AI Character Settings - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-011-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-012-DB",
+      "featureId": "F-012",
+      "taskKind": "db",
+      "name": "AI Concierge Database - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-012-API",
+      "featureId": "F-012",
+      "taskKind": "api",
+      "name": "AI Concierge Database - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-012-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-012-UI",
+      "featureId": "F-012",
+      "taskKind": "ui",
+      "name": "AI Concierge Database - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-012-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-012-INTEGRATION",
+      "featureId": "F-012",
+      "taskKind": "integration",
+      "name": "AI Concierge Database - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-012-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-012-REVIEW",
+      "featureId": "F-012",
+      "taskKind": "review",
+      "name": "AI Concierge Database - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-012-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-012-TEST",
+      "featureId": "F-012",
+      "taskKind": "test",
+      "name": "AI Concierge Database - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-012-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-013-DB",
+      "featureId": "F-013",
+      "taskKind": "db",
+      "name": "Statistics Core - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-013-API",
+      "featureId": "F-013",
+      "taskKind": "api",
+      "name": "Statistics Core - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-013-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-013-UI",
+      "featureId": "F-013",
+      "taskKind": "ui",
+      "name": "Statistics Core - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-013-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-013-INTEGRATION",
+      "featureId": "F-013",
+      "taskKind": "integration",
+      "name": "Statistics Core - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-013-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-013-REVIEW",
+      "featureId": "F-013",
+      "taskKind": "review",
+      "name": "Statistics Core - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-013-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-013-TEST",
+      "featureId": "F-013",
+      "taskKind": "test",
+      "name": "Statistics Core - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-013-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-016-DB",
+      "featureId": "F-016",
+      "taskKind": "db",
+      "name": "Admin UI Design / Layout - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-016-API",
+      "featureId": "F-016",
+      "taskKind": "api",
+      "name": "Admin UI Design / Layout - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-016-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-016-UI",
+      "featureId": "F-016",
+      "taskKind": "ui",
+      "name": "Admin UI Design / Layout - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-016-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-016-INTEGRATION",
+      "featureId": "F-016",
+      "taskKind": "integration",
+      "name": "Admin UI Design / Layout - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-016-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-016-REVIEW",
+      "featureId": "F-016",
+      "taskKind": "review",
+      "name": "Admin UI Design / Layout - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-016-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-016-TEST",
+      "featureId": "F-016",
+      "taskKind": "test",
+      "name": "Admin UI Design / Layout - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-016-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-017-DB",
+      "featureId": "F-017",
+      "taskKind": "db",
+      "name": "System Logs - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-017-API",
+      "featureId": "F-017",
+      "taskKind": "api",
+      "name": "System Logs - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-017-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-017-UI",
+      "featureId": "F-017",
+      "taskKind": "ui",
+      "name": "System Logs - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-017-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-017-INTEGRATION",
+      "featureId": "F-017",
+      "taskKind": "integration",
+      "name": "System Logs - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-017-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-017-REVIEW",
+      "featureId": "F-017",
+      "taskKind": "review",
+      "name": "System Logs - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-017-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-017-TEST",
+      "featureId": "F-017",
+      "taskKind": "test",
+      "name": "System Logs - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-017-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-018-DB",
+      "featureId": "F-018",
+      "taskKind": "db",
+      "name": "Billing - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-018-API",
+      "featureId": "F-018",
+      "taskKind": "api",
+      "name": "Billing - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-018-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-018-UI",
+      "featureId": "F-018",
+      "taskKind": "ui",
+      "name": "Billing - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-018-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-018-INTEGRATION",
+      "featureId": "F-018",
+      "taskKind": "integration",
+      "name": "Billing - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-018-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-018-REVIEW",
+      "featureId": "F-018",
+      "taskKind": "review",
+      "name": "Billing - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-018-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-018-TEST",
+      "featureId": "F-018",
+      "taskKind": "test",
+      "name": "Billing - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-018-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-019-DB",
+      "featureId": "F-019",
+      "taskKind": "db",
+      "name": "Super Admin - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-019-API",
+      "featureId": "F-019",
+      "taskKind": "api",
+      "name": "Super Admin - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-019-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-019-UI",
+      "featureId": "F-019",
+      "taskKind": "ui",
+      "name": "Super Admin - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-019-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-019-INTEGRATION",
+      "featureId": "F-019",
+      "taskKind": "integration",
+      "name": "Super Admin - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-019-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-019-REVIEW",
+      "featureId": "F-019",
+      "taskKind": "review",
+      "name": "Super Admin - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-019-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-019-TEST",
+      "featureId": "F-019",
+      "taskKind": "test",
+      "name": "Super Admin - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-019-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-005-DB",
+      "featureId": "G-005",
+      "taskKind": "db",
+      "name": "Campaign View - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-005-API",
+      "featureId": "G-005",
+      "taskKind": "api",
+      "name": "Campaign View - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-005-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-005-UI",
+      "featureId": "G-005",
+      "taskKind": "ui",
+      "name": "Campaign View - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-005-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-005-INTEGRATION",
+      "featureId": "G-005",
+      "taskKind": "integration",
+      "name": "Campaign View - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-005-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-005-REVIEW",
+      "featureId": "G-005",
+      "taskKind": "review",
+      "name": "Campaign View - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-005-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-005-TEST",
+      "featureId": "G-005",
+      "taskKind": "test",
+      "name": "Campaign View - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-005-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-006-DB",
+      "featureId": "G-006",
+      "taskKind": "db",
+      "name": "Info Portal - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-006-API",
+      "featureId": "G-006",
+      "taskKind": "api",
+      "name": "Info Portal - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-006-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-006-UI",
+      "featureId": "G-006",
+      "taskKind": "ui",
+      "name": "Info Portal - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-006-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-006-INTEGRATION",
+      "featureId": "G-006",
+      "taskKind": "integration",
+      "name": "Info Portal - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-006-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-006-REVIEW",
+      "featureId": "G-006",
+      "taskKind": "review",
+      "name": "Info Portal - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-006-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-006-TEST",
+      "featureId": "G-006",
+      "taskKind": "test",
+      "name": "Info Portal - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-006-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-007-DB",
+      "featureId": "G-007",
+      "taskKind": "db",
+      "name": "AI Chat - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-007-API",
+      "featureId": "G-007",
+      "taskKind": "api",
+      "name": "AI Chat - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-007-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-007-UI",
+      "featureId": "G-007",
+      "taskKind": "ui",
+      "name": "AI Chat - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-007-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-007-INTEGRATION",
+      "featureId": "G-007",
+      "taskKind": "integration",
+      "name": "AI Chat - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-007-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-007-REVIEW",
+      "featureId": "G-007",
+      "taskKind": "review",
+      "name": "AI Chat - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-007-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-007-TEST",
+      "featureId": "G-007",
+      "taskKind": "test",
+      "name": "AI Chat - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-007-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-015-DB",
+      "featureId": "C-015",
+      "taskKind": "db",
+      "name": "World-class UI Design Principles - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "C-015-API",
+      "featureId": "C-015",
+      "taskKind": "api",
+      "name": "World-class UI Design Principles - API",
+      "status": "backlog",
+      "blockedBy": [
+        "C-015-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-015-UI",
+      "featureId": "C-015",
+      "taskKind": "ui",
+      "name": "World-class UI Design Principles - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "C-015-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-015-INTEGRATION",
+      "featureId": "C-015",
+      "taskKind": "integration",
+      "name": "World-class UI Design Principles - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "C-015-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-015-REVIEW",
+      "featureId": "C-015",
+      "taskKind": "review",
+      "name": "World-class UI Design Principles - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "C-015-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "C-015-TEST",
+      "featureId": "C-015",
+      "taskKind": "test",
+      "name": "World-class UI Design Principles - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "C-015-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-014-DB",
+      "featureId": "F-014",
+      "taskKind": "db",
+      "name": "Statistics AI - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-014-API",
+      "featureId": "F-014",
+      "taskKind": "api",
+      "name": "Statistics AI - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-014-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-014-UI",
+      "featureId": "F-014",
+      "taskKind": "ui",
+      "name": "Statistics AI - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-014-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-014-INTEGRATION",
+      "featureId": "F-014",
+      "taskKind": "integration",
+      "name": "Statistics AI - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-014-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-014-REVIEW",
+      "featureId": "F-014",
+      "taskKind": "review",
+      "name": "Statistics AI - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-014-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-014-TEST",
+      "featureId": "F-014",
+      "taskKind": "test",
+      "name": "Statistics AI - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-014-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-015-DB",
+      "featureId": "F-015",
+      "taskKind": "db",
+      "name": "Statistics Delivery / A/B Test - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-015-API",
+      "featureId": "F-015",
+      "taskKind": "api",
+      "name": "Statistics Delivery / A/B Test - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-015-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-015-UI",
+      "featureId": "F-015",
+      "taskKind": "ui",
+      "name": "Statistics Delivery / A/B Test - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-015-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-015-INTEGRATION",
+      "featureId": "F-015",
+      "taskKind": "integration",
+      "name": "Statistics Delivery / A/B Test - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-015-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-015-REVIEW",
+      "featureId": "F-015",
+      "taskKind": "review",
+      "name": "Statistics Delivery / A/B Test - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-015-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-015-TEST",
+      "featureId": "F-015",
+      "taskKind": "test",
+      "name": "Statistics Delivery / A/B Test - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-015-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-020-DB",
+      "featureId": "F-020",
+      "taskKind": "db",
+      "name": "AI Settings - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "F-020-API",
+      "featureId": "F-020",
+      "taskKind": "api",
+      "name": "AI Settings - API",
+      "status": "backlog",
+      "blockedBy": [
+        "F-020-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-020-UI",
+      "featureId": "F-020",
+      "taskKind": "ui",
+      "name": "AI Settings - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "F-020-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-020-INTEGRATION",
+      "featureId": "F-020",
+      "taskKind": "integration",
+      "name": "AI Settings - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "F-020-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-020-REVIEW",
+      "featureId": "F-020",
+      "taskKind": "review",
+      "name": "AI Settings - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "F-020-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "F-020-TEST",
+      "featureId": "F-020",
+      "taskKind": "test",
+      "name": "AI Settings - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "F-020-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-008-DB",
+      "featureId": "G-008",
+      "taskKind": "db",
+      "name": "App Launcher - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-008-API",
+      "featureId": "G-008",
+      "taskKind": "api",
+      "name": "App Launcher - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-008-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-008-UI",
+      "featureId": "G-008",
+      "taskKind": "ui",
+      "name": "App Launcher - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-008-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-008-INTEGRATION",
+      "featureId": "G-008",
+      "taskKind": "integration",
+      "name": "App Launcher - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-008-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-008-REVIEW",
+      "featureId": "G-008",
+      "taskKind": "review",
+      "name": "App Launcher - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-008-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-008-TEST",
+      "featureId": "G-008",
+      "taskKind": "test",
+      "name": "App Launcher - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-008-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-009-DB",
+      "featureId": "G-009",
+      "taskKind": "db",
+      "name": "Page Routing / Navigation - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-009-API",
+      "featureId": "G-009",
+      "taskKind": "api",
+      "name": "Page Routing / Navigation - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-009-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-009-UI",
+      "featureId": "G-009",
+      "taskKind": "ui",
+      "name": "Page Routing / Navigation - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-009-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-009-INTEGRATION",
+      "featureId": "G-009",
+      "taskKind": "integration",
+      "name": "Page Routing / Navigation - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-009-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-009-REVIEW",
+      "featureId": "G-009",
+      "taskKind": "review",
+      "name": "Page Routing / Navigation - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-009-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-009-TEST",
+      "featureId": "G-009",
+      "taskKind": "test",
+      "name": "Page Routing / Navigation - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-009-REVIEW"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-010-DB",
+      "featureId": "G-010",
+      "taskKind": "db",
+      "name": "Device Reset / Maintenance - Database",
+      "status": "backlog",
+      "blockedBy": [],
+      "files": []
+    },
+    {
+      "taskId": "G-010-API",
+      "featureId": "G-010",
+      "taskKind": "api",
+      "name": "Device Reset / Maintenance - API",
+      "status": "backlog",
+      "blockedBy": [
+        "G-010-DB"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-010-UI",
+      "featureId": "G-010",
+      "taskKind": "ui",
+      "name": "Device Reset / Maintenance - UI",
+      "status": "backlog",
+      "blockedBy": [
+        "G-010-API"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-010-INTEGRATION",
+      "featureId": "G-010",
+      "taskKind": "integration",
+      "name": "Device Reset / Maintenance - Integration",
+      "status": "backlog",
+      "blockedBy": [
+        "G-010-UI"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-010-REVIEW",
+      "featureId": "G-010",
+      "taskKind": "review",
+      "name": "Device Reset / Maintenance - Code Audit",
+      "status": "backlog",
+      "blockedBy": [
+        "G-010-INTEGRATION"
+      ],
+      "files": []
+    },
+    {
+      "taskId": "G-010-TEST",
+      "featureId": "G-010",
+      "taskKind": "test",
+      "name": "Device Reset / Maintenance - Testing",
+      "status": "backlog",
+      "blockedBy": [
+        "G-010-REVIEW"
+      ],
+      "files": []
+    }
+  ],
+  "startedAt": "2026-03-05T10:24:16.586Z",
+  "updatedAt": "2026-03-05T10:24:16.586Z"
+}
