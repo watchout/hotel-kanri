@@ -124,8 +124,8 @@ function main() {
 
   // Page Registryの存在確認
   if (!fs.existsSync(PAGE_REGISTRY_PATH)) {
-    console.log('⚠️ Page Registryが見つかりません:', PAGE_REGISTRY_PATH);
-    process.exit(0); // Skip gracefully if file doesn't exist
+    console.log('❌ Page Registryが見つかりません:', PAGE_REGISTRY_PATH);
+    process.exit(1);
   }
 
   // 有効なパス一覧を取得
