@@ -1,0 +1,102 @@
+name: CI - Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  # ==========================================
+  # Job: ops-policy-lint（必須）
+  # ==========================================
+  ops-policy-lint:
+    name: ops-policy-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate ops policy
+        run: node ops/scripts/validate-policy.js
+
+  # ==========================================
+  # Job: ssot-compliance（必須）
+  # ==========================================
+  ssot-compliance:
+    name: ssot-compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check SSOT citation and Requirement IDs in PR body
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          echo "Checking PR body for SSOT references and requirement IDs..."
+          if ! echo "$PR_BODY" | grep -q "docs/03_ssot"; then
+            echo "❌ エラー: PR本文にSSOT参照が見つかりません (docs/03_ssot/...)" && exit 1
+          fi
+          if ! echo "$PR_BODY" | grep -qE "[A-Z]+-[0-9]+"; then
+            echo "❌ エラー: PR本文に要件ID（XXX-nnn形式）が見つかりません" && exit 1
+          fi
+          echo "✅ SSOT準拠チェック: 合格"
+
+  # ==========================================
+  # Job: typescript-check（必須・このリポではNo-Op）
+  # ==========================================
+  typescript-check:
+    name: typescript-check
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No TypeScript sources to check in hotel-kanri. Skipping."
+
+  # ==========================================
+  # Job: eslint（必須・このリポではNo-Op）
+  # ==========================================
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No ESLint target in hotel-kanri. Skipping."
+
+  # ==========================================
+  # Job: unit-tests（必須・このリポではNo-Op）
+  # ==========================================
+  unit-tests:
+    name: unit-tests
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No unit tests in hotel-kanri. Skipping."
+
+  # ==========================================
+  # Job: route-order（必須・kanriではNo-Op）
+  # ==========================================
+  route-order:
+    name: route-order
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No API routes in hotel-kanri. Skipping route-order check."
+
+  # ==========================================
+  # 最終ゲート: 全ジョブ成功確認（参考）
+  # ==========================================
+  quality-gate:
+    name: Quality Gate - All Checks Passed
+    runs-on: ubuntu-latest
+    needs:
+      - ops-policy-lint
+      - ssot-compliance
+      - typescript-check
+      - eslint
+      - unit-tests
+      - route-order
+    steps:
+      - run: |
+          echo "✅ 全ての必須チェックが合格しました。"
+          echo "🎉 マージ可能な状態です"
