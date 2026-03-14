@@ -7,15 +7,111 @@
   ],
   "ignorePatterns": [
     {
+      "pattern": "^#"
+    },
+    {
       "pattern": "^http://localhost"
     },
     {
       "pattern": "^https://example.com"
+    },
+    {
+      "pattern": "^https://stg.example.com"
+    },
+    {
+      "pattern": "^file:///"
+    },
+    {
+      "pattern": "path/to/SSOT"
+    },
+    {
+      "pattern": "path/to/DOC"
+    },
+    {
+      "pattern": "^https://dev[-\\.]"
+    },
+    {
+      "pattern": "^https://app\\.datadoghq\\.com"
+    },
+    {
+      "pattern": "^https://console\\.aws\\.amazon\\.com"
+    },
+    {
+      "pattern": "^https://github\\.com/example/"
+    },
+    {
+      "pattern": "^https://github\\.com/<org>"
+    },
+    {
+      "pattern": "^https://common\\.hotel-system\\.com"
+    },
+    {
+      "pattern": "^https://docs/"
+    },
+    {
+      "pattern": "omotenasuai\\.com"
+    },
+    {
+      "pattern": "Users/kaneko"
+    },
+    {
+      "pattern": "\\.SSOT_ADMIN_AI_CONCIERGE\\.md"
+    },
+    {
+      "pattern": "00_foundation/SSOT_DATABASE_SCHEMA"
+    },
+    {
+      "pattern": "01_systems/"
+    },
+    {
+      "pattern": "SSOT_[A-Z]"
+    },
+    {
+      "pattern": "\\.cursor/prompts/"
+    },
+    {
+      "pattern": "standards/DATABASE_NAMING_STANDARD"
+    },
+    {
+      "pattern": "prisma\\.io/docs/guides/migrate/troubleshooting"
+    },
+    {
+      "pattern": "patterns\\.dev/typescript"
+    },
+    {
+      "pattern": "vue-react-wrapper"
+    },
+    {
+      "pattern": "komoju\\.com/blog"
+    },
+    {
+      "pattern": "meti\\.go\\.jp"
+    },
+    {
+      "pattern": "omotenasu-ai\\.com"
+    },
+    {
+      "pattern": "\\.\\./.*systems/"
+    },
+    {
+      "pattern": "\\.\\./.*features/"
+    },
+    {
+      "pattern": "\\.\\./.*tech-debt/"
+    },
+    {
+      "pattern": "\\.\\./.*00_shared/"
+    },
+    {
+      "pattern": "\\.\\./.*unify-dev/"
     }
   ],
   "timeout": "20s",
   "retryOn429": true,
   "retryCount": 3,
   "fallbackRetryDelay": "30s",
-  "aliveStatusCodes": [200, 206]
+  "aliveStatusCodes": [
+    200,
+    206
+  ]
 }

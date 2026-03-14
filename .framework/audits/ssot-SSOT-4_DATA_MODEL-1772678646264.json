@@ -1,0 +1,104 @@
+{
+  "mode": "ssot",
+  "target": {
+    "id": "SSOT-4_DATA_MODEL",
+    "name": "SSOT-4_DATA_MODEL.md",
+    "path": "docs/design/core/SSOT-4_DATA_MODEL.md",
+    "auditDate": "2026-03-05T02:44:06.263Z",
+    "iteration": 1
+  },
+  "scorecard": [
+    {
+      "category": "Completeness",
+      "maxPoints": 15,
+      "earned": 15,
+      "deductions": []
+    },
+    {
+      "category": "Consistency",
+      "maxPoints": 15,
+      "earned": 15,
+      "deductions": []
+    },
+    {
+      "category": "Clarity",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Verifiability",
+      "maxPoints": 10,
+      "earned": 0,
+      "deductions": [
+        {
+          "reason": "10 untestable MUST requirements",
+          "amount": 10
+        }
+      ]
+    },
+    {
+      "category": "Traceability",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Feasibility",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "RFC 2119 Compliance",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Test Coverage",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Cross-SSOT Consistency",
+      "maxPoints": 5,
+      "earned": 5,
+      "deductions": []
+    },
+    {
+      "category": "Document Quality",
+      "maxPoints": 5,
+      "earned": 5,
+      "deductions": []
+    }
+  ],
+  "totalScore": 90,
+  "verdict": "conditional",
+  "absoluteConditions": [
+    {
+      "name": "TBD Count = 0",
+      "passed": true
+    },
+    {
+      "name": "Critical Findings = 0",
+      "passed": true
+    },
+    {
+      "name": "Cross-SSOT Critical/Major = 0",
+      "passed": true
+    }
+  ],
+  "findings": [
+    {
+      "id": 1,
+      "severity": "major",
+      "category": "Verifiability",
+      "location": "Document",
+      "issue": "10 MUST requirements may be untestable",
+      "correction": "Add measurable criteria to each MUST requirement",
+      "deduction": 10
+    }
+  ]
+}

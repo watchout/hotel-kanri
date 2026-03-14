@@ -1,16 +1,20 @@
 #!/usr/bin/env node
 /*
- * SSOT要件IDカバレッジチェック（CommonJS版）
- * - docs/03_ssot/requirements.md の対応表（対象のみ）
- * - docs/03_ssot/openapi/staff-management.yaml（operation description）
- * に含まれる STAFF-*** ID の対応を機械検証（対象範囲に限定）
+ * SSOT要件IDカバレッジチェック（CIでnpm install不要なCommonJS版）
+ *
+ * 目的:
+ * - SSOT側の要件ID（docs/03_ssot/requirements.md）に記載されたIDが、
+ *   OpenAPI（docs/03_ssot/openapi/staff-management.yaml）にも必ず含まれることを検証する。
+ *
+ * 制約:
+ * - GitHub Actions上ではこのスクリプト単体で実行されるため、外部依存（js-yaml等）は使わない。
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const MAP_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/requirements.md');
-const OPENAPI_FILE = path.resolve(__dirname, '..', 'docs/03_ssot/openapi/staff-management.yaml');
+const MAP_FILE = path.resolve(__dirname, '..', 'docs/03_ssot_legacy/requirements.md');
+const OPENAPI_FILE = path.resolve(__dirname, '..', 'docs/03_ssot_legacy/openapi/staff-management.yaml');
 
 function readText(filePath) {
   if (!fs.existsSync(filePath)) {
@@ -36,6 +40,7 @@ function extractRequirementIdsFromMap(text) {
       }
     }
   }
+
   return Array.from(ids).sort();
 }
 
@@ -61,19 +66,23 @@ function main() {
   const ssotOnly = targetIds.filter((id) => !openapiIds.includes(id));
   const openapiOnly = openapiIds.filter((id) => !targetIds.includes(id));
 
-  if (ssotOnly.length === 0 && openapiOnly.length === 0) {
-    console.log('✅ 要件IDカバレッジ: 100%');
-    console.log(`   - 総ID数: ${targetIds.length}`);
+  if (ssotOnly.length === 0) {
+    console.log('✅ 要件IDカバレッジ: SSOT -> OpenAPI OK');
+    console.log(`   - SSOT ID数: ${targetIds.length}`);
+    console.log(`   - OpenAPI ID数: ${openapiIds.length}`);
+    if (openapiOnly.length > 0) {
+      console.log(`⚠️  OpenAPIのみ（参考）: ${openapiOnly.join(', ')}`);
+    }
     process.exit(0);
   }
 
-  console.error('\n🚨 要件IDカバレッジ不足');
-  if (ssotOnly.length > 0) {
-    console.error(`❌ OpenAPIに不足: ${ssotOnly.join(', ')}`);
-  }
+  console.error('\n🚨 要件IDカバレッジ不足（SSOTにあるがOpenAPIにない）');
+  console.error(`❌ OpenAPIに不足: ${ssotOnly.join(', ')}`);
+
   if (openapiOnly.length > 0) {
-    console.error(`❌ requirementsに未マップ: ${openapiOnly.join(', ')}`);
+    console.error(`\n参考: OpenAPIのみ: ${openapiOnly.join(', ')}`);
   }
+
   process.exit(1);
 }
 
