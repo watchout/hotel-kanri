@@ -1,0 +1,59 @@
+{
+  "description": "hotel-kanriを統合リポとして、配下リポをサブプロジェクトとして管理",
+  "subprojects": [
+    {
+      "name": "hotel-common-rebuild",
+      "path": "../hotel-common-rebuild",
+      "remote": "watchout/hotel-common-rebuild",
+      "branch": "feature/DEV-0250-webhook",
+      "role": "共通基盤（再構築ライン）"
+    },
+    {
+      "name": "hotel-saas-rebuild",
+      "path": "../hotel-saas-rebuild",
+      "remote": "watchout/hotel-saas-rebuild",
+      "branch": "feature/DEV-0250-webhook",
+      "role": "SaaS本体（再構築ライン）"
+    },
+    {
+      "name": "hotel-common",
+      "path": "../hotel-common",
+      "remote": "watchout/hotel-common",
+      "branch": "main",
+      "role": "共通基盤（現行ライン）"
+    },
+    {
+      "name": "hotel-saas",
+      "path": "../hotel-saas",
+      "remote": "watchout/hotel-saas",
+      "branch": "main",
+      "role": "SaaS本体（現行ライン）"
+    },
+    {
+      "name": "hotel-pms",
+      "path": "../hotel-pms",
+      "remote": "watchout/hotel-pms",
+      "branch": "unify-dev/pms-env-verify-two-tier",
+      "role": "PMS側"
+    },
+    {
+      "name": "hotel-member",
+      "path": "../hotel-member",
+      "remote": "watchout/hotel-member",
+      "branch": "unify-dev/member-alert-mitigation",
+      "role": "会員/ユーザー系"
+    }
+  ],
+  "taskRouting": {
+    "description": "Issueのラベルでどのサブリポで作業するかを示す",
+    "labels": {
+      "repo:common-rebuild": "hotel-common-rebuild",
+      "repo:saas-rebuild": "hotel-saas-rebuild",
+      "repo:common": "hotel-common",
+      "repo:saas": "hotel-saas",
+      "repo:pms": "hotel-pms",
+      "repo:member": "hotel-member",
+      "repo:kanri": "hotel-kanri"
+    }
+  }
+}

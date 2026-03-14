@@ -61,15 +61,29 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "${{ matrix.service }}/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: ${{ matrix.service }}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip: ${{ matrix.service }}"
+          fi
+
       - name: Checkout code
         uses: actions/checkout@v4
           
       - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           
       - name: Install dependencies
+<<<<<<< HEAD
         run: npm install
         
       - name: Validate scripts syntax
@@ -82,6 +96,209 @@ jobs:
 
   # ==========================================
   # Job 3: Security Scan
+=======
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm ci
+        
+      - name: Run ESLint
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm run lint
+        continue-on-error: true
+        
+      - name: Run TypeScript typecheck
+        if: steps.detect.outputs.exists == 'true'
+        if: matrix.service == 'hotel-saas'
+        working-directory: ${{ matrix.service }}
+        run: npx nuxi typecheck
+        continue-on-error: true
+
+  # ==========================================
+  # Job 3: Unit Tests
+  # ==========================================
+  unit-tests:
+    name: Unit Tests (${{ matrix.service }})
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [hotel-common, hotel-saas]
+    
+    steps:
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "${{ matrix.service }}/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: ${{ matrix.service }}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip: ${{ matrix.service }}"
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+          
+      - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '${{ matrix.service }}/package-lock.json'
+          
+      - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm ci
+        
+      - name: Run unit tests
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm run test:unit
+        
+      - name: Run coverage
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm run test:coverage
+        continue-on-error: true
+        
+      - name: Upload coverage to Codecov
+        if: steps.detect.outputs.exists == 'true'
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ${{ matrix.service }}/coverage
+          flags: ${{ matrix.service }}
+          name: ${{ matrix.service }}-coverage
+
+  # ==========================================
+  # Job 4: API Tests（hotel-common）
+  # ==========================================
+  api-tests:
+    name: API Tests (hotel-common)
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: hotel_app
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: hotel_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+          
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "hotel-common/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: hotel-common"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip API tests: hotel-common"
+          fi
+        
+      - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'hotel-common/package-lock.json'
+          
+      - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: hotel-common
+        run: npm ci
+        
+      - name: Run Prisma migrations
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: hotel-common
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://hotel_app:password@localhost:5432/hotel_test
+        
+      - name: Run API tests
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: hotel-common
+        run: npm run test:api
+        env:
+          DATABASE_URL: postgresql://hotel_app:password@localhost:5432/hotel_test
+          REDIS_URL: redis://localhost:6379
+          TEST_API_URL: http://localhost:3400
+
+  # ==========================================
+  # Job 5: Build Check
+  # ==========================================
+  build:
+    name: Build Check (${{ matrix.service }})
+    if: ${{ !contains(github.event.pull_request.title, 'qos gatekeeper') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [hotel-common, hotel-saas]
+    
+    steps:
+      - name: Detect service directory
+        id: detect
+        shell: bash
+        run: |
+          if [ -f "${{ matrix.service }}/package-lock.json" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "✅ service dir found: ${{ matrix.service }}"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  service dir missing, skip build: ${{ matrix.service }}"
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+          
+      - name: Setup Node.js
+        if: steps.detect.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '${{ matrix.service }}/package-lock.json'
+          
+      - name: Install dependencies
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm ci
+        
+      - name: Build project
+        if: steps.detect.outputs.exists == 'true'
+        working-directory: ${{ matrix.service }}
+        run: npm run build
+
+  # ==========================================
+  # Job 6: Security Scan
+>>>>>>> origin/main
   # ==========================================
   security:
     name: Security Scan
@@ -128,3 +345,29 @@ jobs:
         run: |
           echo "✅ 全てのチェックが合格しました！"
           echo "🎉 マージ可能な状態です"
+  notify:
+    name: Notify Telegram
+    runs-on: ubuntu-latest
+    needs: [quality-gate]
+    if: always() && github.event_name == 'pull_request'
+    steps:
+      - name: Send Telegram notification
+        run: |
+          REPO="watchout/hotel-kanri"
+          PR="${{ github.event.pull_request.number }}"
+          BRANCH="${{ github.head_ref }}"
+          RUN_URL="https://github.com/${REPO}/actions/runs/${{ github.run_id }}"
+
+          if [ "${{ needs.quality-gate.result }}" = "failure" ]; then
+            MSG="❌ CI失敗: ${REPO} PR #${PR} (${BRANCH})
+→ 次のアクション: CIエラーを修正してください
+🔗 ${RUN_URL}"
+          else
+            MSG="✅ CI完了: ${REPO} PR #${PR} (${BRANCH})
+→ 次のアクション: レビュー・マージ可能
+🔗 https://github.com/${REPO}/pull/${PR}"
+          fi
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            --data-urlencode "text=${MSG}"

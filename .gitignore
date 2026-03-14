@@ -1,5 +1,6 @@
 node_modules
 
+<<<<<<< HEAD
 # 環境変数ファイル（秘密情報）
 .env
 .env.*
@@ -8,3 +9,17 @@ node_modules
 
 # Claude Code secrets
 .claude/settings.local.json
+=======
+# MCP環境変数（秘密情報）
+.env.mcp
+
+# Nuxt generated files
+.nuxt/
+.output/
+
+# AI Development Framework artifacts
+.framework/audits/
+.framework/feedback/
+docs/audits/
+.github/workflows/eval-results.json
+>>>>>>> origin/main

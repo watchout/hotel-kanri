@@ -16,7 +16,7 @@
 
 □ 1-1. Order外部キー制約追加
    ファイル: /Users/kaneko/hotel-common/prisma/schema.prisma
-   
+
    ```prisma
    model Order {
      id        Int         @id @default(autoincrement())
@@ -44,6 +44,7 @@
    ```
 
 □ 1-2. マイグレーション実行
+
    ```bash
    cd /Users/kaneko/hotel-common
    npx prisma migrate dev --name "add-order-session-foreign-key"
@@ -52,7 +53,7 @@
 
 □ 1-3. 本格注文作成API実装
    ファイル: /Users/kaneko/hotel-common/src/routes/api/v1/orders/index.js
-   
+
    ```javascript
    const express = require('express');
    const { PrismaClient } = require('@prisma/client');
@@ -156,7 +157,7 @@
 
 □ 2-1. モック実装の完全削除
    ファイル: /Users/kaneko/hotel-saas/server/api/v1/order/create.post.ts
-   
+
    ```typescript
    /**
     * 注文作成API - hotel-common連携版
@@ -221,6 +222,7 @@
 【Phase 3: 即座テスト・検証】
 
 □ 3-1. hotel-common API動作確認
+
    ```bash
    curl -X POST http://localhost:3400/api/v1/orders \
      -H "Content-Type: application/json" \
@@ -232,6 +234,7 @@
    ```
 
 □ 3-2. hotel-saas API動作確認
+
    ```bash
    curl -X POST http://localhost:3100/api/v1/order/create \
      -H "Content-Type: application/json" \
@@ -259,4 +262,3 @@
 作成日時: 2025年9月22日
 緊急度: 最高（即座実行必須）
 目的: モック・一時実装の完全排除
-
