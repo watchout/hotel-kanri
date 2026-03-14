@@ -320,7 +320,7 @@
   "macAddress": "AA:BB:CC:DD:EE:FF",
   "ipAddress": "192.168.1.101",
   "userAgent": "Mozilla/5.0 ...",
-  "pagePath": "/order"
+  "pagePath": "/menu"
 }
 ```
 
@@ -1000,7 +1000,7 @@ router.post('/api/v1/devices/check-status', async (req, res) => {
       "macAddress": "AA:BB:CC:DD:EE:FF",
       "ipAddress": "192.168.1.200",
       "userAgent": "...",
-      "pagePath": "/order",
+      "pagePath": "/menu",
       "failureReason": "device_not_found",
       "accessedAt": "2025-10-02T15:30:00Z",
       "attemptCount": 5        // 同一MAC/IPでの連続失敗回数

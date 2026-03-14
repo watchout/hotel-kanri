@@ -27,7 +27,7 @@ function readText(filePath) {
 function extractRequirementIdsFromMap(text) {
   const ids = new Set();
   const lines = text.split(/\r?\n/);
-
+  
   // 1) 通常のID表記（STAFF-001 / STAFF-SEC-001 等）
   const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
 
@@ -36,11 +36,12 @@ function extractRequirementIdsFromMap(text) {
 
   for (const line of lines) {
     let m;
+    // 通常表記
     while ((m = re.exec(line)) !== null) {
       ids.add(m[1]);
     }
 
-    // compactも同じ行から拾う
+    // 省略表記も同じ行から拾う
     while ((m = compactRe.exec(line)) !== null) {
       ids.add(`${m[1]}${m[2]}`);
       ids.add(`${m[1]}${m[3]}`);
@@ -52,7 +53,9 @@ function extractRequirementIdsFromMap(text) {
 
 function extractRequirementIdsFromOpenApiText(text) {
   const acc = new Set();
-  const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
+  // openapi: staff-management.yaml には "STAFF-UI-001..021" のような範囲表現があるため、
+  // ".." を含まない単体IDのみを抽出対象にする（範囲の展開は別スクリプトに委ねる）。
+  const re = /(STAFF(?:-SEC|-UI)?-\d{3})(?!\.\.)/g;
   let m;
   while ((m = re.exec(text)) !== null) {
     acc.add(m[1]);

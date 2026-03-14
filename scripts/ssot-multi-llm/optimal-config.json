@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "lastBenchmark": "2026-01-20T23:02:36Z",
+    "status": "PENDING_RERUN",
+    "note": "Anthropic APIクレジット不足により有効なベンチマーク結果なし"
+  },
+  "techArchitect": {
+    "useMultiLLM": false,
+    "generators": ["claude-sonnet-4-20250514"],
+    "merger": null,
+    "expectedScore": null,
+    "reason": "ベンチマーク無効 - 要再実行"
+  },
+  "marketing": {
+    "useMultiLLM": false,
+    "generators": ["claude-sonnet-4-20250514"],
+    "merger": null,
+    "expectedScore": null,
+    "reason": "ベンチマーク無効 - 要再実行"
+  },
+  "recommendedPatterns": {
+    "A_balanced": {
+      "name": "Sonnet + GPT-4o + mini（バランス）",
+      "generators": ["claude-sonnet-4-20250514", "gpt-4o", "gpt-4o-mini"],
+      "merger": "claude-sonnet-4-20250514"
+    },
+    "B_highQuality": {
+      "name": "Sonnet + GPT-4o + Opus（高品質）",
+      "generators": ["claude-sonnet-4-20250514", "gpt-4o", "claude-opus-4-20250514"],
+      "merger": "claude-opus-4-20250514"
+    },
+    "C_lowCost": {
+      "name": "Sonnet + mini + mini（低コスト）",
+      "generators": ["claude-sonnet-4-20250514", "gpt-4o-mini", "gpt-4o-mini"],
+      "merger": "claude-sonnet-4-20250514"
+    }
+  },
+  "nextAction": {
+    "action": "CHARGE_ANTHROPIC_CREDITS",
+    "url": "https://console.anthropic.com/",
+    "estimatedCost": "$5-10",
+    "thenRun": "node scripts/ssot-multi-llm/full-benchmark.cjs"
+  }
+}

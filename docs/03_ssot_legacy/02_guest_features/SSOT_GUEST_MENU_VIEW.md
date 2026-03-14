@@ -30,7 +30,6 @@
 9. [動画コンテンツ](#動画コンテンツ)
 10. [実装ガイド](#実装ガイド)
 11. [セキュリティ](#セキュリティ)
-12. [実装状況](#実装状況)
 
 ---
 
@@ -55,8 +54,8 @@
 [客室端末: タブレット/TV]
   ↓ ブラウザ（WebViewアプリ）
 [hotel-saas Pages (Vue 3/Nuxt 3)]
-  ├─ /menu/index.vue（メニュートップ）
-  └─ /menu/category/[id].vue（カテゴリ詳細）
+  ├─ /menu（メニュートップ）= pages/menu/index.vue
+  └─ /menu/category/[id]（カテゴリ詳細）= pages/menu/category/[id].vue
 [hotel-saas Components]
   ├─ CategoryTabs.vue（3階層カテゴリナビゲーション）
   ├─ CategoryList.vue（カテゴリ一覧）
@@ -112,16 +111,18 @@
 
 ### 画面一覧（2画面）
 
-| # | 画面パス | 画面名 | 主要機能 | 実装状況 |
-|:-:|:---------|:-------|:--------|:--------|
-| 1 | `/menu/index` | メニュートップ | トップレベルカテゴリ一覧、おすすめメニュー | ✅ 85% |
-| 2 | `/menu/category/[id]` | カテゴリ詳細 | 子カテゴリ展開、商品フィルタリング | ✅ 90% |
+**ページパス**: Page Registry（`SSOT_PAGE_REGISTRY.md`）を参照（canonical）
+
+| # | 画面パス | 画面名 | 主要機能 |
+|:-:|:---------|:-------|:--------|
+| 1 | `/menu` | メニュートップ | トップレベルカテゴリ一覧、おすすめメニュー |
+| 2 | `/menu/category/[id]` | カテゴリ詳細 | 子カテゴリ展開、商品フィルタリング |
 
 ### 画面遷移フロー
 
 ```mermaid
 graph TD
-    A[/ TOP] --> B[/menu/index メニュートップ]
+    A[/] --> B[/menu メニュートップ]
     B --> C[カテゴリカード選択]
     C --> D[/menu/category/[id] カテゴリ詳細]
     D --> E[子カテゴリ選択]
@@ -186,7 +187,7 @@ colors: {
 
 ## 📄 画面詳細仕様
 
-### 1. メニュートップ (`/menu/index.vue`)
+### 1. メニュートップ（canonical: `/menu`）
 
 #### 画面構成
 
@@ -300,7 +301,7 @@ const fetchRecommended = async () => {
 
 ---
 
-### 2. カテゴリ詳細 (`/menu/category/[id].vue`)
+### 2. カテゴリ詳細（canonical: `/menu/category/[id]`）
 
 #### 画面構成
 
@@ -474,8 +475,6 @@ const filteredItems = computed(() => {
 
 ### 1. CategoryTabs.vue（3階層カテゴリナビゲーション）
 
-**実装状況**: ✅ 95%完成
-
 **ファイルパス**: `components/menu/CategoryTabs.vue`
 
 #### 機能概要
@@ -521,8 +520,6 @@ emit('select', path: string)  // カテゴリ選択時
 
 ### 2. MenuCard.vue（商品カード）
 
-**実装状況**: ✅ 100%完成
-
 **ファイルパス**: `components/menu/MenuCard.vue`
 
 #### Props
@@ -561,8 +558,6 @@ defineProps<{
 
 ### 3. AvailabilityMask.vue（提供時間外マスク）
 
-**実装状況**: ✅ 100%完成
-
 **ファイルパス**: `components/menu/AvailabilityMask.vue`
 
 #### 機能
@@ -581,8 +576,6 @@ defineProps<{
 ---
 
 ### 4. GachaMenuCard.vue（ガチャ機能）
-
-**実装状況**: ✅ 100%完成
 
 **ファイルパス**: `components/menu/GachaMenuCard.vue`
 
@@ -604,15 +597,13 @@ defineProps<{
 
 ### API一覧（7エンドポイント）
 
-| # | メソッド | パス | 機能 | 実装状況 |
-|:-:|:--------|:-----|:-----|:--------|
-| 1 | GET | `/api/v1/order/menu` | 全メニューデータ取得 | ✅ 完成 |
-| 2 | GET | `/api/v1/menu/categories` | カテゴリ一覧取得 | ✅ 完成 |
-| 3 | GET | `/api/v1/menu/recommended` | おすすめメニュー | ✅ 完成 |
-| 4 | GET | `/api/v1/menus/top` | ランキング取得 | ✅ 完成 |
-| 5 | GET | `/api/v1/menus/search` | メニュー検索 | ❌ Phase 2 |
-| 6 | GET | `/api/v1/menus/filter` | 高度なフィルタリング | ❌ Phase 2 |
-| 7 | GET | `/api/v1/menus/trending` | 急上昇メニュー | ❌ Phase 2 |
+**APIパス（canonical）**: `SSOT_API_REGISTRY.md` を参照（Guest API）
+
+| # | メソッド | パス | 機能 |
+|:-:|:--------|:-----|:-----|
+| 1 | GET | `/api/v1/guest/categories` | カテゴリ一覧取得 |
+| 2 | GET | `/api/v1/guest/menus` | 全メニューデータ取得 |
+| 3 | GET | `/api/v1/guest/menus/:id` | メニュー詳細取得 |
 
 ### API詳細仕様
 
@@ -1177,32 +1168,50 @@ Sora 2 API統合による動画自動生成
 
 ### デバイス自動認証
 
-**実装場所**: `middleware/01-device-auth.ts`
+**実装場所**: `middleware/device-guard.ts`
 
 **認証フロー**:
 ```typescript
-// IPアドレス取得
-const clientIp = getClientIp(event)
+// ✅ APIパス（canonical）: SSOT_API_REGISTRY.md を参照
+// hotel-common: GET /api/v1/guest/device/status?ip=auto
+// 必須ヘッダー: x-tenant-id
 
-// checkin_sessionsから部屋情報取得
-const session = await prisma.checkinSessions.findFirst({
-  where: {
-    deviceIp: clientIp,
-    status: 'active'
-  }
-})
-
-// セッション検証
-if (!session || !session.roomId) {
-  throw createError({
-    statusCode: 401,
-    message: 'デバイス認証が必要です'
-  })
+const tenantId = event.context.tenantId
+if (!tenantId) {
+  return sendRedirect(event, '/unauthorized-device', 302)
 }
 
-// コンテキストに設定
-event.context.session = session
-event.context.roomId = session.roomId
+try {
+  const response = await callHotelCommonAPI(event, '/api/v1/guest/device/status', {
+    method: 'GET',
+    headers: { 'x-tenant-id': tenantId },
+    params: { ip: 'auto' }
+  })
+
+  const roomId = response.data?.roomId
+  if (!roomId) {
+    return sendRedirect(event, '/unauthorized-device', 302)
+  }
+
+  // コンテキストに設定
+  event.context.roomId = roomId
+  event.context.deviceId = response.data?.deviceId || null
+} catch (error: any) {
+  // 404: 未登録/非アクティブ/他テナント（列挙耐性） → 未認証として扱う
+  return sendRedirect(event, '/unauthorized-device', 302)
+}
+```
+
+**hotel-common側API**:
+```typescript
+// GET /api/v1/guest/device/status?ip=auto
+// - tenantId は x-tenant-id（またはホスト名）から解決
+// - device_rooms を (MAC優先 → IP) で検索し、isActive=true のみ許可
+// - 未登録/非アクティブ/他テナントは 404（列挙耐性）
+return createSuccessResponse({
+  roomId: device.roomId,
+  deviceId: device.deviceId
+})
 ```
 
 ### XSS対策
@@ -1224,50 +1233,28 @@ event.context.roomId = session.roomId
 
 ---
 
-## 📊 実装状況
+## 🧭 Page Registry 参照（必須）
 
-### Phase 1: 基本機能（完了率: 85%）
+- ページパス（canonical）は `SSOT_PAGE_REGISTRY.md` を参照すること。
+- 進捗・実装ギャップは Plane / reports 側で管理し、本SSOTには記載しない。
 
-| 機能 | 実装状況 | 完成度 | 備考 |
-|:-----|:--------|:-----:|:-----|
-| メニュートップページ | ✅ 完成 | 85% | カルーセル強化必要 |
-| カテゴリ詳細ページ | ✅ 完成 | 90% | フィルタ追加必要 |
-| CategoryTabs | ✅ 完成 | 95% | ほぼ完璧 |
-| MenuCard | ✅ 完成 | 100% | 完璧 |
-| AvailabilityMask | ✅ 完成 | 100% | 完璧 |
-| GachaMenuCard | ✅ 完成 | 100% | 完璧 |
-| おすすめ表示 | ✅ 完成 | 80% | パーソナライズ追加 |
+---
 
-### Phase 2: AI・動画機能（完了率: 0%）
+## 🆕 MVP機能対応（追記）
 
-| 機能 | 実装状況 | 優先度 | 工数 |
-|:-----|:--------|:-----:|:-----|
-| AIチャット連携 | ❌ 未実装 | 🔴 最高 | 2日 |
-| 滞在スタイル分析 | ❌ 未実装 | 🔴 高 | 3日 |
-| ゲストプロファイル | ❌ 未実装 | 🔴 高 | 2日 |
-| 文化的配慮フィルター | ❌ 未実装 | 🔴 高 | 2日 |
-| メニュー動画対応 | ❌ 未実装 | 🔴 高 | 2日 |
-| サンクスムービー | ❌ 未実装 | 🟡 中 | 1日 |
-| ガチャメニュー強化 | ❌ 未実装 | 🟡 中 | 1日 |
+### F02: 在庫・時間帯コンテキスト連携
+- 関連COM: COM-241（[MVP] TVメニュー閲覧）
+- 概要: 提供不可商品はマスク表示 or 非表示。提供可否は在庫・提供時間帯で判定。
+- Accept:
+  - [ ] 提供不可商品の「選択」ボタンを表示しない（または無効化＋理由表示）
+  - [ ] 現在時刻が提供外の商品のカードに半透明マスク＋バッジ
 
-**Phase 2完了率**: 0/13日 = **0%**
-
-### Phase 3: 検索・フィルタ（完了率: 0%）
-
-| 機能 | 実装状況 | 優先度 | 工数 |
-|:-----|:--------|:-----:|:-----|
-| メニュー検索 | ❌ 未実装 | 🟡 中 | 2日 |
-| パンくずリスト | ❌ 未実装 | 🟢 低 | 0.5日 |
-| ソート機能 | ❌ 未実装 | 🟢 低 | 1日 |
-| AI翻訳（管理画面） | ❌ 未実装 | 🟡 中 | 3日 |
-
-### Phase 4: Member連携後（完了率: 0%）
-
-| 機能 | 実装状況 | 依存関係 |
-|:-----|:--------|:--------|
-| AIパーソナライズ学習 | ❌ 未実装 | hotel-member API |
-| スタンプラリー | ❌ 未実装 | hotel-member API |
-| 会員ランク別メニュー | ❌ 未実装 | hotel-member API |
+### F05: Top3レコメンド（Stage 1）
+- 関連COM: COM-257（[Stage 1] 時間帯Top3レコメンド）
+- 概要: 初期は静的Top3枠をメニュートップに表示（時間帯/在庫反映はStage 1で強化）
+- Accept:
+  - [ ] メニュートップ上部にTop3セクションが表示される
+  - [ ] 枠は在庫切れ商品を除外して3件を表示（不足時は埋め草テキスト）
 
 ---
 

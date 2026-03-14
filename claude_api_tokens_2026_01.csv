@@ -1,0 +1,9 @@
+usage_date_utc,model_version,api_key,workspace,usage_type,context_window,usage_input_tokens_no_cache,usage_input_tokens_cache_write_5m,usage_input_tokens_cache_write_1h,usage_input_tokens_cache_read,usage_output_tokens,web_search_count
+2026-01-16,claude-opus-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,6322,0,0,0,9010,0
+2026-01-16,claude-sonnet-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,7298,0,0,0,9866,0
+2026-01-18,claude-opus-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,481528,0,0,0,32018,0
+2026-01-18,claude-sonnet-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,442414,0,0,0,270490,0
+2026-01-19,claude-opus-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,428668,0,0,0,10770,0
+2026-01-19,claude-sonnet-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,195893,0,0,0,118211,0
+2026-01-20,claude-opus-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,133764,0,0,0,149957,0
+2026-01-20,claude-sonnet-4-20250514,hotel-kanri-SSOT,Default,standard,≤ 200k,373150,0,0,0,430727,0
