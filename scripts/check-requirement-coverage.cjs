@@ -27,34 +27,30 @@ function readText(filePath) {
 function extractRequirementIdsFromMap(text) {
   const ids = new Set();
   const lines = text.split(/\r?\n/);
-
-  // 1) 通常のID表記（STAFF-001 / STAFF-SEC-001 等）
-  const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
-
-  // 2) 省略表記（例: STAFF-SEC-005/006）を展開
-  const compactRe = /(STAFF(?:-SEC|-UI)?-)(\d{3})\/(\d{3})/g;
-
+  // 例:
+  // - "| STAFF-001 | ... |"
+  // - "| STAFF-SEC-005/006 | ... |" -> STAFF-SEC-005, STAFF-SEC-006
   for (const line of lines) {
+    const re = /(STAFF(?:-SEC|-UI)?-)(\d{3})(?:\/(\d{3}))?/g;
     let m;
     while ((m = re.exec(line)) !== null) {
-      ids.add(m[1]);
-    }
-
-    // compactも同じ行から拾う
-    while ((m = compactRe.exec(line)) !== null) {
       ids.add(`${m[1]}${m[2]}`);
-      ids.add(`${m[1]}${m[3]}`);
+      if (m[3]) {
+        ids.add(`${m[1]}${m[3]}`);
+      }
     }
   }
 
   return Array.from(ids).sort();
 }
 
-function extractRequirementIdsFromOpenApiText(text) {
+function extractRequirementIdsFromOpenAPIText(openapiText) {
   const acc = new Set();
-  const re = /(STAFF(?:-SEC|-UI)?-\d{3})/g;
+  // openapi: staff-management.yaml には "STAFF-UI-001..021" のような範囲表現があるため、
+  // ".." を含まない単体IDのみを抽出対象にする（範囲の展開は別スクリプトに委ねる）。
+  const re = /(STAFF(?:-SEC|-UI)?-\d{3})(?!\.\.)/g;
   let m;
-  while ((m = re.exec(text)) !== null) {
+  while ((m = re.exec(openapiText)) !== null) {
     acc.add(m[1]);
   }
   return Array.from(acc).sort();
@@ -65,7 +61,7 @@ function main() {
   const targetIds = extractRequirementIdsFromMap(mapText);
 
   const openapiText = readText(OPENAPI_FILE);
-  const openapiIds = extractRequirementIdsFromOpenApiText(openapiText);
+  const openapiIds = extractRequirementIdsFromOpenAPIText(openapiText);
 
   const ssotOnly = targetIds.filter((id) => !openapiIds.includes(id));
   const openapiOnly = openapiIds.filter((id) => !targetIds.includes(id));
