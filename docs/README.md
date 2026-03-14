@@ -16,6 +16,12 @@
 > **注意**: 過去のREADMEでは「319ファイル → 5ファイルに集約」と記載されていましたが、
 > 実態は1,283ファイル以上が存在します。本READMEは実態に合わせて更新されました。
 
+### **🔄 認証システムの大幅変更**
+
+- **変更日**: 2025年10月1日
+- **内容**: JWT認証 → セッション認証への移行
+- **影響**: 全システム（hotel-saas, hotel-pms, hotel-member, hotel-common）
+
 ---
 
 ## ドキュメント優先順位（正式な参照順序）
@@ -45,7 +51,14 @@ docs/03_ssot/
 | `docs/ops/` | 運用手順、デプロイ手順 |
 | `docs/adr/` | アーキテクチャ決定記録（ADR） |
 
-### 3. 参考資料（矛盾時はSSOTが優先）
+### 3. マスター・統一化ドキュメント
+
+- **認証統一仕様書**: `/docs/AUTHENTICATION_MASTER_SPECIFICATION.md` ⭐⭐⭐
+- **実装統一ガイド**: `/docs/IMPLEMENTATION_MASTER_GUIDE.md` ⭐⭐⭐
+- **JWT廃止通知**: `/docs/JWT_DEPRECATION_NOTICE.md` ⭐⭐
+- **整理サマリー**: `/docs/DOCUMENT_CLEANUP_SUMMARY.md` ⭐⭐
+
+### 4. 参考資料（矛盾時はSSOTが優先）
 
 | ディレクトリ | 説明 |
 |:------------|:-----|
@@ -66,11 +79,15 @@ docs/03_ssot/
 3. **矛盾時の扱い**: `docs/03_ssot/` の内容を正とする
 4. **参照時の注意**: 日付プレフィックス付きファイルは特に古い可能性あり
 
-### アーカイブ移動の条件（Phase 2で実施予定）
+### JWT関連（全て廃止）
 
-- 移動前に参照関係を検索
-- 移動後の導線（README/INDEX）を用意
-- JWT等の廃止仕様は「廃止」ラベル付きでアーカイブ
+```text
+❌ 使用禁止:
+- /docs/01_systems/common/integration/specifications/jwt-token-specification.md
+- /docs/01_systems/saas/auth/JWT_AUTH_DESIGN.md
+- /docs/01_systems/common/unified-authentication-infrastructure-design.md
+- その他JWT関連319ファイル
+```
 
 ---
 
@@ -118,12 +135,35 @@ docs/03_ssot/
 1. `CLAUDE.md`（プロジェクトルート）を確認
 2. `docs/03_ssot/README.md` でSSOT構造を把握
 3. 実装対象のSSOTを読んでから着手
+4. **認証仕様の理解**: `/docs/AUTHENTICATION_MASTER_SPECIFICATION.md` を熟読
+5. **実装方法の習得**: `/docs/IMPLEMENTATION_MASTER_GUIDE.md` を参照
+6. **禁止事項の確認**: JWT関連は一切使用禁止
+
+### 既存開発者
+
+1. **変更内容の確認**: `/docs/JWT_DEPRECATION_NOTICE.md` を確認
+2. **移行作業**: 既存JWT実装をセッション認証に移行
+3. **統一仕様の適用**: 新しい統一仕様に従って実装
 
 ### 実装時の原則
 
 - **仕様確認**: まず `docs/03_ssot/` を確認
 - **ルール確認**: `docs/standards/` でコーディング規約を確認
 - **矛盾発見時**: SSOTを正とし、矛盾を報告
+
+```text
+✅ 必須:
+- 統一認証仕様書に従う
+- セッション認証のみ使用
+- 重複実装の禁止
+- KISS原則の徹底
+
+❌ 禁止:
+- JWT認証の実装
+- 独自認証システムの作成
+- 複数認証方式の混在
+- 廃止ドキュメントの参照
+```
 
 ---
 
@@ -132,11 +172,20 @@ docs/03_ssot/
 ### v3.0.0 (2026-01-23)
 - READMEを実態に合わせて全面更新
 - SSOT優先の明文化
+- 認証システム統一: JWT → セッション認証
 - 01_systemsのアーカイブ方針を明記
 - ファイル数の訂正（319→1,283）
+- マスター文書の統一化
 
 ### v2.0.0 (2025-10-01)
 - 認証システム統一: JWT → セッション認証
+- ドキュメント大幅整理: 319ファイル → 5ファイルに集約
+- 統一仕様書作成: Single Source of Truth の確立
 
 ### v1.x (〜2025-09-30)
 - 旧版: JWT認証ベース（廃止済み）
+
+---
+
+**このREADMEが、Hotel-Kanriプロジェクトの統一されたドキュメント体系への入り口です。**  
+**必ず統一仕様書から開始し、一貫性のある実装を心がけてください。**

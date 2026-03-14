@@ -2,3 +2,13 @@ node_modules
 
 # MCP環境変数（秘密情報）
 .env.mcp
+
+# Nuxt generated files
+.nuxt/
+.output/
+
+# AI Development Framework artifacts
+.framework/audits/
+.framework/feedback/
+docs/audits/
+.github/workflows/eval-results.json

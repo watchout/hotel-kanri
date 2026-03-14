@@ -1,0 +1,134 @@
+{
+  "mode": "ssot",
+  "target": {
+    "id": "SSOT-3_API_CONTRACT",
+    "name": "SSOT-3_API_CONTRACT.md",
+    "path": "docs/design/core/SSOT-3_API_CONTRACT.md",
+    "auditDate": "2026-03-05T02:38:13.844Z",
+    "iteration": 1
+  },
+  "scorecard": [
+    {
+      "category": "Completeness",
+      "maxPoints": 15,
+      "earned": 9,
+      "deductions": [
+        {
+          "reason": "Missing sections: §11, §12",
+          "amount": 6
+        }
+      ]
+    },
+    {
+      "category": "Consistency",
+      "maxPoints": 15,
+      "earned": 10,
+      "deductions": [
+        {
+          "reason": "1 TBD items found",
+          "amount": 5
+        }
+      ]
+    },
+    {
+      "category": "Clarity",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Verifiability",
+      "maxPoints": 10,
+      "earned": 0,
+      "deductions": [
+        {
+          "reason": "9 untestable MUST requirements",
+          "amount": 10
+        }
+      ]
+    },
+    {
+      "category": "Traceability",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Feasibility",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "RFC 2119 Compliance",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Test Coverage",
+      "maxPoints": 10,
+      "earned": 10,
+      "deductions": []
+    },
+    {
+      "category": "Cross-SSOT Consistency",
+      "maxPoints": 5,
+      "earned": 5,
+      "deductions": []
+    },
+    {
+      "category": "Document Quality",
+      "maxPoints": 5,
+      "earned": 5,
+      "deductions": []
+    }
+  ],
+  "totalScore": 79,
+  "verdict": "fail",
+  "absoluteConditions": [
+    {
+      "name": "TBD Count = 0",
+      "passed": false,
+      "detail": "1 TBDs found"
+    },
+    {
+      "name": "Critical Findings = 0",
+      "passed": false,
+      "detail": "1 critical findings"
+    },
+    {
+      "name": "Cross-SSOT Critical/Major = 0",
+      "passed": true
+    }
+  ],
+  "findings": [
+    {
+      "id": 1,
+      "severity": "major",
+      "category": "Completeness",
+      "location": "Document",
+      "issue": "Missing 2 required sections: §11, §12",
+      "correction": "Add all missing sections per SSOT template",
+      "deduction": 6
+    },
+    {
+      "id": 2,
+      "severity": "critical",
+      "category": "Consistency",
+      "location": "Document",
+      "issue": "1 TBD items remaining",
+      "correction": "Resolve all TBD items with concrete specifications",
+      "deduction": 5
+    },
+    {
+      "id": 3,
+      "severity": "major",
+      "category": "Verifiability",
+      "location": "Document",
+      "issue": "9 MUST requirements may be untestable",
+      "correction": "Add measurable criteria to each MUST requirement",
+      "deduction": 10
+    }
+  ]
+}
