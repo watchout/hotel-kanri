@@ -1,8 +1,8 @@
 # SSOT: 客室端末注文フロー（GUEST_ORDER_FLOW）
 
 **作成日**: 2025-10-14  
-**最終更新**: 2025-10-14  
-**バージョン**: v1.0.0  
+**最終更新**: 2025-11-04  
+**バージョン**: v2.0.0  
 **ステータス**: ✅ 確定  
 **優先度**: 🔴 最高（Phase 2 Week 5）
 
@@ -28,7 +28,6 @@
 7. [リアルタイム更新](#リアルタイム更新)
 8. [実装ガイド](#実装ガイド)
 9. [セキュリティ](#セキュリティ)
-10. [実装状況](#実装状況)
 
 ---
 
@@ -53,7 +52,7 @@
 [客室端末: タブレット/TV]
   ↓ ブラウザ（WebViewアプリ）
 [hotel-saas Pages (Vue 3/Nuxt 3)]
-  ↓ /order, /order/cart, /order/history
+  ↓ /menu, /order/cart, /order/history
 [hotel-saas API (Proxy)]
   ↓ GET/POST /api/v1/order/*
 [hotel-common API (Core)]
@@ -101,23 +100,24 @@
 
 ## 🖥️ 画面構成
 
-### 画面一覧（7画面）
+### 画面一覧（6画面）
 
-| # | 画面パス | 画面名 | 主要機能 | 実装状況 |
-|:-:|:---------|:-------|:--------|:--------|
-| 1 | `/` | ゲストホーム | ルームサービスへの入口、館内情報 | ✅ 完成 |
-| 2 | `/order` | メニュー一覧 | カテゴリタブ、ソート、ランキング、急上昇 | ✅ 完成 |
-| 3 | `/menu/index` | カテゴリ別メニュー | カテゴリ別の商品表示 | ✅ 完成 |
-| 4 | `/menu/category/[id]` | 詳細カテゴリ | 子カテゴリ表示、商品一覧 | ✅ 完成 |
-| 5 | `/order/cart` | カート | 数量変更、削除、注文確定 | ✅ 完成 |
-| 6 | `/order/complete` | 注文完了 | 注文番号表示、自動リダイレクト | ✅ 完成 |
-| 7 | `/order/history` | 注文履歴 | 過去注文、ステータス確認、合計金額 | ✅ 完成 |
+**ページパス**: Page Registry（`SSOT_PAGE_REGISTRY.md`）を参照（canonical）
+
+| # | 画面パス | 画面名 | 主要機能 |
+|:-:|:---------|:-------|:--------|
+| 1 | `/` | ゲストホーム | ルームサービスへの入口、館内情報 |
+| 2 | `/menu` | メニュー一覧 | カテゴリタブ、ソート、ランキング、急上昇 |
+| 4 | `/menu/category/[id]` | 詳細カテゴリ | 子カテゴリ表示、商品一覧 |
+| 5 | `/order/cart` | カート | 数量変更、削除、注文確定 |
+| 6 | `/order/complete` | 注文完了 | 注文番号表示、自動リダイレクト |
+| 7 | `/order/history` | 注文履歴 | 過去注文、ステータス確認、合計金額 |
 
 ### 画面遷移フロー
 
 ```mermaid
 graph TD
-    A[/ TOP] --> B[/order メニュー一覧]
+    A[/] --> B[/menu メニュー一覧]
     B --> C[商品詳細モーダル]
     C --> D[カートに追加]
     D --> E[アップセル提案モーダル]
@@ -199,8 +199,36 @@ model MenuItem {
   carbs           Float?   // 炭水化物（g）
   sodium          Float?   // 塩分（g）
   
+  // v2.0.0追加フィールド（在庫管理強化）
+  stockManagementEnabled Boolean @default(false) @map("stock_management_enabled")
+  currentStock           Int?    @map("current_stock")
+  lowStockThreshold      Int?    @map("low_stock_threshold")
+  stockStatus            String  @default("available") @map("stock_status") // 'available', 'low', 'out_of_stock'
+  
   @@map("menu_items")
 }
+
+### v2.0.0拡張: orders テーブル
+
+**目的**: AI統合・冪等性対応
+
+```prisma
+model Order {
+  // 既存フィールド（省略）
+  
+  // v2.0.0追加フィールド
+  idempotencyKey String?  @unique @map("idempotency_key")
+  sourceType     String   @default("manual") @map("source_type") // 'manual' | 'ai_recommendation'
+  sourceMetadata Json?    @map("source_metadata")
+  
+  @@map("orders")
+}
+```
+
+**マイグレーション手順**:
+```bash
+cd /Users/kaneko/hotel-common
+npx prisma migrate dev --name add_idempotency_and_stock_management_v2
 ```
 
 ---
@@ -209,13 +237,15 @@ model MenuItem {
 
 ### API一覧（4エンドポイント）
 
-| # | メソッド | パス | 機能 | 実装状況 |
-|:-:|:--------|:-----|:-----|:--------|
-| 1 | GET | `/api/v1/order/menu` | メニュー一覧取得 | ✅ 完成 |
-| 2 | POST | `/api/v1/order/place` | 注文作成 | ✅ 完成 |
-| 3 | GET | `/api/v1/orders/history` | 注文履歴取得 | ✅ 完成 |
-| 4 | GET | `/api/v1/menus/top` | ランキング取得 | ✅ 完成 |
-| 5 | GET | `/api/v1/menus/trending` | 急上昇メニュー取得 | ❌ Phase 2実装 |
+**APIパス（canonical）**: `SSOT_API_REGISTRY.md` を参照（Guest API）
+
+| # | メソッド | パス | 機能 |
+|:-:|:--------|:-----|:-----|
+| 1 | GET | `/api/v1/guest/menus` | メニュー一覧取得 |
+| 2 | POST | `/api/v1/guest/orders` | 注文作成 |
+| 3 | GET | `/api/v1/guest/orders/history` | 注文履歴取得 |
+| 4 | GET | `/api/v1/guest/orders/active` | アクティブ注文取得 |
+| 5 | GET | `/api/v1/menus/top` | ランキング取得（将来/別SSOTで定義） |
 
 ### API詳細仕様
 
@@ -265,7 +295,17 @@ Cookie: hotel_session=<session_id>
 
 **エンドポイント**: `POST /api/v1/order/place`
 
-**リクエスト**:
+**v2.0.0拡張**: Idempotency-Keyヘッダー対応
+
+**リクエストヘッダー**:
+```http
+POST /api/v1/order/place HTTP/1.1
+Host: localhost:3100
+Cookie: hotel_session=<session_id>
+Idempotency-Key: order_abc123def456_1699012345678
+```
+
+**リクエストボディ**:
 ```json
 {
   "items": [
@@ -279,11 +319,18 @@ Cookie: hotel_session=<session_id>
   ],
   "roomId": "301",
   "placeId": 15,
-  "specialRequests": "希望提供時間: 12:30"
+  "specialRequests": "希望提供時間: 12:30",
+  
+  "sourceType": "ai_recommendation",
+  "sourceMetadata": {
+    "conversationId": "conv_abc123",
+    "recommendationId": "rec_def456",
+    "aiProvider": "openai"
+  }
 }
 ```
 
-**レスポンス**:
+**レスポンス（成功時）**:
 ```json
 {
   "order": {
@@ -292,6 +339,19 @@ Cookie: hotel_session=<session_id>
     "total": 2400,
     "estimatedDeliveryTime": "12:45",
     "items": [...]
+  }
+}
+```
+
+**レスポンス（重複注文検知時: 409 Conflict）**:
+```json
+{
+  "error": "duplicate_order",
+  "message": "この注文は既に処理されています",
+  "existingOrder": {
+    "id": "ord_123abc",
+    "status": "received",
+    "total": 2400
   }
 }
 ```
@@ -354,48 +414,20 @@ const tabs = [
 
 #### B. おすすめ商品表示
 
-**機能**: 管理画面で設定された`isFeatured=true`商品を優先表示
+**機能**: 管理画面で設定された`isFeatured=true`商品を「おすすめ」として強調表示する
 
-**実装場所**: `pages/order/index.vue` (318-329行目)
+**実装（rebuild）**:
+- UI: `hotel-saas-rebuild/components/MenuItemCard.vue`
+  - `isFeatured` のとき「おすすめ」バッジを表示
+- 一覧ページ: `hotel-saas-rebuild/pages/menu/index.vue`（URL: `/menu`）
 
-```typescript
-const displayItems = computed(() => {
-  if (!selectedCategoryPath.value) {
-    const featuredItems = menuData.value.items.filter(
-      (item: MenuItem) => item.isFeatured
-    )
-    return featuredItems.length > 0 ? featuredItems : menuData.value.items
-  }
-  // カテゴリフィルタリング
-})
-```
+> 注: 旧実装（hotel-saas）の `pages/order/index.vue` への参照は混乱の原因になるため削除しました。
 
 #### C. アップセル提案
 
 **機能**: カート追加時に関連商品を自動提案（最大3件）
 
-**実装場所**: 
-- UI: `components/order/UpsellModal.vue`
-- ロジック: `pages/order/index.vue` (491-507行目)
-
-```typescript
-const showUpsellItems = (addedItem: MenuItem) => {
-  const category = addedItem.tags.find(tag => 
-    ['food', 'drink', 'set'].includes(tag)
-  )
-  
-  const relatedItems = menuData.value.items.filter((item: MenuItem) => 
-    item.id !== addedItem.id && 
-    item.tags.includes(category) && 
-    item.tags.includes('upsell') // アップセルタグで判定
-  ).slice(0, 3)
-  
-  if (relatedItems.length > 0) {
-    upsellItems.value = relatedItems
-    showUpsell.value = true
-  }
-}
-```
+> 注: 旧実装参照（`components/order/UpsellModal.vue`, `pages/order/index.vue` 等）はrebuildには存在しないため削除しました。
 
 ### Phase 2追加機能（2つ）
 
@@ -468,6 +500,230 @@ Response: {
 ```
 
 **表示場所**: 商品詳細モーダル下部
+
+---
+
+## 🤖 AI統合機能（v2.0.0新規）
+
+### A. AI回答内ワンタップ追加
+
+**要件ID**: ORD-AI-001
+
+**機能概要**:
+AIコンシェルジュの商品提案から直接カート追加
+
+**実装コンポーネント**:
+- `components/ai/AIProductCard.vue`（新規作成、150行）
+- `components/ai/MiniCart.vue`（新規作成、100行）
+
+**AI応答形式**:
+```typescript
+interface AIProductRecommendation {
+  menuItemId: number
+  name: string
+  price: number
+  imageUrl: string
+  quickAddEnabled: boolean
+  options?: MenuOption[]
+}
+
+interface MenuOption {
+  id: number
+  name: string
+  choices: string[]
+  required: boolean
+  priceModifier?: number
+}
+
+// AI応答例
+{
+  type: 'product_recommendation',
+  products: [
+    {
+      menuItemId: 123,
+      name: 'ハンバーガーセット',
+      price: 1200,
+      imageUrl: '/uploads/hamburger.jpg',
+      quickAddEnabled: true,
+      options: [
+        { id: 1, name: 'ドリンク', choices: ['コーラ', 'オレンジ', '水'], required: true }
+      ]
+    }
+  ],
+  actionButtons: [
+    { label: 'カートに追加', action: 'add_to_cart', menuItemId: 123 }
+  ]
+}
+```
+
+**UI仕様**:
+- カート追加ボタン（CTA: "カートに追加"）
+- 数量選択（1-5、ステッパーUI）
+- オプション選択モーダル
+- 追加成功トースト（2秒表示）
+
+---
+
+### B. ディープリンク対応
+
+**要件ID**: ORD-AI-002
+
+**URL形式**:
+`/menu/category/{categoryId}?item={itemId}&highlight=true`
+
+**実装方法**:
+```typescript
+// pages/menu/category/[id].vue
+const route = useRoute()
+const highlightItemId = computed(() => route.query.item)
+
+onMounted(() => {
+  if (highlightItemId.value) {
+    scrollToItem(highlightItemId.value) // スムーススクロール
+    highlightItem(highlightItemId.value, 3000) // 3秒間ハイライト
+  }
+})
+```
+
+**ハイライト効果**:
+- 背景色: `bg-amber-100` → フェードアウト（3秒）
+- ボーダー: `ring-2 ring-amber-400` → フェードアウト
+- アニメーション: `animate-pulse`（2回）
+
+---
+
+### C. 在庫・時間帯コンテキスト連携
+
+**要件ID**: ORD-AI-003
+
+**実装場所**: `hotel-common/src/services/ai-context-builder.ts`（新規作成）
+
+**機能**:
+```typescript
+class MenuItemAvailabilityChecker {
+  async buildContext(tenantId: string): Promise<AIContext> {
+    const menuItems = await prisma.menuItem.findMany({
+      where: { tenantId }
+    })
+    
+    const availableItems = menuItems.filter(item => {
+      // 在庫チェック
+      if (item.stockManagementEnabled && item.currentStock <= 0) {
+        return false
+      }
+      
+      // 時間帯チェック
+      if (!this.isWithinTimeRestrictions(item.timeRestrictions)) {
+        return false
+      }
+      
+      return true
+    })
+    
+    return {
+      currentTime: new Date().toLocaleTimeString('ja-JP'),
+      availableMenuItems: availableItems,
+      unavailableItems: menuItems.filter(item => !availableItems.includes(item)),
+      alternativeSuggestions: await this.findAlternatives(unavailableItems)
+    }
+  }
+  
+  private async findAlternatives(items: MenuItem[]): Promise<MenuItem[]> {
+    // カテゴリ・価格帯が近い商品を2件提案
+    // 実装詳細は ORD-AI-003 参照
+  }
+}
+```
+
+**AIコンテキスト拡張例**:
+```typescript
+const aiContext = {
+  currentTime: '19:30',
+  availableMenuItems: [...], // 提供可能商品リスト
+  unavailableItems: [
+    { id: 123, name: 'チーズバーガー', reason: 'out_of_stock' }
+  ],
+  alternativeSuggestions: [
+    { id: 124, name: 'ベーコンバーガー', reason: 'similar_category' },
+    { id: 125, name: 'マルゲリータ', reason: 'similar_price' }
+  ]
+}
+```
+
+---
+
+### D. 冪等性・リトライ制御
+
+**要件ID**: ORD-REL-001, ORD-REL-002
+
+**Idempotency-Key実装**:
+
+```typescript
+// クライアント側（hotel-saas）
+const placeOrder = async (orderData: OrderPayload) => {
+  const idempotencyKey = `order_${generateHash(orderData)}_${Date.now()}`
+  
+  const response = await $fetch('/api/v1/order/place', {
+    method: 'POST',
+    headers: {
+      'Idempotency-Key': idempotencyKey
+    },
+    body: orderData
+  })
+  
+  return response
+}
+
+// サーバー側（hotel-common）
+const processOrder = async (orderData, idempotencyKey) => {
+  // 既存注文チェック
+  const existing = await redis.get(`idempotency:${idempotencyKey}`)
+  if (existing) {
+    return JSON.parse(existing) // 既存注文を返却
+  }
+  
+  // 新規注文作成
+  const order = await createOrder(orderData)
+  
+  // 24時間キャッシュ
+  await redis.setex(`idempotency:${idempotencyKey}`, 86400, JSON.stringify(order))
+  
+  return order
+}
+```
+
+**自動リトライロジック**:
+
+```typescript
+// hotel-saas/composables/useOrderWithRetry.ts
+const placeOrderWithRetry = async (
+  orderData: OrderPayload,
+  maxRetries = 3
+): Promise<Order> => {
+  let lastError: Error
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await placeOrder(orderData)
+    } catch (error) {
+      lastError = error
+      
+      // リトライ可能なエラーか判定
+      if (!isRetryableError(error)) {
+        throw error
+      }
+      
+      // 指数バックオフ（1秒、2秒、4秒）
+      const delay = Math.pow(2, attempt) * 1000
+      await sleep(delay)
+      
+      console.log(`リトライ ${attempt + 1}/${maxRetries}...`)
+    }
+  }
+  
+  throw lastError
+}
+```
 
 ---
 
@@ -579,6 +835,109 @@ sequenceDiagram
    - 栄養情報表示
    - フィルタ機能追加
 
+### Phase 2 Week 3-4: AI統合・冪等性実装（2週間）- v2.0.0
+
+#### Week 3: AI統合機能
+
+**Day 1: AIコンテキスト拡張（在庫・時間帯）**
+
+実装場所: `hotel-common/src/services/ai-context-builder.ts`（新規作成）
+
+タスク:
+- [ ] `MenuItemAvailabilityChecker` クラス作成
+- [ ] 在庫チェックロジック実装
+- [ ] 時間帯チェックロジック実装
+- [ ] 代替商品提案ロジック実装
+- [ ] テスト作成（Jest）
+
+成果物:
+- `ai-context-builder.ts`（200行）
+- `ai-context-builder.test.ts`（100行）
+
+**Day 2: AIコンテキスト統合**
+
+タスク:
+- [ ] AI API（`/api/v1/ai/chat`）への統合
+- [ ] プロンプト拡張（システムメッセージ）
+- [ ] 動作確認
+
+**Day 3-4: AI回答内カート追加UI**
+
+実装場所: `hotel-saas/components/ai/`
+
+タスク:
+- [ ] `AIProductCard.vue` 作成（150行）
+- [ ] `MiniCart.vue` 作成（100行）
+- [ ] カート追加API呼び出し実装
+- [ ] トースト通知実装
+- [ ] スタイリング（Tailwind CSS）
+- [ ] レスポンシブ対応
+
+**Day 5: ディープリンク実装**
+
+実装場所: `hotel-saas/pages/menu/category/[id].vue`
+
+タスク:
+- [ ] クエリパラメータ取得
+- [ ] スクロール処理実装（smooth scroll）
+- [ ] ハイライト処理実装（3秒間）
+- [ ] アニメーション追加（fade-out）
+
+---
+
+#### Week 4: 冪等性・信頼性
+
+**Day 1: Idempotency-Key実装（データベース）**
+
+タスク:
+- [ ] Prismaスキーマ更新（orders, menu_items）
+- [ ] マイグレーション実行
+- [ ] 既存データ対応（source_type = 'manual'）
+
+**Day 2: Idempotency-Key実装（API）**
+
+実装場所: `hotel-common/src/services/order-service.ts`
+
+タスク:
+- [ ] `checkIdempotency` 関数実装
+- [ ] Redis キャッシュ実装（TTL: 24h）
+- [ ] 重複検知ロジック実装
+- [ ] エラーハンドリング（409 Conflict）
+
+成果物:
+- `order-service.ts` 拡張（+80行）
+
+**Day 3: クライアント側リトライロジック**
+
+実装場所: `hotel-saas/composables/useOrderWithRetry.ts`（新規作成）
+
+タスク:
+- [ ] `placeOrderWithRetry` 関数実装
+- [ ] 指数バックオフ実装（1s, 2s, 4s）
+- [ ] リトライ可能エラー判定
+- [ ] ローディング状態管理
+
+成果物:
+- `useOrderWithRetry.ts`（80行）
+- `useOrderWithRetry.test.ts`（60行）
+
+**Day 4: テスト（単体）**
+
+タスク:
+- [ ] API テスト（Idempotency-Key）
+- [ ] リトライロジック テスト
+- [ ] エラーケース テスト
+- [ ] 在庫管理 テスト
+
+**Day 5: QA（統合テスト）**
+
+タスク:
+- [ ] AI → カート追加フロー確認
+- [ ] 重複注文防止確認
+- [ ] ネットワークエラー時のリトライ確認
+- [ ] 性能テスト（CR₁測定）
+- [ ] 在庫切れ時の代替提案確認
+
 ### Phase 3: 配達時間予測（1週間）
 
 7. **kitchen_settings テーブル追加**（0.5日）
@@ -604,33 +963,38 @@ sequenceDiagram
 
 ### デバイス自動認証
 
-**実装場所**: `middleware/01-device-auth.ts`
+**実装場所**: `middleware/device-guard.ts`
 
 **認証フロー**:
 ```typescript
-// 1. IPアドレス取得
-const clientIp = getClientIp(event)
+// ✅ APIパス（canonical）: SSOT_API_REGISTRY.md を参照
+// hotel-common: GET /api/v1/guest/device/status?ip=auto
+// 必須ヘッダー: x-tenant-id
 
-// 2. checkin_sessionsテーブルから部屋情報取得
-const session = await prisma.checkinSessions.findFirst({
-  where: {
-    deviceIp: clientIp,
-    status: 'active'
-  }
-})
-
-// 3. セッション検証
-if (!session || !session.roomId) {
-  throw createError({
-    statusCode: 401,
-    message: 'デバイス認証が必要です'
-  })
+const tenantId = event.context.tenantId
+if (!tenantId) {
+  return sendRedirect(event, '/unauthorized-device', 302)
 }
 
-// 4. コンテキストに部屋情報を設定
-event.context.session = session
-event.context.roomId = session.roomId
-event.context.placeId = session.placeId
+try {
+  const response = await callHotelCommonAPI(event, '/api/v1/guest/device/status', {
+    method: 'GET',
+    headers: { 'x-tenant-id': tenantId },
+    params: { ip: 'auto' }
+  })
+
+  const roomId = response.data?.roomId
+  if (!roomId) {
+    return sendRedirect(event, '/unauthorized-device', 302)
+  }
+
+  // コンテキストに部屋情報を設定
+  event.context.roomId = roomId
+  event.context.deviceId = response.data?.deviceId || null
+} catch (error: any) {
+  // 404: 未登録/非アクティブ/他テナント（列挙耐性） → 未認証として扱う
+  return sendRedirect(event, '/unauthorized-device', 302)
+}
 ```
 
 ### XSS対策
@@ -652,43 +1016,47 @@ event.context.placeId = session.placeId
 
 ---
 
-## 📊 実装状況
+## 🧭 Registry 参照（必須）
 
-### Phase 1-3: 基本機能（完了率: 90%）
+- ページパス（canonical）は `SSOT_PAGE_REGISTRY.md` を参照すること。
+- APIパス（canonical）は `SSOT_API_REGISTRY.md` を参照すること。
+- 進捗・実装ギャップは Plane / reports 側で管理し、本SSOTには記載しない。
 
-| 機能 | 実装状況 | 完成度 | 備考 |
-|:-----|:--------|:-----:|:-----|
-| メニュー一覧 | ✅ 完成 | 100% | - |
-| カート機能 | ✅ 完成 | 100% | - |
-| 注文作成 | ✅ 完成 | 100% | - |
-| 注文履歴 | ✅ 完成 | 100% | - |
-| リアルタイム進捗 | ✅ 完成 | 100% | WebSocket |
-| ランキング表示 | ✅ 完成 | 100% | 週間・月間・年間 |
-| おすすめ表示 | ✅ 完成 | 100% | isFeatured |
-| アップセル | ✅ 完成 | 100% | 関連商品3件 |
-| 配達時間指定 | 🟡 部分実装 | 60% | UI未完成 |
+**成功指標**:
+| 指標 | 目標値 | 測定方法 |
+|:-----|:------|:--------|
+| CR₁（回答→注文開始） | ≥ 35% | AI商品提案→カート追加率 |
+| 在庫NGカート拒否率 | ≤ 1% | 在庫切れによる拒否数 / 総注文試行数 |
+| 二重注文発生率 | 0% | 同一Idempotency-Keyの重複課金 |
+| 自動再送成功率 | ≥ 95% | リトライ成功数 / リトライ試行数 |
 
-### Phase 2: レコメンデーション強化（完了率: 0%）
+**既存要件との関連**:
+- ORD-FLOW-003（カート機能）に依存
+- ORD-FLOW-005（注文作成API）を拡張
 
-| 機能 | 実装状況 | 完成度 | 工数 |
-|:-----|:--------|:-----:|:-----|
-| 急上昇メニュー | ❌ 未実装 | 0% | 3日 |
-| アレルギー情報 | ❌ 未実装 | 0% | 3日 |
-| 食事制限対応 | ❌ 未実装 | 0% | 2日 |
-| カロリー表示 | ❌ 未実装 | 0% | 1日 |
-| 配達時間予測 | ❌ 未実装 | 0% | 5日 |
-| チャットボット連携 | ❌ 未実装 | 0% | 2週間 |
+### Phase 4-5: Member連携後
 
-**Phase 2完了率**: 0/16タスク = **0%**
+この領域の要件は、hotel-member 側SSOTで定義する（本SSOTではページ/フロー仕様のみを扱う）。
 
-### Phase 4-5: Member連携後（完了率: 0%）
+---
 
-| 機能 | 実装状況 | 依存関係 |
-|:-----|:--------|:--------|
-| AIレコメンデーション | ❌ 未実装 | hotel-member API |
-| 会員ランク別価格 | ❌ 未実装 | hotel-member API |
-| リピート注文 | ❌ 未実装 | hotel-member API |
-| 季節・イベント連動 | ❌ 未実装 | - |
+## 🆕 MVP機能対応（追記）
+
+### F01: AI商品提案→カート追加（ミニカート）
+- 関連COM: COM-242（[MVP] 注文・決済）
+- 概要: AI回答内の「カートに追加」から直接`/api/v1/order/place`へ送信
+- Accept:
+  - [ ] 1タップでカート追加できる（数量既定=1、オプションはモーダル経由で選択可能）
+  - [ ] 追加成功トーストを2秒表示
+  - [ ] 失敗時はリトライ案内（詳細はF09参照）
+
+### F09: 冪等性・リトライ
+- 関連COM: COM-242, COM-243（[MVP] 注文状況）
+- 概要: Idempotency-Key必須、409重複検知、指数バックオフ（1s/2s/4s）で自動再送
+- Accept:
+  - [ ] 二重注文発生率 = 0%（同一Idempotency-Keyで409返却）
+  - [ ] 自動リトライ成功率 ≥ 95%
+  - [ ] 重複検知時は既存注文情報を返却
 
 ---
 
@@ -706,6 +1074,7 @@ event.context.placeId = session.placeId
 ---
 
 **バージョン履歴**:
+- v2.0.0 (2025-11-04): AI統合・冪等性機能追加。AI回答内カート追加、在庫・時間帯コンテキスト連携、Idempotency-Key、自動リトライ機能。
 - v1.0.0 (2025-10-14): 初版作成。既存実装の完全文書化、Phase 2機能詳細仕様追加。
 
 

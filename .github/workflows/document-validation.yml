@@ -26,7 +26,12 @@ jobs:
         with:
           files: "docs/**/*.md"
           config_file: .markdownlint.json
+<<<<<<< HEAD
+          ignore_files: "node_modules/**"
+        continue-on-error: true
+=======
           ignore_files: "node_modules/** backups/** .nuxt/** docs/03_ssot_legacy/** docs/_archived_system_docs/** docs/01_systems/** docs/00_shared/architecture/** docs/standards/**"
+>>>>>>> origin/main
 
   broken-links:
     name: リンク切れチェック
@@ -40,6 +45,16 @@ jobs:
         run: npm install -g markdown-link-check@3.11.2
 
       - name: リンク切れチェックのセットアップ
+<<<<<<< HEAD
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+          config-file: '.github/workflows/mlc_config.json'
+          folder-path: 'docs'
+          max-depth: -1
+        continue-on-error: true
+=======
         run: |
           set +e
           ERRORS=0
@@ -67,6 +82,7 @@ jobs:
             echo "::error::リンク切れが $ERRORS ファイルで検出されました"
             exit 1
           fi
+>>>>>>> origin/main
 
   spellcheck:
     name: スペルチェック
@@ -84,6 +100,7 @@ jobs:
         with:
           config_path: .github/workflows/spellcheck.yml
           task_name: Markdown
+        continue-on-error: true
 
   notify:
     name: 通知

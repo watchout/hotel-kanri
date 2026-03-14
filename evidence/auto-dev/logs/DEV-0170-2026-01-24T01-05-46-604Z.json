@@ -1,0 +1,79 @@
+{
+  "taskId": "DEV-0170",
+  "startTime": "2026-01-24T01:05:46.604Z",
+  "endTime": "2026-01-24T01:05:50.132Z",
+  "logs": [
+    {
+      "timestamp": "2026-01-24T01:05:46.606Z",
+      "level": "step",
+      "message": "親タスク情報取得",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:48.580Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0170] [COM-246] [MVP] 有人ハンドオフ最小（通知1チャネル固定/60秒で電話CTA）",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:48.580Z",
+      "level": "step",
+      "message": "子タスク取得",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:49.995Z",
+      "level": "info",
+      "message": "子タスク数: 4",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:49.995Z",
+      "level": "step",
+      "message": "━━━━━ サブタスク開始: DEV-0171 ━━━━━",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:49.995Z",
+      "level": "info",
+      "message": "タイトル: [DEV-0171] [COM-246] ハンドオフ要件・運用フロー整理 / SSOT整合チェック",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:50.127Z",
+      "level": "info",
+      "message": "ステータス: In Progress",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:50.128Z",
+      "level": "warning",
+      "message": "SSOT未存在、生成します",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:50.128Z",
+      "level": "step",
+      "message": "SSOT生成（未存在のため作成）",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:50.130Z",
+      "level": "error",
+      "message": "SSOT生成失敗: spawnSync /bin/sh ENOENT",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:50.131Z",
+      "level": "error",
+      "message": "SSOT生成失敗",
+      "data": null
+    },
+    {
+      "timestamp": "2026-01-24T01:05:50.131Z",
+      "level": "error",
+      "message": "子タスク失敗のため中断",
+      "data": null
+    }
+  ]
+}

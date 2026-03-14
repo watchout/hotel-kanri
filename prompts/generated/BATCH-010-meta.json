@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-010",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_MULTILINGUAL_SYSTEM.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "claude-code",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 22,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": true,
+    "initialScore": 90,
+    "finalScore": 90,
+    "ssotScore": 95,
+    "passedBySSOT": true,
+    "iterations": 1,
+    "cost": {
+      "inputTokens": 33217,
+      "outputTokens": 1258,
+      "totalCostUSD": 0.40204249999999997,
+      "totalCostJPY": 60.306374999999996,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 1,
+          "costUSD": 0.017007500000000002
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 1,
+          "costUSD": 0.024675000000000002
+        },
+        "claude-opus-4-20250514": {
+          "calls": 1,
+          "costUSD": 0.36035999999999996
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-18T06:45:19.816Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-010-ssot_multilingual_system.md"
+}

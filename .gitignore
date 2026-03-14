@@ -1,5 +1,15 @@
 node_modules
 
+<<<<<<< HEAD
+# 環境変数ファイル（秘密情報）
+.env
+.env.*
+!.env.example
+!.env.mcp.example
+
+# Claude Code secrets
+.claude/settings.local.json
+=======
 # MCP環境変数（秘密情報）
 .env.mcp
 
@@ -12,3 +22,4 @@ node_modules
 .framework/feedback/
 docs/audits/
 .github/workflows/eval-results.json
+>>>>>>> origin/main

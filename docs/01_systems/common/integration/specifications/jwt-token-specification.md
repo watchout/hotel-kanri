@@ -1,24 +1,11 @@
-# JWTトークン仕様書 (JWT Token Specification)
+# JWTトークン仕様（旧 / アーカイブへ移動）
 
-> ⚠️ **この仕様書は廃止されました** ⚠️
-> 
-> **廃止日**: 2025年10月1日  
-> **理由**: JWT認証からセッション認証への移行決定  
-> **新仕様**: セッション認証（Redis + HttpOnly Cookie）
+このファイルは旧JWT仕様としてアーカイブへ移動しました。
 
----
+## 正（参照すべきSSOT）
+- `docs/03_ssot/00_foundation/SSOT_SAAS_ADMIN_AUTHENTICATION.md`
+- `docs/03_ssot/00_foundation/SSOT_SAAS_DEVICE_AUTHENTICATION.md`
+- `docs/03_ssot/00_foundation/SSOT_SAAS_AUTHENTICATION.md`
 
-## 🔄 **新しい認証仕様**
-
-**統一認証仕様書を参照してください**:
-👉 `/docs/AUTHENTICATION_MASTER_SPECIFICATION.md`
-
-### **変更内容**
-- ❌ JWT認証 → ✅ セッション認証
-- ❌ 複雑な実装 → ✅ シンプルな実装
-- ❌ 307ファイル → ✅ 1つのミドルウェア
-
----
-
-**このファイルの内容は使用しないでください。**  
-**新しい統一仕様書を参照してください。**
+## アーカイブ原本
+- `docs/_archived_auth/original/01_systems/common/integration/specifications/jwt-token-specification.md`

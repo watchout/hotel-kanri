@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-AUTH",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_SAAS_ADMIN_AUTHENTICATION.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "claude-code",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 16,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": true,
+    "initialScore": 55,
+    "finalScore": 86,
+    "ssotScore": 95,
+    "passedBySSOT": true,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 72707,
+      "outputTokens": 17522,
+      "totalCostUSD": 1.0863265000000002,
+      "totalCostJPY": 162.948975,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 3,
+          "costUSD": 0.0389875
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 5,
+          "costUSD": 0.273474
+        },
+        "claude-opus-4-20250514": {
+          "calls": 3,
+          "costUSD": 0.773865
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T09:13:16.929Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-AUTH-ssot_saas_admin_authentication.md"
+}

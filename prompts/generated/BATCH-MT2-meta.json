@@ -1,0 +1,45 @@
+{
+  "taskId": "BATCH-MT2",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "claude-code",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 55,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": true,
+    "initialScore": 36,
+    "finalScore": 82,
+    "ssotScore": 95,
+    "passedBySSOT": true,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 141543,
+      "outputTokens": 21459,
+      "totalCostUSD": 2.0875090000000003,
+      "totalCostJPY": 313.12635000000006,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 3,
+          "costUSD": 0.048265
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 5,
+          "costUSD": 0.342009
+        },
+        "claude-opus-4-20250514": {
+          "calls": 3,
+          "costUSD": 1.697235
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T23:46:35.273Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-MT2-ssot_saas_multitenant.md"
+}

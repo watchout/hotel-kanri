@@ -1,0 +1,21 @@
+{
+  "taskId": "DEV-0208",
+  "ssotPath": "docs/03_ssot/02_guest_features/ai_chat/SSOT_GUEST_AI_HANDOFF.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "codex",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 39,
+    "priority": "P1"
+  },
+  "audit": {
+    "skipped": true,
+    "reason": "disabled"
+  },
+  "generatedAt": "2026-01-18T01:03:03.888Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/DEV-0208-ssot_guest_ai_handoff.md"
+}
