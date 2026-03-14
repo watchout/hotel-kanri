@@ -1,0 +1,185 @@
+{
+  "ssotName": "SSOT_SAAS_MULTITENANT",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_SAAS_MULTITENANT.md",
+  "timestamp": "2026-01-20T23:43:44.293Z",
+  "audits": {
+    "technical": {
+      "checklist": {
+        "T01": {
+          "pass": true,
+          "comment": ""
+        },
+        "T02": {
+          "pass": false,
+          "comment": "camelCase使用箇所あり"
+        },
+        "T03": {
+          "pass": true,
+          "comment": ""
+        },
+        "T04": {
+          "pass": true,
+          "comment": ""
+        },
+        "T05": {
+          "pass": true,
+          "comment": ""
+        },
+        "T06": {
+          "pass": true,
+          "comment": ""
+        },
+        "T07": {
+          "pass": true,
+          "comment": ""
+        },
+        "T08": {
+          "pass": true,
+          "comment": ""
+        },
+        "T09": {
+          "pass": true,
+          "comment": ""
+        },
+        "T10": {
+          "pass": true,
+          "comment": ""
+        },
+        "T11": {
+          "pass": true,
+          "comment": ""
+        },
+        "T12": {
+          "pass": true,
+          "comment": ""
+        },
+        "T13": {
+          "pass": true,
+          "comment": ""
+        },
+        "T14": {
+          "pass": true,
+          "comment": ""
+        },
+        "T15": {
+          "pass": true,
+          "comment": ""
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "T02",
+          "title": "カラム名命名規則違反",
+          "location": "### データベース設計",
+          "description": "createdAtはcreated_atにすべき",
+          "recommendation": "@map(\"created_at\")を追加"
+        }
+      ],
+      "score": 42,
+      "summary": "技術的な品質は概ね良好だが、命名規則に一部問題あり"
+    },
+    "implementability": {
+      "checklist": {
+        "I01": {
+          "pass": true,
+          "comment": "要件ID体系が整備されている"
+        },
+        "I02": {
+          "pass": true,
+          "comment": "全要件にIDが付与されている"
+        },
+        "I03": {
+          "pass": false,
+          "comment": "一部要件にAccept条件が明記されていない"
+        },
+        "I04": {
+          "pass": true,
+          "comment": "Accept条件が検証可能な形で記載されている"
+        },
+        "I05": {
+          "pass": true,
+          "comment": "優先度が明記されている"
+        },
+        "I06": {
+          "pass": true,
+          "comment": "実装チェックリストが存在する"
+        },
+        "I07": {
+          "pass": true,
+          "comment": "Phase分けが明確にされている"
+        },
+        "I08": {
+          "pass": true,
+          "comment": "各Phaseの完了条件が記載されている"
+        },
+        "I09": {
+          "pass": true,
+          "comment": "テストケースが定義されている"
+        },
+        "I10": {
+          "pass": true,
+          "comment": "エラーケースが列挙されている"
+        },
+        "I11": {
+          "pass": true,
+          "comment": "ユーザー表示メッセージが記載されている"
+        },
+        "I12": {
+          "pass": true,
+          "comment": "技術視点が考慮されている"
+        },
+        "I13": {
+          "pass": true,
+          "comment": "ビジネス視点が考慮されている"
+        },
+        "I14": {
+          "pass": true,
+          "comment": "UX視点が考慮されている"
+        },
+        "I15": {
+          "pass": true,
+          "comment": "変更履歴が明記されている"
+        }
+      },
+      "issues": [
+        {
+          "severity": "critical",
+          "id": "I03",
+          "title": "Accept条件不足",
+          "location": "要件定義セクション",
+          "description": "一部要件にAccept条件が定義されていないため、検証が困難。",
+          "recommendation": "全ての要件に対して明確なAccept条件を追加してください。"
+        }
+      ],
+      "score": 42,
+      "summary": "要件定義は概ね整備されているが、一部Accept条件が不足しており、検証に影響を及ぼす可能性があります。"
+    }
+  },
+  "totalScore": 84,
+  "totalCost": 0.007887,
+  "issues": {
+    "critical": [
+      {
+        "severity": "critical",
+        "id": "T02",
+        "title": "カラム名命名規則違反",
+        "location": "### データベース設計",
+        "description": "createdAtはcreated_atにすべき",
+        "recommendation": "@map(\"created_at\")を追加",
+        "audit": "technical"
+      },
+      {
+        "severity": "critical",
+        "id": "I03",
+        "title": "Accept条件不足",
+        "location": "要件定義セクション",
+        "description": "一部要件にAccept条件が定義されていないため、検証が困難。",
+        "recommendation": "全ての要件に対して明確なAccept条件を追加してください。",
+        "audit": "implementability"
+      }
+    ],
+    "warning": [],
+    "info": []
+  }
+}

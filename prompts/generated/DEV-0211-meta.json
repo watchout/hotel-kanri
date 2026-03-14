@@ -1,0 +1,45 @@
+{
+  "taskId": "DEV-0211",
+  "ssotPath": "docs/03_ssot/02_guest_features/ai_chat/SSOT_GUEST_AI_HANDOFF.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "codex",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 39,
+    "priority": "P1"
+  },
+  "audit": {
+    "success": false,
+    "initialScore": 83,
+    "finalScore": 83,
+    "ssotScore": 85,
+    "passedBySSOT": false,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 80538,
+      "outputTokens": 31530,
+      "totalCostUSD": 1.2168569999999999,
+      "totalCostJPY": 182.52855,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 4,
+          "costUSD": 0.05585999999999999
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 7,
+          "costUSD": 0.5123219999999999
+        },
+        "claude-opus-4-20250514": {
+          "calls": 4,
+          "costUSD": 0.648675
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-18T01:47:25.100Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/DEV-0211-ssot_guest_ai_handoff.md"
+}

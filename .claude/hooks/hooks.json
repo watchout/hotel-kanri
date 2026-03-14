@@ -1,0 +1,54 @@
+{
+  "hooks": [
+    {
+      "description": "hotel-saasでPrisma使用を検出",
+      "matcher": "tool == \"Edit\" && tool_input.file_path matches \"hotel-saas.*\\\\.ts$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "grep -n 'PrismaClient\\|from.*@prisma' \"$CLAUDE_FILE_PATH\" 2>/dev/null && echo '[Hook] ❌ hotel-saasでPrisma使用禁止' >&2 || true"
+        }
+      ]
+    },
+    {
+      "description": "console.logの検出",
+      "matcher": "tool == \"Edit\" && tool_input.file_path matches \"\\\\.ts$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "grep -n 'console\\.log' \"$CLAUDE_FILE_PATH\" 2>/dev/null && echo '[Hook] ⚠️ console.logが残っています' >&2 || true"
+        }
+      ]
+    },
+    {
+      "description": "フォールバック値の検出",
+      "matcher": "tool == \"Edit\" && tool_input.file_path matches \"\\\\.ts$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "grep -n \"|| 'default'\\|?? 'default'\" \"$CLAUDE_FILE_PATH\" 2>/dev/null && echo '[Hook] ❌ フォールバック値禁止' >&2 || true"
+        }
+      ]
+    },
+    {
+      "description": "any型の検出",
+      "matcher": "tool == \"Edit\" && tool_input.file_path matches \"\\\\.ts$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "grep -n ': any' \"$CLAUDE_FILE_PATH\" 2>/dev/null && echo '[Hook] ⚠️ any型の使用を避けてください' >&2 || true"
+        }
+      ]
+    },
+    {
+      "description": "$fetch直接使用の検出（hotel-saas）",
+      "matcher": "tool == \"Edit\" && tool_input.file_path matches \"hotel-saas.*server.*\\\\.ts$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "grep -n '\\$fetch(' \"$CLAUDE_FILE_PATH\" 2>/dev/null | grep -v 'callHotelCommonAPI' && echo '[Hook] ❌ $fetch直接使用禁止。callHotelCommonAPIを使用してください' >&2 || true"
+        }
+      ]
+    }
+  ]
+}

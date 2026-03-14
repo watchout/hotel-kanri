@@ -1,0 +1,21 @@
+name: Deploy hotel-common
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'hotel-common/**'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add dokku remote
+        run: git remote add dokku dokku@${{ secrets.DOKKU_HOST }}:hotel-common
+      - name: Push to dokku
+        env:
+          GIT_SSH_COMMAND: 'ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519'
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DOKKU_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          git push dokku HEAD:refs/heads/master

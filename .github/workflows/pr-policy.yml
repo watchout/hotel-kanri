@@ -1,0 +1,35 @@
+name: PR Policy
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || "";
+
+            // GitHub Issue参照 or DEV番号があるか確認
+            const hasIssueRef = /(?:Plan Issue:\s*#\d+|GitHub Issue:\s*#\d+|DEV-\d{4}|closes?\s+#\d+|fixes?\s+#\d+)/i.test(body);
+            if (!hasIssueRef) {
+              core.setFailed(
+                "PR本文にタスク参照がありません。\n" +
+                "以下のいずれかを記載してください:\n" +
+                "  - 'DEV-XXXX'\n" +
+                "  - 'GitHub Issue: #123'\n" +
+                "  - 'closes #123' / 'fixes #123'"
+              );
+              return;
+            }
+
+            // SSOT参照があるか確認
+            const hasSSOT = /docs\/03_ssot\//i.test(body);
+            if (!hasSSOT) {
+              core.setFailed("PR本文にSSO参照（docs/03_ssot/）がありません。");
+              return;
+            }
+
+            core.info("✅ PR Policy チェック合格");

@@ -1,0 +1,91 @@
+# === TaskCard (Investigation) ======================================
+id: INVEST-5
+alias: i1
+slug: slow-query-analysis
+project: hotel-pms
+type: investigation
+priority: P2
+
+title: 予約一覧APIのパフォーマンス劣化原因調査
+goal: 応答時間3秒→原因特定→改善案を3つ提示
+
+scope:
+  in:  [ログ分析, クエリ実行計画確認, ボトルネック特定, 改善案提示]
+  out: [実装作業（改善は別タスク）]
+non_goals:
+  - 調査のみ（改善実装は次フェーズ）
+
+targets:
+  reposcope: monorepo
+  paths: [apps/hotel-pms/server/api/reservations]
+
+inputs:
+  metrics:
+    - 平均応答時間: 3.2秒（目標: 300ms以内）
+    - データ量: 予約10万件、顧客5万件
+  refs:
+    - apps/hotel-pms/server/api/reservations/index.get.ts
+    - prisma/schema.prisma#Reservation
+  logs: logs/slow-query.log
+
+investigation_tasks:
+  - N+1クエリの有無確認
+  - インデックス利用状況確認
+  - JOIN数・データ取得量確認
+  - キャッシュ戦略の有無確認
+
+artifacts:
+  docs:
+    - docs/investigations/INVEST-5-slow-query-report.md
+  metrics:
+    - logs/query-execution-plan.log
+
+deliverables:
+  analysis:
+    - root_cause: ボトルネックの特定（SQL/コード/アーキテクチャ）
+    - impact: 影響範囲（他API・ユーザー体験）
+    - evidence: 実行計画・ログ・メトリクスの引用
+  improvement_proposals:
+    - option_a: [概要, 工数, リスク, 効果予測]
+    - option_b: [概要, 工数, リスク, 効果予測]
+    - option_c: [概要, 工数, リスク, 効果予測]
+  next_action:
+    - 推奨案の選択
+    - 実装タスクの作成
+
+definition_of_done:
+  - ボトルネック特定完了（Evidence付き）
+  - 改善案3つ提示（工数・リスク・効果明記）
+  - 次アクション明確化（実装 or 追加調査）
+  - レビュー承認取得
+
+constraints:
+  - 調査時間: 最大4時間
+  - 本番環境への影響禁止（readonly調査のみ）
+
+risks:
+  - 本番データアクセスによる負荷増加
+mitigations:
+  - dev環境で本番同等データを使用
+  - EXPLAIN ANALYZEのみ実行（実データ取得なし）
+
+epa:
+  evidence_requirements:
+    - 現状メトリクス（応答時間・クエリ実行計画）引用
+    - コードの問題箇所引用（N+1等）
+    - スキーマのインデックス状況引用
+  plan_steps:
+    - ログからスロークエリ抽出
+    - EXPLAIN ANALYZEで実行計画確認
+    - コードレビュー（N+1・JOIN過多）
+    - 改善案3つ作成（工数・効果見積もり）
+    - 推奨案の提示＋次タスク提案
+  act_mode:
+    report_only: true  # 調査レポートのみ
+
+commands:
+  log_analysis: [grep "GET /api/reservations" logs/slow-query.log | sort -k3 -nr | head -20]
+  explain_plan: [psql -c "EXPLAIN ANALYZE SELECT * FROM reservations WHERE tenant_id='xxx' LIMIT 100;"]
+
+approval_points: [evidence, analysis, proposals, recommendation]
+# ===================================================================

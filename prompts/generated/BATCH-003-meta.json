@@ -1,0 +1,43 @@
+{
+  "taskId": "BATCH-003",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_GENERIC_RESOURCES_API.md",
+  "classification": {
+    "success": true,
+    "taskType": "ssot-only",
+    "agents": {
+      "primary": "manual"
+    },
+    "estimatedHours": 6,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": true,
+    "initialScore": 81,
+    "finalScore": 81,
+    "ssotScore": 95,
+    "passedBySSOT": true,
+    "iterations": 1,
+    "cost": {
+      "inputTokens": 9036,
+      "outputTokens": 1474,
+      "totalCostUSD": 0.120633,
+      "totalCostJPY": 18.09495,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 1,
+          "costUSD": 0.008324999999999999
+        },
+        "claude-opus-4-20250514": {
+          "calls": 1,
+          "costUSD": 0.09240000000000001
+        },
+        "claude-sonnet-4-20250514": {
+          "calls": 1,
+          "costUSD": 0.019908
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-18T06:34:56.796Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-003-ssot_generic_resources_api.md"
+}

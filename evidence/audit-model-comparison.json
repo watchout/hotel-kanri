@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-01-22T22:56:30.370Z",
+  "ssot": "test-ssot-low-quality.md",
+  "results": [
+    {
+      "model": "gpt-4o-mini",
+      "success": true,
+      "score": 9,
+      "duration": 8460,
+      "cost": 0.00022754999999999997,
+      "tokens": {
+        "input": 350,
+        "output": 389
+      },
+      "summary": "全体的にSSOTは不十分であり、複数の項目でFailとなっています。"
+    },
+    {
+      "model": "gpt-4o",
+      "success": true,
+      "score": 9,
+      "duration": 4717,
+      "cost": 0.0032974999999999997,
+      "tokens": {
+        "input": 350,
+        "output": 323
+      },
+      "summary": "多くの項目で基準を満たしておらず、改善が必要です。"
+    },
+    {
+      "model": "o3-mini",
+      "success": true,
+      "score": 9,
+      "duration": 10809,
+      "cost": 0.0048719,
+      "tokens": {
+        "input": 349,
+        "output": 1360
+      },
+      "summary": "APIパスのみが基準を満たしており、DB定義や要件、実装詳細に複数の不足点があります。"
+    },
+    {
+      "model": "gpt-4.1-mini",
+      "success": true,
+      "score": 0,
+      "duration": 8855,
+      "cost": 0.0007292,
+      "tokens": {
+        "input": 350,
+        "output": 491
+      },
+      "summary": "全体的に基本的な命名規則や要件定義、実装詳細が不足しており改善が必要です。"
+    },
+    {
+      "model": "gemini-2.0-flash",
+      "success": true,
+      "score": 9,
+      "duration": 2488,
+      "cost": 0.0001306,
+      "tokens": {
+        "input": 346,
+        "output": 320
+      },
+      "summary": "多くの項目で改善が必要です。詳細な定義と具体的な実装例の追加を推奨します。"
+    }
+  ]
+}

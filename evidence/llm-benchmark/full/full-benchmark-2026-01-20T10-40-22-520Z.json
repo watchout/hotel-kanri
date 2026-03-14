@@ -1,0 +1,383 @@
+{
+  "timestamp": "2026-01-20T10:40:22.520Z",
+  "config": {
+    "runsPerCombination": 3,
+    "patterns": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "tasks": [
+      "handoff",
+      "orderManagement",
+      "auth"
+    ],
+    "steps": [
+      "techArchitect",
+      "marketing"
+    ]
+  },
+  "results": [
+    {
+      "step": "techArchitect",
+      "task": "handoff",
+      "pattern": "A",
+      "patternName": "Sonnet + GPT-4o + mini（バランス）",
+      "scores": [
+        80,
+        85,
+        85
+      ],
+      "avgScore": 83.33333333333333,
+      "stdDev": 2.357022603955158,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "handoff",
+      "pattern": "B",
+      "patternName": "Sonnet + GPT-4o + Opus（高品質）",
+      "scores": [
+        85,
+        85,
+        85
+      ],
+      "avgScore": 85,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "handoff",
+      "pattern": "C",
+      "patternName": "Sonnet + mini + mini（低コスト）",
+      "scores": [
+        85,
+        85,
+        85
+      ],
+      "avgScore": 85,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "handoff",
+      "pattern": "D",
+      "patternName": "Single Best（ベースライン）",
+      "scores": [
+        85,
+        80,
+        85
+      ],
+      "avgScore": 83.33333333333333,
+      "stdDev": 2.357022603955158,
+      "isSingle": true
+    },
+    {
+      "step": "techArchitect",
+      "task": "orderManagement",
+      "pattern": "A",
+      "patternName": "Sonnet + GPT-4o + mini（バランス）",
+      "scores": [
+        85,
+        85,
+        85
+      ],
+      "avgScore": 85,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "orderManagement",
+      "pattern": "B",
+      "patternName": "Sonnet + GPT-4o + Opus（高品質）",
+      "scores": [
+        90,
+        85,
+        80
+      ],
+      "avgScore": 85,
+      "stdDev": 4.08248290463863,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "orderManagement",
+      "pattern": "C",
+      "patternName": "Sonnet + mini + mini（低コスト）",
+      "scores": [
+        85,
+        85,
+        83
+      ],
+      "avgScore": 84.33333333333333,
+      "stdDev": 0.9428090415820634,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "orderManagement",
+      "pattern": "D",
+      "patternName": "Single Best（ベースライン）",
+      "scores": [
+        85,
+        84,
+        85
+      ],
+      "avgScore": 84.66666666666667,
+      "stdDev": 0.4714045207910317,
+      "isSingle": true
+    },
+    {
+      "step": "techArchitect",
+      "task": "auth",
+      "pattern": "A",
+      "patternName": "Sonnet + GPT-4o + mini（バランス）",
+      "scores": [
+        80,
+        87,
+        85
+      ],
+      "avgScore": 84,
+      "stdDev": 2.943920288775949,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "auth",
+      "pattern": "B",
+      "patternName": "Sonnet + GPT-4o + Opus（高品質）",
+      "scores": [
+        87,
+        92,
+        85
+      ],
+      "avgScore": 88,
+      "stdDev": 2.943920288775949,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "auth",
+      "pattern": "C",
+      "patternName": "Sonnet + mini + mini（低コスト）",
+      "scores": [
+        85,
+        85,
+        80
+      ],
+      "avgScore": 83.33333333333333,
+      "stdDev": 2.357022603955158,
+      "isSingle": false
+    },
+    {
+      "step": "techArchitect",
+      "task": "auth",
+      "pattern": "D",
+      "patternName": "Single Best（ベースライン）",
+      "scores": [
+        85,
+        85,
+        85
+      ],
+      "avgScore": 85,
+      "stdDev": 0,
+      "isSingle": true
+    },
+    {
+      "step": "marketing",
+      "task": "handoff",
+      "pattern": "A",
+      "patternName": "Sonnet + GPT-4o + mini（バランス）",
+      "scores": [
+        85,
+        87,
+        88
+      ],
+      "avgScore": 86.66666666666667,
+      "stdDev": 1.247219128924647,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "handoff",
+      "pattern": "B",
+      "patternName": "Sonnet + GPT-4o + Opus（高品質）",
+      "scores": [
+        88,
+        78,
+        88
+      ],
+      "avgScore": 84.66666666666667,
+      "stdDev": 4.714045207910316,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "handoff",
+      "pattern": "C",
+      "patternName": "Sonnet + mini + mini（低コスト）",
+      "scores": [
+        88,
+        85,
+        78
+      ],
+      "avgScore": 83.66666666666667,
+      "stdDev": 4.189935029992178,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "handoff",
+      "pattern": "D",
+      "patternName": "Single Best（ベースライン）",
+      "scores": [
+        88,
+        88,
+        88
+      ],
+      "avgScore": 88,
+      "stdDev": 0,
+      "isSingle": true
+    },
+    {
+      "step": "marketing",
+      "task": "orderManagement",
+      "pattern": "A",
+      "patternName": "Sonnet + GPT-4o + mini（バランス）",
+      "scores": [
+        88,
+        88,
+        78
+      ],
+      "avgScore": 84.66666666666667,
+      "stdDev": 4.714045207910316,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "orderManagement",
+      "pattern": "B",
+      "patternName": "Sonnet + GPT-4o + Opus（高品質）",
+      "scores": [
+        78,
+        78,
+        78
+      ],
+      "avgScore": 78,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "orderManagement",
+      "pattern": "C",
+      "patternName": "Sonnet + mini + mini（低コスト）",
+      "scores": [
+        78,
+        85,
+        85
+      ],
+      "avgScore": 82.66666666666667,
+      "stdDev": 3.2998316455372216,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "orderManagement",
+      "pattern": "D",
+      "patternName": "Single Best（ベースライン）",
+      "scores": [
+        85,
+        88,
+        88
+      ],
+      "avgScore": 87,
+      "stdDev": 1.4142135623730951,
+      "isSingle": true
+    },
+    {
+      "step": "marketing",
+      "task": "auth",
+      "pattern": "A",
+      "patternName": "Sonnet + GPT-4o + mini（バランス）",
+      "scores": [
+        78,
+        78,
+        78
+      ],
+      "avgScore": 78,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "auth",
+      "pattern": "B",
+      "patternName": "Sonnet + GPT-4o + Opus（高品質）",
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "avgScore": 0,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "auth",
+      "pattern": "C",
+      "patternName": "Sonnet + mini + mini（低コスト）",
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "avgScore": 0,
+      "stdDev": 0,
+      "isSingle": false
+    },
+    {
+      "step": "marketing",
+      "task": "auth",
+      "pattern": "D",
+      "patternName": "Single Best（ベースライン）",
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "avgScore": 0,
+      "stdDev": 0,
+      "isSingle": true
+    }
+  ],
+  "totalCost": {
+    "inputTokens": 249417,
+    "outputTokens": 349876,
+    "totalCostUSD": 10.0569115,
+    "totalCostJPY": 1508.5367249999988,
+    "byModel": {
+      "gpt-4o-mini": {
+        "calls": 54,
+        "costUSD": 0.029585999999999998
+      },
+      "gpt-4o": {
+        "calls": 72,
+        "costUSD": 0.40339750000000013
+      },
+      "claude-sonnet-4-20250514": {
+        "calls": 124,
+        "costUSD": 3.453018000000002
+      },
+      "claude-opus-4-20250514": {
+        "calls": 32,
+        "costUSD": 6.170909999999998
+      }
+    }
+  }
+}

@@ -7,11 +7,11 @@ hotel-saasのデプロイ失敗の原因となっていた新たな問題を修�
 
 **修正内容**:
 - `tsconfig.json`: 末尾の不要な`%`記号を削除
-- `tsconfig.json`: `"extends": "../hotel-common/configs/tsconfig.base.json"`設定を削除
+- `tsconfig.json`: `"extends": "/Users/kaneko/hotel-common/configs/tsconfig.base.json"`設定を削除
 
 この修正は、以下のエラーを解決するために行いました：
 ```
-[nuxi] ERROR Nuxt Build Error: [vite:esbuild] failed to resolve "extends":"../hotel-common/configs/tsconfig.base.json" in /opt/omotenasuai/hotel-saas/tsconfig.json
+[nuxi] ERROR Nuxt Build Error: [vite:esbuild] failed to resolve "extends":"/Users/kaneko/hotel-common/configs/tsconfig.base.json" in /opt/omotenasuai/hotel-saas/tsconfig.json
 ```
 
 サーバー上では`hotel-common`リポジトリが`hotel-saas`と同じ階層に配置されていないため、`extends`設定が解決できずにビルドエラーが発生していました。

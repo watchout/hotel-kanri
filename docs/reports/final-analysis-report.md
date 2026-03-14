@@ -33,7 +33,7 @@ hotel-saasのデプロイが継続的に失敗し、GitHub Actionsのログか�
 ### 3.2. tsconfig.jsonの不適切な参照
 
 #### 問題
-`tsconfig.json`ファイルが`"extends": "../hotel-common/configs/tsconfig.base.json"`を参照していましたが、サーバー環境ではこのパスが解決できませんでした。
+`tsconfig.json`ファイルが`"extends": "/Users/kaneko/hotel-common/configs/tsconfig.base.json"`を参照していましたが、サーバー環境ではこのパスが解決できませんでした。
 
 #### 対応
 - `tsconfig.json`から`extends`設定を削除

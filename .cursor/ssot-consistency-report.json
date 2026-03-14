@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-01-24T01:27:35.369Z",
+  "totalSsots": 78,
+  "errors": [],
+  "warnings": [
+    {
+      "type": "DEPRECATED_AUTH_METHOD_MENTIONED",
+      "method": "JWT認証",
+      "files": [
+        "00_foundation/SSOT_SAAS_MULTITENANT.md",
+        "00_foundation/SSOT_SAAS_DEVICE_AUTHENTICATION.md",
+        "00_foundation/SSOT_SAAS_DATABASE_SCHEMA.md",
+        "00_foundation/SSOT_SAAS_AUTHENTICATION.md",
+        "00_foundation/SSOT_SAAS_ADMIN_AUTHENTICATION.md",
+        "00_foundation/SSOT_QUALITY_CHECKLIST.md",
+        "00_foundation/SSOT_PRODUCTION_PARITY_RULES.md",
+        "00_foundation/LINEAR_SETUP_GUIDE.md",
+        "01_admin_features/SSOT_SAAS_ROOM_MANAGEMENT.md",
+        "01_admin_features/SSOT_SAAS_ORDER_MANAGEMENT.md",
+        "01_admin_features/SSOT_SAAS_MENU_MANAGEMENT.md",
+        "01_admin_features/SSOT_SAAS_FRONT_DESK_OPERATIONS.md",
+        "01_admin_features/SSOT_ADMIN_BILLING.md",
+        "01_admin_features/reports/SSOT_SAAS_MENU_MANAGEMENT_SAAS_IMPLEMENTATION_GUIDE.md",
+        "02_guest_features/ai_chat/drafts/HANDOFF_TECH_ARCHITECT.md",
+        "SSOT_PROGRESS_MASTER.md"
+      ],
+      "message": "非推奨の認証方式（JWT認証）が言及されています（過去の仕様説明等は許容）"
+    }
+  ],
+  "score": 98
+}

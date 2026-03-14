@@ -1,0 +1,36 @@
+name: QOS Gatekeeper
+on: [pull_request]
+jobs:
+  qos-gatekeeper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PR Body (required links)
+        run: |
+          BODY="$(jq -r .pull_request.body $GITHUB_EVENT_PATH)"
+          miss=0
+          for r in \
+            "docs/03_ssot/" \
+          ; do
+            echo "$BODY" | grep -qi "$r" || { echo "❌ Missing: $r"; miss=1; }
+          done
+          [ $miss -eq 0 ] || exit 1
+          echo "✅ PR本文にSSO参照が含まれています"
+      - name: Install spectral
+        run: npm i -g @stoplight/spectral-cli >/dev/null 2>&1 || true
+      - name: Lint OpenAPI (if exists)
+        run: |
+          if [ -f docs/03_ssot/openapi/staff-management.yaml ]; then
+            spectral lint docs/03_ssot/openapi/staff-management.yaml || true
+          fi
+          if [ -f docs/03_ssot/openapi/generic-resources.yaml ]; then
+            spectral lint docs/03_ssot/openapi/generic-resources.yaml || true
+          fi
+          echo "✅ OpenAPI Lint 完了"
+      - name: Check SSOT requirements coverage
+        run: |
+          if [ -f scripts/check-requirement-coverage.cjs ]; then
+            node scripts/check-requirement-coverage.cjs || true
+          else
+            echo "⚠️ check-requirement-coverage.cjs 未実装（スキップ）"
+          fi

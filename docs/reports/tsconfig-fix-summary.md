@@ -8,16 +8,16 @@
 GitHub Actionsのデプロイログを確認したところ、以下のエラーが発生していることが判明しました：
 
 ```
-[nuxi] ERROR Nuxt Build Error: [vite:esbuild] failed to resolve "extends":"../hotel-common/configs/tsconfig.base.json" in /opt/omotenasuai/hotel-saas/tsconfig.json
+[nuxi] ERROR Nuxt Build Error: [vite:esbuild] failed to resolve "extends":"/Users/kaneko/hotel-common/configs/tsconfig.base.json" in /opt/omotenasuai/hotel-saas/tsconfig.json
 ```
 
-このエラーは、`hotel-saas`の`tsconfig.json`が`../hotel-common/configs/tsconfig.base.json`を参照しようとしているが、サーバー上ではこのファイルが見つからないことを示しています。
+このエラーは、`hotel-saas`の`tsconfig.json`が`/Users/kaneko/hotel-common/configs/tsconfig.base.json`を参照しようとしているが、サーバー上ではこのファイルが見つからないことを示しています。
 
 ## 2. 原因の分析
 
 問題の原因を詳細に分析した結果、以下の点が判明しました：
 
-1. `hotel-saas`の`tsconfig.json`ファイルに`"extends": "../hotel-common/configs/tsconfig.base.json"`設定がある
+1. `hotel-saas`の`tsconfig.json`ファイルに`"extends": "/Users/kaneko/hotel-common/configs/tsconfig.base.json"`設定がある
 2. ローカル環境では`hotel-common`リポジトリが`hotel-saas`と同じ階層に配置されているため問題ない
 3. しかし、サーバー上では`hotel-common`リポジトリが`hotel-saas`と同じ階層に配置されていない可能性がある
 4. また、`tsconfig.json`ファイルの末尾にも`%`記号が残っていた
@@ -26,7 +26,7 @@ GitHub Actionsのデプロイログを確認したところ、以下のエラー
 
 問題を解決するために、以下の対応を実施しました：
 
-1. `tsconfig.json`ファイルから`"extends": "../hotel-common/configs/tsconfig.base.json"`設定を削除
+1. `tsconfig.json`ファイルから`"extends": "/Users/kaneko/hotel-common/configs/tsconfig.base.json"`設定を削除
    ```json
    // 変更前
    {
@@ -35,7 +35,7 @@ GitHub Actionsのデプロイログを確認したところ、以下のエラー
        "node_modules",
        "dist"
      ],
-     "extends": "../hotel-common/configs/tsconfig.base.json"
+     "extends": "/Users/kaneko/hotel-common/configs/tsconfig.base.json"
    }%
 
    // 変更後

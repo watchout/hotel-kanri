@@ -1,0 +1,16 @@
+rules:
+- id: saas-no-prisma
+  message: "hotel-saasでPrisma直接使用は禁止（hotel-common経由）"
+  severity: ERROR
+  languages: [ts, js]
+  pattern: |
+    import { PrismaClient } from '@prisma/client'
+  paths:
+    include: ['**/hotel-saas/**']
+
+- id: no-node-env-branch
+  message: "NODE_ENVによるロジック分岐は禁止（設定差し替えで対応）"
+  severity: ERROR
+  languages: [ts, js]
+  pattern: |
+    if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "production") { ... }

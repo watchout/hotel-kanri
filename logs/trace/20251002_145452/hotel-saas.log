@@ -1,0 +1,610 @@
+
+> hotel-saas@1.0.0 dev
+> NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=512' nuxt dev
+
+[nuxi] Nuxt 3.18.1 with Nitro 2.12.4
+
+ 
+              █▀▀▀▀▀▀▀█▀██▀▀▀██▀█▀▀▀▀▀▀▀█
+              █ █▀▀▀█ █▄▄ ▀ ▀ ▀▄█ █▀▀▀█ █
+              █ █   █ █▀▀ ▀█▄▀█ █ █   █ █
+              █ ▀▀▀▀▀ █ █▀▄▀▄ █ █ ▀▀▀▀▀ █
+              █▀▀▀██▀▀█ ▀ ▄ █▀▀█▀▀▀▀██▀▀█
+              █ ██  ▄▀██▄▄▀██  ▀  ▀▀ ▀▄ █
+              █▀▄█▀▀ ▀▀▄ █▄ █ ▄ ▀▀██▄██▀█
+              █▀ ▄▄▄ ▀▄ ▀█ ▀█  ██▄█▀▀▀▄ █
+              █▀▀▀▀▄▄▀█ ▄▄▀██▀█▀▀ ▀▀██▀██
+              █▀▀▀▀▀▀▀█▄█▄ ▀▄ ▄ █▀█ ▀▄█ █
+              █ █▀▀▀█ █▄▀ ▀██▀▀ ▀▀▀ ▀█ ▄█
+              █ █   █ █▀▄▀ ██  ▀██  ▄▄ ▀█
+              █ ▀▀▀▀▀ █ ▄█▀██   █▀▄▄▀██▀█
+              ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ 
+  ➜ Local:    http://0.0.0.0:3100/
+  ➜ Network:  http://100.119.154.32:3100/ [QR code]
+
+[nuxt:tailwindcss] ℹ Using Tailwind CSS from ~/assets/css/tailwind.css
+[nuxt:tailwindcss] ℹ Tailwind Viewer: http://0.0.0.0:3100/_tailwind/
+ℹ Forced re-optimization of dependencies
+✔ Vite client built in 50ms
+✔ Vite server built in 2328ms
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  "@prisma/client" is imported by "server/api/v1/receipts/[receiptId].get.ts", but could not be resolved – treating it as an external dependency.
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 3793ms
+ℹ Vite client warmed up in 3ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+🔓 パブリックパス: /admin/login
+🔓 パブリックパス: /admin/login
+ℹ Vite server warmed up in 4182ms
+🔒 認証が必要なパス: /api/v1/auth/me
+WARN  [h3] Please prefer using message for longer error messages instead of statusMessage. In the future, statusMessage will be sanitized by default.
+🔓 パブリックパス: /api/v1/auth/login
+🔐 ログイン試行: admin@omotenasuai.com
+✅ hotel-common認証成功: { success: true,
+  data:
+   { success: true,
+     sessionId: 'd4301c49d19d9969dae7a06a9c696d2003aae888a9722c217ce27732f5c7d179',
+     user:
+      { user_id: '00b6152e-d2b1-4783-a0d3-e09d06433778',
+        tenant_id: 'default',
+        email: 'admin@omotenasuai.com',
+        role: 'admin',
+        level: 3,
+        permissions: [] } },
+  meta: {},
+  timestamp: '2025-10-02T05:58:04.926Z',
+  request_id: 'req-1759384684926-kbfc6a8dc8' }
+✅ ログイン成功: admin@omotenasuai.com セッションID: d4301c49
+🔒 認証が必要なパス: /api/v1/auth/me
+Redis接続成功: redis://localhost:6379
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/tenant/current
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/tenant/current
+🔍 テナント情報取得: default
+✅ テナント情報取得成功: undefined
+ERROR  Failed to send log to hotel-common /api/v1/logs/auth: [POST] "http://localhost:3400/api/v1/logs/auth": 400 Bad Request
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.sendToHotelCommon (.nuxt/dev/chunks/_/log-client.mjs:1:2462)
+    at async Promise.allSettled (index 0)
+    at async Object.processBatch (.nuxt/dev/chunks/_/log-client.mjs:1:2401)
+    at async Object.startQueueProcessor (.nuxt/dev/chunks/_/log-client.mjs:1:2155)
+ERROR  FAILED_LOG_TO_HOTEL_COMMON: {"endpoint":"/api/v1/logs/auth","data":{"tenantId":"default","userId":"00b6152e-d2b1-4783-a0d3-e09d06433778","action":"LOGIN","success":true,"ipAddress":"127.0.0.1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","deviceInfo":{"email":"admin@omotenasuai.com","role":"admin","timestamp":"2025-10-02T05:58:04.935Z"}},"error":"[POST] \"http://localhost:3400/api/v1/logs/auth\": 400 Bad Request","timestamp":"2025-10-02T05:58:05.799Z"}
+🔒 認証が必要なパス: /api/v1/auth/me
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+🔒 認証が必要なパス: /api/v1/admin/devices/count
+🔒 認証が必要なパス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+🔒 認証が必要なパス: /api/v1/admin/orders/monthly-count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/devices/count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders/monthly-count
+🔍 サマリー情報取得: default
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'authjs.csrf-token=84e11eeb5ad1747a0ae55ec9a7109065' }
+🔍 デバイス数取得: default
+ERROR  ❌ サマリー情報取得エラー: [GET] "http://localhost:3400/api/v1/admin/summary?from=2025-10-02&to=2025-10-02": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/summary.get.mjs:1:660)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+🔍 月次注文数取得API開始
+ERROR  ❌ 月次注文数取得エラー: [GET] "http://localhost:3400/api/v1/admin/orders/monthly-count?year=2025&month=10": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/orders/monthly-count.get.mjs:1:779)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+🔍 対象年月: 2025年10月
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'authjs.csrf-token=84e11eeb5ad1747a0ae55ec9a7109065' }
+✅ デバイス数取得成功
+🔓 パブリックパス: /api/v1/auth/logout
+🔓 パブリックパス: /api/v1/auth/logout
+ℹ ✨ new dependencies optimized: date-fns, date-fns/locale, @vueuse/integrations/useSortable
+ℹ ✨ optimized dependencies changed. reloading
+🔓 パブリックパス: /admin/login
+🔒 認証が必要なパス: /api/v1/auth/me
+WARN  [h3] Please prefer using message for longer error messages instead of statusMessage. In the future, statusMessage will be sanitized by default.
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2404ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2318ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2303ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+🔓 パブリックパス: /api/v1/auth/login
+🔐 ログイン試行: admin@omotenasuai.com
+✅ hotel-common認証成功: { success: true,
+  data:
+   { success: true,
+     sessionId: 'c7b1a06e7e6fe6604864ef87acfcaf5e11243a58694306cbf70e30641f17314d',
+     user:
+      { user_id: '00b6152e-d2b1-4783-a0d3-e09d06433778',
+        tenant_id: 'default',
+        email: 'admin@omotenasuai.com',
+        role: 'admin',
+        level: 3,
+        permissions: [] } },
+  meta: {},
+  timestamp: '2025-10-02T06:05:41.304Z',
+  request_id: 'req-1759385141304-pf40xrdhlre' }
+✅ ログイン成功: admin@omotenasuai.com セッションID: c7b1a06e
+🍪 Cookie設定: hotel-session-id = c7b1a06e7e6fe660... (httpOnly, sameSite=strict)
+🔒 認証が必要なパス: /api/v1/auth/me
+Redis接続成功: redis://localhost:6379
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/tenant/current
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/tenant/current
+🔍 テナント情報取得: default
+✅ テナント情報取得成功: undefined
+ERROR  Failed to send log to hotel-common /api/v1/logs/auth: [POST] "http://localhost:3400/api/v1/logs/auth": 400 Bad Request
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.sendToHotelCommon (.nuxt/dev/chunks/_/log-client.mjs:1:2462)
+    at async Promise.allSettled (index 0)
+    at async Object.processBatch (.nuxt/dev/chunks/_/log-client.mjs:1:2401)
+    at async Object.startQueueProcessor (.nuxt/dev/chunks/_/log-client.mjs:1:2155)
+ERROR  FAILED_LOG_TO_HOTEL_COMMON: {"endpoint":"/api/v1/logs/auth","data":{"tenantId":"default","userId":"00b6152e-d2b1-4783-a0d3-e09d06433778","action":"LOGIN","success":true,"ipAddress":"127.0.0.1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","deviceInfo":{"email":"admin@omotenasuai.com","role":"admin","timestamp":"2025-10-02T06:05:41.311Z"}},"error":"[POST] \"http://localhost:3400/api/v1/logs/auth\": 400 Bad Request","timestamp":"2025-10-02T06:05:42.208Z"}
+🔒 認証が必要なパス: /api/v1/auth/me
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+ERROR  ❌ サマリー情報取得エラー: [GET] "http://localhost:3400/api/v1/admin/summary?from=2025-10-02&to=2025-10-02": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/summary.get.mjs:1:660)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+🔒 認証が必要なパス: /api/v1/admin/devices/count
+🔒 認証が必要なパス: /api/v1/admin/orders?status=pending
+🔒 認証が必要なパス: /api/v1/admin/orders/monthly-count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/devices/count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders/monthly-count
+🔍 サマリー情報取得: default
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'authjs.csrf-token=84e11eeb5ad1747a0ae55ec9a7109065' }
+🔍 デバイス数取得: default
+🔍 月次注文数取得API開始
+🔍 対象年月: 2025年10月
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'authjs.csrf-token=84e11eeb5ad1747a0ae55ec9a7109065' }
+ERROR  ❌ 月次注文数取得エラー: [GET] "http://localhost:3400/api/v1/admin/orders/monthly-count?year=2025&month=10": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/orders/monthly-count.get.mjs:1:779)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+✅ デバイス数取得成功
+🔓 パブリックパス: /api/v1/auth/logout
+🔓 パブリックパス: /api/v1/auth/logout
+ℹ hmr update /pages/admin/index.vue, /assets/css/tailwind.css, /assets/css/tailwind.css?direct, /pages/admin/index.vue?macro=true, /@id/virtual:nuxt:%2FUsers%2Fkaneko%2Fhotel-saas%2F.nuxt%2Froutes.mjs
+ℹ hmr update /pages/admin/index.vue, /assets/css/tailwind.css, /assets/css/tailwind.css?direct, /pages/admin/index.vue?macro=true, /@id/virtual:nuxt:%2FUsers%2Fkaneko%2Fhotel-saas%2F.nuxt%2Froutes.mjs (x2)
+ℹ hmr update /pages/admin/index.vue, /assets/css/tailwind.css, /assets/css/tailwind.css?direct, /pages/admin/index.vue?macro=true, /@id/virtual:nuxt:%2FUsers%2Fkaneko%2Fhotel-saas%2F.nuxt%2Froutes.mjs (x3)
+ℹ hmr update /assets/css/tailwind.css, /assets/css/tailwind.css?direct, /pages/admin/index.vue?macro=true, /@id/virtual:nuxt:%2FUsers%2Fkaneko%2Fhotel-saas%2F.nuxt%2Froutes.mjs
+[nuxt] ℹ Compiled types/plugins.d.ts in 1298.76ms
+[nuxt] ℹ Compiled plugins.client.mjs in 1300.08ms
+
+ WARN  'manifest-route-rule' middleware already exists at '/Users/kaneko/hotel-saas/node_modules/nuxt/dist/app/middleware/manifest-route-rule.js'. You can set override: true to replace it.
+
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2397ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2817ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2378ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2582ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001
+🔓 パブリックパス: /admin/login
+🔒 認証が必要なパス: /api/v1/auth/me
+WARN  [h3] Please prefer using message for longer error messages instead of statusMessage. In the future, statusMessage will be sanitized by default.
+🔓 パブリックパス: /api/v1/auth/login
+🔐 ログイン試行: admin@omotenasuai.com
+✅ hotel-common認証成功: { success: true,
+  data:
+   { success: true,
+     sessionId: '8b39217d8244d9b27eee05cd851e64846ce3c428677f02a0379dd8577d1a8666',
+     user:
+      { user_id: '00b6152e-d2b1-4783-a0d3-e09d06433778',
+        tenant_id: 'default',
+        email: 'admin@omotenasuai.com',
+        role: 'admin',
+        level: 3,
+        permissions: [] } },
+  meta: {},
+  timestamp: '2025-10-02T06:16:04.691Z',
+  request_id: 'req-1759385764691-i2nfrfxbsjc' }
+✅ ログイン成功: admin@omotenasuai.com セッションID: 8b39217d
+🍪 Cookie設定: hotel-session-id = 8b39217d8244d9b2... (httpOnly, sameSite=strict)
+🔒 認証が必要なパス: /api/v1/auth/me
+Redis接続成功: redis://localhost:6379
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/tenant/current
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/tenant/current
+🔍 テナント情報取得: default
+✅ テナント情報取得成功: undefined
+🔒 認証が必要なパス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+🔒 認証が必要なパス: /api/v1/admin/devices/count
+🔒 認証が必要なパス: /api/v1/admin/orders?status=pending
+🔒 認証が必要なパス: /api/v1/admin/orders/monthly-count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/devices/count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders/monthly-count
+🔍 hotel-session-id をサーバー側で設定: 8b39217d8244d9b2...
+🔍 サマリー情報取得: default
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=8b39217d8244d9b27eee05cd851e64846' }
+🔍 デバイス数取得: default
+ERROR  ❌ サマリー情報取得エラー: [GET] "http://localhost:3400/api/v1/admin/summary?from=2025-10-02&to=2025-10-02": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/summary.get.mjs:1:886)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+🔍 月次注文数取得API開始
+🔍 hotel-session-id をサーバー側で設定: 8b39217d8244d9b2...
+🔍 対象年月: 2025年10月
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=8b39217d8244d9b27eee05cd851e64846' }
+ERROR  ❌ 月次注文数取得エラー: [GET] "http://localhost:3400/api/v1/admin/orders/monthly-count?year=2025&month=10": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/orders/monthly-count.get.mjs:1:1005)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+✅ デバイス数取得成功
+🔓 パブリックパス: /api/v1/auth/logout
+🔓 パブリックパス: /api/v1/auth/logout
+ERROR  Failed to send log to hotel-common /api/v1/logs/auth: [POST] "http://localhost:3400/api/v1/logs/auth": 400 Bad Request
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.sendToHotelCommon (.nuxt/dev/chunks/_/log-client.mjs:1:2462)
+    at async Promise.allSettled (index 0)
+    at async Object.processBatch (.nuxt/dev/chunks/_/log-client.mjs:1:2401)
+    at async Object.startQueueProcessor (.nuxt/dev/chunks/_/log-client.mjs:1:2155)
+ERROR  FAILED_LOG_TO_HOTEL_COMMON: {"endpoint":"/api/v1/logs/auth","data":{"tenantId":"default","userId":"00b6152e-d2b1-4783-a0d3-e09d06433778","action":"LOGIN","success":true,"ipAddress":"127.0.0.1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","deviceInfo":{"email":"admin@omotenasuai.com","role":"admin","timestamp":"2025-10-02T06:16:04.698Z"}},"error":"[POST] \"http://localhost:3400/api/v1/logs/auth\": 400 Bad Request","timestamp":"2025-10-02T06:16:05.594Z"}
+ℹ page reload plugins/session-auth.client.ts
+🔓 パブリックパス: /admin/login
+ℹ page reload composables/useSessionAuth.ts
+🔓 パブリックパス: /admin/login
+
+ WARN  'manifest-route-rule' middleware already exists at '/Users/kaneko/hotel-saas/node_modules/nuxt/dist/app/middleware/manifest-route-rule.js'. You can set override: true to replace it.
+
+ℹ page reload plugins/session-auth.client.ts
+ℹ page reload composables/useSessionAuth.ts
+🔓 パブリックパス: /admin/login
+🔓 パブリックパス: /admin/login
+🔓 パブリックパス: /api/v1/auth/login
+🔐 ログイン試行: admin@omotenasuai.com
+✅ hotel-common認証成功: { success: true,
+  data:
+   { success: true,
+     sessionId: '466352f9f332db8bb392a170652e2fccdc5033d24e1144f27654e2129a04ea1b',
+     user:
+      { user_id: '00b6152e-d2b1-4783-a0d3-e09d06433778',
+        tenant_id: 'default',
+        email: 'admin@omotenasuai.com',
+        role: 'admin',
+        level: 3,
+        permissions: [] } },
+  meta: {},
+  timestamp: '2025-10-02T06:25:07.868Z',
+  request_id: 'req-1759386307868-709t2zrcy0a' }
+✅ ログイン成功: admin@omotenasuai.com セッションID: 466352f9
+🍪 Cookie設定: hotel-session-id = 466352f9f332db8b... (httpOnly, sameSite=strict)
+🔒 認証が必要なパス: /api/v1/auth/me
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/tenant/current
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/tenant/current
+🔍 テナント情報取得: default
+✅ テナント情報取得成功: undefined
+🔒 認証が必要なパス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+🔒 認証が必要なパス: /api/v1/admin/devices/count
+🔒 認証が必要なパス: /api/v1/admin/orders?status=pending
+🔒 認証が必要なパス: /api/v1/admin/orders/monthly-count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/devices/count
+🔍 hotel-session-id をサーバー側で設定: 466352f9f332db8b...
+🔍 サマリー情報取得: default
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=466352f9f332db8bb392a170652e2fccd' }
+🔍 デバイス数取得: default
+ERROR  ❌ サマリー情報取得エラー: [GET] "http://localhost:3400/api/v1/admin/summary?from=2025-10-02&to=2025-10-02": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/summary.get.mjs:1:886)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders/monthly-count
+🔍 月次注文数取得API開始
+🔍 hotel-session-id をサーバー側で設定: 466352f9f332db8b...
+🔍 対象年月: 2025年10月
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=466352f9f332db8bb392a170652e2fccd' }
+ERROR  ❌ 月次注文数取得エラー: [GET] "http://localhost:3400/api/v1/admin/orders/monthly-count?year=2025&month=10": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/orders/monthly-count.get.mjs:1:1005)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+✅ デバイス数取得成功
+🔓 パブリックパス: /api/v1/auth/logout
+🔓 パブリックパス: /api/v1/auth/logout
+ERROR  Failed to send log to hotel-common /api/v1/logs/auth: [POST] "http://localhost:3400/api/v1/logs/auth": 400 Bad Request
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.sendToHotelCommon (.nuxt/dev/chunks/_/log-client.mjs:1:2462)
+    at async Promise.allSettled (index 0)
+    at async Object.processBatch (.nuxt/dev/chunks/_/log-client.mjs:1:2401)
+    at async Object.startQueueProcessor (.nuxt/dev/chunks/_/log-client.mjs:1:2155)
+ERROR  FAILED_LOG_TO_HOTEL_COMMON: {"endpoint":"/api/v1/logs/auth","data":{"tenantId":"default","userId":"00b6152e-d2b1-4783-a0d3-e09d06433778","action":"LOGIN","success":true,"ipAddress":"127.0.0.1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","deviceInfo":{"email":"admin@omotenasuai.com","role":"admin","timestamp":"2025-10-02T06:25:07.873Z"}},"error":"[POST] \"http://localhost:3400/api/v1/logs/auth\": 400 Bad Request","timestamp":"2025-10-02T06:25:08.274Z"}
+🔓 パブリックパス: /admin/login
+🔓 パブリックパス: /api/v1/auth/login
+🔐 ログイン試行: admin@omotenasuai.com
+✅ hotel-common認証成功: { success: true,
+  data:
+   { success: true,
+     sessionId: '7006f925edd08cf9dd4a0a325f6b4ba02fc24ce4532a7b70bd2d0d826b26ebf7',
+     user:
+      { user_id: '00b6152e-d2b1-4783-a0d3-e09d06433778',
+        tenant_id: 'default',
+        email: 'admin@omotenasuai.com',
+        role: 'admin',
+        level: 3,
+        permissions: [] } },
+  meta: {},
+  timestamp: '2025-10-02T06:26:15.839Z',
+  request_id: 'req-1759386375839-yaj21zyl78n' }
+✅ ログイン成功: admin@omotenasuai.com セッションID: 7006f925
+🍪 Cookie設定: hotel-session-id = 7006f925edd08cf9... (httpOnly, sameSite=strict)
+🔒 認証が必要なパス: /api/v1/auth/me
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/tenant/current
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/tenant/current
+🔍 テナント情報取得: default
+✅ テナント情報取得成功: undefined
+🔒 認証が必要なパス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+🔒 認証が必要なパス: /api/v1/admin/devices/count
+ERROR  ❌ サマリー情報取得エラー: [GET] "http://localhost:3400/api/v1/admin/summary?from=2025-10-02&to=2025-10-02": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/summary.get.mjs:1:886)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+🔍 hotel-session-id をサーバー側で設定: 7006f925edd08cf9...
+🔍 サマリー情報取得: default
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=7006f925edd08cf9dd4a0a325f6b4ba02' }
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/devices/count
+🔍 デバイス数取得: default
+🔒 認証が必要なパス: /api/v1/admin/orders?status=pending
+🔒 認証が必要なパス: /api/v1/admin/orders/monthly-count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders/monthly-count
+🔍 月次注文数取得API開始
+🔍 hotel-session-id をサーバー側で設定: 7006f925edd08cf9...
+🔍 対象年月: 2025年10月
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=7006f925edd08cf9dd4a0a325f6b4ba02' }
+ERROR  ❌ 月次注文数取得エラー: [GET] "http://localhost:3400/api/v1/admin/orders/monthly-count?year=2025&month=10": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/orders/monthly-count.get.mjs:1:1005)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+✅ デバイス数取得成功
+🔓 パブリックパス: /api/v1/auth/logout
+🔓 パブリックパス: /api/v1/auth/logout
+ERROR  Failed to send log to hotel-common /api/v1/logs/auth: [POST] "http://localhost:3400/api/v1/logs/auth": 400 Bad Request
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.sendToHotelCommon (.nuxt/dev/chunks/_/log-client.mjs:1:2462)
+    at async Promise.allSettled (index 0)
+    at async Object.processBatch (.nuxt/dev/chunks/_/log-client.mjs:1:2401)
+    at async Object.startQueueProcessor (.nuxt/dev/chunks/_/log-client.mjs:1:2155)
+ERROR  FAILED_LOG_TO_HOTEL_COMMON: {"endpoint":"/api/v1/logs/auth","data":{"tenantId":"default","userId":"00b6152e-d2b1-4783-a0d3-e09d06433778","action":"LOGIN","success":true,"ipAddress":"127.0.0.1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","deviceInfo":{"email":"admin@omotenasuai.com","role":"admin","timestamp":"2025-10-02T06:26:15.840Z"}},"error":"[POST] \"http://localhost:3400/api/v1/logs/auth\": 400 Bad Request","timestamp":"2025-10-02T06:26:16.374Z"}
+🔓 パブリックパス: /admin/login
+🔓 パブリックパス: /api/v1/auth/login
+🔐 ログイン試行: admin@omotenasuai.com
+✅ hotel-common認証成功: { success: true,
+  data:
+   { success: true,
+     sessionId: '5487e17fa60b0cdd945e27b4e2ebec6e41fa39ae901492505555b6e3dfe28d26',
+     user:
+      { user_id: '00b6152e-d2b1-4783-a0d3-e09d06433778',
+        tenant_id: 'default',
+        email: 'admin@omotenasuai.com',
+        role: 'admin',
+        level: 3,
+        permissions: [] } },
+  meta: {},
+  timestamp: '2025-10-02T06:27:07.367Z',
+  request_id: 'req-1759386427367-1gp9ama52tfh' }
+✅ ログイン成功: admin@omotenasuai.com セッションID: 5487e17f
+🍪 Cookie設定: hotel-session-id = 5487e17fa60b0cdd... (httpOnly, sameSite=strict)
+ERROR  Failed to send log to hotel-common /api/v1/logs/auth: [POST] "http://localhost:3400/api/v1/logs/auth": 400 Bad Request
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.sendToHotelCommon (.nuxt/dev/chunks/_/log-client.mjs:1:2462)
+    at async Promise.allSettled (index 0)
+    at async Object.processBatch (.nuxt/dev/chunks/_/log-client.mjs:1:2401)
+    at async Object.startQueueProcessor (.nuxt/dev/chunks/_/log-client.mjs:1:2155)
+ERROR  FAILED_LOG_TO_HOTEL_COMMON: {"endpoint":"/api/v1/logs/auth","data":{"tenantId":"default","userId":"00b6152e-d2b1-4783-a0d3-e09d06433778","action":"LOGIN","success":true,"ipAddress":"127.0.0.1","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36","deviceInfo":{"email":"admin@omotenasuai.com","role":"admin","timestamp":"2025-10-02T06:27:07.369Z"}},"error":"[POST] \"http://localhost:3400/api/v1/logs/auth\": 400 Bad Request","timestamp":"2025-10-02T06:27:07.442Z"}
+🔒 認証が必要なパス: /api/v1/auth/me
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/auth/me
+🔒 認証が必要なパス: /api/v1/admin/tenant/current
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/tenant/current
+🔍 テナント情報取得: default
+✅ テナント情報取得成功: undefined
+🔒 認証が必要なパス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+ERROR  ❌ サマリー情報取得エラー: [GET] "http://localhost:3400/api/v1/admin/summary?from=2025-10-02&to=2025-10-02": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/summary.get.mjs:1:886)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+🔒 認証が必要なパス: /api/v1/admin/devices/count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/summary?from=2025-10-02&to=2025-10-02
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/devices/count
+🔍 hotel-session-id をサーバー側で設定: 5487e17fa60b0cdd...
+🔍 サマリー情報取得: default
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=5487e17fa60b0cdd945e27b4e2ebec6e4' }
+🔍 デバイス数取得: default
+✅ デバイス数取得成功
+🔒 認証が必要なパス: /api/v1/admin/orders?status=pending
+🔒 認証が必要なパス: /api/v1/admin/orders/monthly-count
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders?status=pending
+✅ セッション認証成功: admin@omotenasuai.com (admin) - パス: /api/v1/admin/orders/monthly-count
+🔍 月次注文数取得API開始
+🔍 hotel-session-id をサーバー側で設定: 5487e17fa60b0cdd...
+🔍 対象年月: 2025年10月
+🔍 送信ヘッダー: { hasCookie: true,
+  cookiePreview: 'hotel-session-id=5487e17fa60b0cdd945e27b4e2ebec6e4' }
+ERROR  ❌ 月次注文数取得エラー: [GET] "http://localhost:3400/api/v1/admin/orders/monthly-count?year=2025&month=10": 401 Unauthorized
+
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async $fetch2 (node_modules/ofetch/dist/shared/ofetch.03887fc3.mjs:316:15)
+    at async Object.handler (.nuxt/dev/chunks/routes/api/v1/admin/orders/monthly-count.get.mjs:1:1005)
+    at async node_modules/h3/dist/index.mjs:2004:19
+    at async Object.callAsync (node_modules/unctx/dist/index.mjs:72:16)
+    at async Server.toNodeHandle (node_modules/h3/dist/index.mjs:2296:7)
+🔓 パブリックパス: /api/v1/auth/logout
+🔓 パブリックパス: /api/v1/auth/logout
+ℹ hmr update /assets/css/tailwind.css, /assets/css/tailwind.css?direct, /pages/admin/index.vue, /components/admin/PlanBanner.vue, /layouts/admin.vue, /pages/admin/statistics/index.vue, /pages/admin/front-desk/index.vue, /pages/admin/front-desk/accounting-list.vue, /pages/admin/front-desk/room-notes.vue, /pages/admin/front-desk/history.vue, /pages/admin/orders/index.vue, /pages/admin/devices/index.vue, /pages/admin/menu/index.vue, /pages/admin/billing/index.vue
+ℹ hmr update /assets/css/tailwind.css, /assets/css/tailwind.css?direct, /pages/admin/index.vue, /components/admin/PlanBanner.vue, /layouts/admin.vue, /pages/admin/statistics/index.vue, /pages/admin/front-desk/index.vue, /pages/admin/front-desk/accounting-list.vue, /pages/admin/front-desk/room-notes.vue, /pages/admin/front-desk/history.vue, /pages/admin/orders/index.vue, /pages/admin/devices/index.vue, /pages/admin/menu/index.vue, /pages/admin/billing/index.vue (x2)
+
+ WARN  Duplicated imports "prisma", the one from "/Users/kaneko/hotel-saas/server/utils/db-service.ts" has been ignored and "/Users/kaneko/hotel-saas/server/utils/prisma.ts" is used
+
+
+ WARN  Duplicated imports "getSession", the one from "h3" has been ignored and "/Users/kaneko/hotel-saas/server/utils/session-auth.ts" is used
+
+
+ WARN  Generated an empty chunk: "room-by-ip.get".
+
+[nitro] ✔ Nuxt Nitro server built in 2284ms
+🔧 統一データベースサービス初期化: hotel-saas
+🏢 システム名: hotel-saas
+🎯 テナントID: test-tenant-001

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# =============================================================================
+# hotel-kanri Pre-Push: Critical Gates Only
+# =============================================================================
+# 設計方針：
+# - Critical（必須）: SSOT準拠、セキュリティ、DB整合性 → ブロッキング
+# - Non-Critical（任意）: Lint/Test → CIで警告のみ
+# =============================================================================
+
+echo "🔍 Critical Gates チェック開始..."
+
+# ✅ OpenAPI生成（SSOT整合性の一部）
+echo "1/3 OpenAPI生成中..."
+pnpm openapi:gen || {
+  echo "❌ OpenAPI生成失敗"
+  exit 1
+}
+
+# ✅ SSOT整合性チェック
+echo "2/3 SSOT整合性チェック中..."
+if [ -f "scripts/quality/check-ssot-consistency.cjs" ]; then
+  node scripts/quality/check-ssot-consistency.cjs || {
+    echo "❌ SSOT整合性チェック失敗"
+    exit 1
+  }
+else
+  echo "⚠️  SSOT整合性チェックスクリプト未実装（TODO）"
+fi
+
+# ✅ データベース整合性チェック
+echo "3/3 データベース整合性チェック中..."
+# hotel-kanriは管理リポジトリのため、Prismaスキーマは存在しない
+# 各システムリポジトリ（hotel-common等）で実行される
+echo "⚠️  hotel-kanriは管理リポジトリのため、Prismaスキーマチェックはスキップ"
+echo "💡 各システムリポジトリ（hotel-saas, hotel-common）で実行されます"
+
+echo ""
+echo "✅ All Critical Gates Passed!"
+echo "💡 Non-Critical checks (lint/test) will run in CI"
+

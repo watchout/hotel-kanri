@@ -1,0 +1,571 @@
+
+> hotel-common@1.0.0 dev
+> ts-node src/server/integration-server.ts
+
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+PostgreSQL接続確認完了
+[32m[2025-10-02T05:57:57.391Z] INFO[0m [hotel-common]: 🎯 hotel-member階層権限管理統合初期化中...
+[32m[2025-10-02T05:57:57.392Z] INFO[0m [hotel-common]: ✅ hotel-member階層権限管理統合初期化完了
+[32m[2025-10-02T05:57:57.392Z] INFO[0m [hotel-common]: 
+🎯 hotel-member階層権限管理統合稼働中
+
+📊 対応機能:
+- 階層JWT認証統合
+- 顧客データ階層アクセス制御
+- 会員ランク・ポイント階層管理
+- グループ分析権限制御
+- FastAPI連携エンドポイント
+
+🔗 APIエンドポイント:
+- VERIFY_TOKEN: /api/hotel-member/hierarchy/auth/verify
+- CHECK_CUSTOMER_ACCESS: /api/hotel-member/hierarchy/permissions/check-customer-access
+- CHECK_MEMBERSHIP_RESTRICTIONS: /api/hotel-member/hierarchy/permissions/check-membership-restrictions
+- CHECK_ANALYTICS_ACCESS: /api/hotel-member/hierarchy/permissions/check-analytics-access
+- BATCH_CHECK: /api/hotel-member/hierarchy/permissions/batch-check
+- GET_ACCESSIBLE_TENANTS: /api/hotel-member/hierarchy/tenants/accessible
+- GET_PERMISSIONS_DETAIL: /api/hotel-member/hierarchy/user/permissions-detail
+- HEALTH_CHECK: /api/hotel-member/hierarchy/health
+
+🎯 実装戦略: 部分対応（顧客データ重点）
+⚡ パフォーマンス: 既存機能への影響最小化
+🔐 セキュリティ: 階層別データアクセス制御
+    
+hotel-member統合初期化完了
+🔧 開発環境: システム間ヘルスチェックを無効化（安定性優先）
+🔍 プロセス監視システム初期化完了
+
+🎉 hotel-common統合APIサーバー起動完了！
+
+📊 サーバー情報:
+- ポート: 3400
+- データベース: PostgreSQL (hotel_unified_db)
+- 監視対象システム: 4個
+
+🔗 利用可能エンドポイント:
+- GET  /health                    - サーバーヘルスチェック
+- GET  /api/systems/status        - システム接続状況
+- POST /api/systems/:name/test    - システム接続テスト
+- GET  /api/database/test         - データベース接続テスト
+- GET  /api/tenants              - テナント一覧
+- POST /api/auth/validate        - 認証検証
+- GET  /api/stats                - システム統計
+- GET  /api/v1/campaigns/health  - キャンペーン機能ヘルスチェック
+- GET  /api/apps/google-play     - Google Playアプリ一覧
+
+🎯 接続対象システム:
+- 🏪 h📡 [2025-10-02T06:45:10.708Z] シグナル受信: SIGTERM
+🚫 開発環境: SIGTERM無視（外部からの自動停止を防止）
+80)
+- 💼 hotel-pms (http://localhost:3300)
+        
+📡 WebSocket server initialized for memo notifications
+📥 [2025-10-02T05:58:04.815Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[hotel-common] Redis接続成功: redis://localhost:6379
+[32m[2025-10-02T05:58:04.926Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T05:58:04.926Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T05:58:04.928Z] POST /api/v1/auth/login - 200 (113ms)
+📥 [2025-10-02T05:58:05.521Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T05:58:05.533Z] GET /api/v1/tenants/default - 200 (12ms)
+📥 [2025-10-02T05:58:05.788Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T05:58:05.797Z] POST / - 400 (9ms)
+📥 [2025-10-02T05:58:05.962Z] GET /api/v1/admin/summary
+📤 [2025-10-02T05:58:05.964Z] GET /api/v1/admin/summary - 401 (2ms)
+📥 [2025-10-02T05:58:05.971Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T05:58:05.972Z] GET /api/v1/admin/orders/monthly-count - 401 (1ms)
+📥 [2025-10-02T05:58:05.973Z] GET /api/v1/devices/count
+📥 [2025-10-02T05:58:05.974Z] GET /api/v1/admin/orders
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T05:58:05.997Z] GET /api/v1/devices/count - 200 (24ms)
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+📤 [2025-10-02T05:58:06.009Z] GET /api/v1/admin/orders - 200 (35ms)
+📥 [2025-10-02T05:58:06.033Z] POST /api/v1/auth/logout
+📤 [2025-10-02T05:58:06.034Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T05:58:06.065Z] POST /api/v1/auth/logout
+📤 [2025-10-02T05:58:06.066Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:05:41.213Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[32m[2025-10-02T06:05:41.304Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T06:05:41.304Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T06:05:41.306Z] POST /api/v1/auth/login - 200 (93ms)
+📥 [2025-10-02T06:05:41.973Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:05:41.979Z] GET /api/v1/tenants/default - 200 (6ms)
+📥 [2025-10-02T06:05:42.195Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T06:05:42.202Z] POST / - 400 (7ms)
+📥 [2025-10-02T06:05:42.928Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:05:42.929Z] GET /api/v1/admin/summary - 401 (1ms)
+📥 [2025-10-02T06:05:42.941Z] GET /api/v1/devices/count
+📥 [2025-10-02T06:05:42.943Z] GET /api/v1/admin/orders
+📥 [2025-10-02T06:05:42.943Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:05:42.944Z] GET /api/v1/admin/orders/monthly-count - 401 (1ms)
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:05:42.962Z] GET /api/v1/devices/count - 200 (21ms)
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+📤 [2025-10-02T06:05:42.975Z] GET /api/v1/admin/orders - 200 (32ms)
+📥 [2025-10-02T06:05:43.081Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:05:43.082Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:05:43.131Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:05:43.135Z] POST /api/v1/auth/logout - 400 (4ms)
+📥 [2025-10-02T06:16:04.599Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[32m[2025-10-02T06:16:04.691Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T06:16:04.691Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T06:16:04.692Z] POST /api/v1/auth/login - 200 (93ms)
+📥 [2025-10-02T06:16:04.955Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:16:04.960Z] GET /api/v1/tenants/default - 200 (5ms)
+📥 [2025-10-02T06:16:05.107Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:16:05.108Z] GET /api/v1/admin/summary - 401 (1ms)
+📥 [2025-10-02T06:16:05.124Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:16:05.126Z] GET /api/v1/admin/orders/monthly-count - 401 (2ms)
+📥 [2025-10-02T06:16:05.127Z] GET /api/v1/devices/count
+📥 [2025-10-02T06:16:05.129Z] GET /api/v1/admin/orders
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:16:05.140Z] GET /api/v1/devices/count - 200 (13ms)
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+📥 [2025-10-02T06:16:05.157Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:16:05.158Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:16:05.159Z] POST /api/v1/auth/logout
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+📤 [2025-10-02T06:16:05.159Z] GET /api/v1/admin/orders - 200 (30ms)
+📤 [2025-10-02T06:16:05.160Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:16:05.582Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T06:16:05.588Z] POST / - 400 (6ms)
+📥 [2025-10-02T06:25:07.774Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[32m[2025-10-02T06:25:07.868Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T06:25:07.868Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T06:25:07.869Z] POST /api/v1/auth/login - 200 (95ms)
+📥 [2025-10-02T06:25:07.977Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:25:07.981Z] GET /api/v1/tenants/default - 200 (4ms)
+📥 [2025-10-02T06:25:08.138Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:25:08.139Z] GET /api/v1/admin/summary - 401 (1ms)
+📥 [2025-10-02T06:25:08.144Z] GET /api/v1/admin/orders
+📥 [2025-10-02T06:25:08.148Z] GET /api/v1/devices/count
+📥 [2025-10-02T06:25:08.150Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:25:08.150Z] GET /api/v1/admin/orders/monthly-count - 401 (0ms)
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:25:08.158Z] GET /api/v1/devices/count - 200 (10ms)
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+📤 [2025-10-02T06:25:08.168Z] GET /api/v1/admin/orders - 200 (24ms)
+📥 [2025-10-02T06:25:08.181Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:25:08.182Z] POST /api/v1/auth/logout - 400 (0ms)
+📥 [2025-10-02T06:25:08.184Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:25:08.185Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:25:08.270Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T06:25:08.272Z] POST / - 400 (2ms)
+📥 [2025-10-02T06:26:15.756Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT 1
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[32m[2025-10-02T06:26:15.839Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T06:26:15.839Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T06:26:15.839Z] POST /api/v1/auth/login - 200 (83ms)
+📥 [2025-10-02T06:26:15.942Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:26:15.947Z] GET /api/v1/tenants/default - 200 (5ms)
+📥 [2025-10-02T06:26:16.039Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:26:16.040Z] GET /api/v1/admin/summary - 401 (1ms)
+📥 [2025-10-02T06:26:16.045Z] GET /api/v1/devices/count
+📥 [2025-10-02T06:26:16.050Z] GET /api/v1/admin/orders
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+📥 [2025-10-02T06:26:16.055Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:26:16.056Z] GET /api/v1/admin/orders/monthly-count - 401 (1ms)
+prisma:query SELECT 1
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+📤 [2025-10-02T06:26:16.057Z] GET /api/v1/admin/orders - 200 (7ms)
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:26:16.079Z] GET /api/v1/devices/count - 200 (34ms)
+📥 [2025-10-02T06:26:16.084Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:26:16.084Z] POST /api/v1/auth/logout - 400 (0ms)
+📥 [2025-10-02T06:26:16.086Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:26:16.087Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:26:16.368Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T06:26:16.372Z] POST / - 400 (4ms)
+📥 [2025-10-02T06:27:07.288Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT 1
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[32m[2025-10-02T06:27:07.367Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T06:27:07.367Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T06:27:07.367Z] POST /api/v1/auth/login - 200 (79ms)
+📥 [2025-10-02T06:27:07.439Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T06:27:07.440Z] POST / - 400 (1ms)
+📥 [2025-10-02T06:27:07.475Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:27:07.481Z] GET /api/v1/tenants/default - 200 (6ms)
+📥 [2025-10-02T06:27:07.584Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:27:07.584Z] GET /api/v1/admin/summary - 401 (0ms)
+📥 [2025-10-02T06:27:07.587Z] GET /api/v1/devices/count
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:27:07.591Z] GET /api/v1/devices/count - 200 (4ms)
+📥 [2025-10-02T06:27:07.755Z] GET /api/v1/admin/orders
+📥 [2025-10-02T06:27:07.756Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:27:07.757Z] GET /api/v1/admin/orders/monthly-count - 401 (1ms)
+prisma:query SELECT 1
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+📤 [2025-10-02T06:27:07.762Z] GET /api/v1/admin/orders - 200 (7ms)
+📥 [2025-10-02T06:27:07.814Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:27:07.815Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:27:07.821Z] POST /api/v1/auth/logout
+📤 [2025-10-02T06:27:07.822Z] POST /api/v1/auth/logout - 400 (1ms)
+📥 [2025-10-02T06:33:15.699Z] POST /api/v1/auth/login
+🔐 [AUTH] セッションログインリクエスト受信
+prisma:query SELECT "public"."staff"."id", "public"."staff"."tenant_id", "public"."staff"."email", "public"."staff"."name", "public"."staff"."role", "public"."staff"."department", "public"."staff"."is_active", "public"."staff"."created_at", "public"."staff"."updated_at", "public"."staff"."failed_login_count", "public"."staff"."last_login_at", "public"."staff"."locked_until", "public"."staff"."password_hash", "public"."staff"."deleted_at", "public"."staff"."deleted_by", "public"."staff"."is_deleted" FROM "public"."staff" WHERE ("public"."staff"."email" = $1 AND "public"."staff"."is_active" = $2 AND "public"."staff"."is_deleted" = $3) OFFSET $4
+[32m[2025-10-02T06:33:15.786Z] INFO[0m [hotel-common] [tenant:default]: セッション作成完了
+[32m[2025-10-02T06:33:15.786Z] INFO[0m [hotel-common] [tenant:default]: セッションログイン成功
+📤 [2025-10-02T06:33:15.786Z] POST /api/v1/auth/login - 200 (87ms)
+📥 [2025-10-02T06:33:16.313Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:33:16.319Z] GET /api/v1/tenants/default - 200 (6ms)
+📥 [2025-10-02T06:33:16.642Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:33:16.642Z] GET /api/v1/admin/summary - 401 (0ms)
+📥 [2025-10-02T06:33:16.653Z] GET /api/v1/admin/orders
+📥 [2025-10-02T06:33:16.654Z] GET /api/v1/devices/count
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+📥 [2025-10-02T06:33:16.659Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:33:16.659Z] GET /api/v1/admin/orders/monthly-count - 401 (0ms)
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+📤 [2025-10-02T06:33:16.675Z] GET /api/v1/admin/orders - 200 (22ms)
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:33:16.682Z] GET /api/v1/devices/count - 200 (28ms)
+📥 [2025-10-02T06:33:16.685Z] POST /api/v1/logs/auth
+認証ログ記録API エラー: ZodError: [
+  {
+    "validation": "uuid",
+    "code": "invalid_string",
+    "message": "テナントIDは有効なUUIDである必要があります",
+    "path": [
+      "tenantId"
+    ]
+  }
+]
+    at Object.get error [as error] (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:45:31)
+    at ZodObject.parse (/Users/kaneko/hotel-common/node_modules/zod/v3/types.cjs:120:22)
+    at /Users/kaneko/hotel-common/src/routes/api/v1/logs/auth.ts:34:48
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kaneko/hotel-common/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kaneko/hotel-common/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kaneko/hotel-common/node_modules/express/lib/router/index.js:280:10) {
+  issues: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      validation: 'uuid',
+      code: 'invalid_string',
+      message: 'テナントIDは有効なUUIDである必要があります',
+      path: [Array]
+    }
+  ]
+}
+📤 [2025-10-02T06:33:16.687Z] POST / - 400 (2ms)
+📥 [2025-10-02T06:33:16.923Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:33:16.924Z] GET /api/v1/admin/summary - 401 (1ms)
+📥 [2025-10-02T06:33:16.933Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:33:16.933Z] GET /api/v1/admin/orders/monthly-count - 401 (0ms)
+📥 [2025-10-02T06:33:21.555Z] GET /api/v1/tenants/default
+prisma:query SELECT "public"."Tenant"."id", "public"."Tenant"."name", "public"."Tenant"."domain", "public"."Tenant"."planType", "public"."Tenant"."status", "public"."Tenant"."contactEmail", "public"."Tenant"."createdAt", "public"."Tenant"."deleted_at", "public"."Tenant"."deleted_by", "public"."Tenant"."features", "public"."Tenant"."is_deleted", "public"."Tenant"."settings" FROM "public"."Tenant" WHERE ("public"."Tenant"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+📤 [2025-10-02T06:33:21.560Z] GET /api/v1/tenants/default - 200 (5ms)
+📥 [2025-10-02T06:33:21.651Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:33:21.651Z] GET /api/v1/admin/summary - 401 (0ms)
+📥 [2025-10-02T06:33:21.656Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:33:21.657Z] GET /api/v1/admin/orders/monthly-count - 401 (1ms)
+📥 [2025-10-02T06:33:21.657Z] GET /api/v1/devices/count
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 OFFSET $2) AS "sub"
+📥 [2025-10-02T06:33:21.659Z] GET /api/v1/admin/orders
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."device_rooms"."id" FROM "public"."device_rooms" WHERE ("public"."device_rooms"."tenantId" = $1 AND "public"."device_rooms"."isActive" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*), "public"."device_rooms"."deviceType" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."deviceType" OFFSET $2
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Order"."id" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) OFFSET $4) AS "sub"
+prisma:query SELECT "public"."Order"."id", "public"."Order"."tenantId", "public"."Order"."roomId", "public"."Order"."placeId", "public"."Order"."status", "public"."Order"."items", "public"."Order"."total", "public"."Order"."createdAt", "public"."Order"."updatedAt", "public"."Order"."paidAt", "public"."Order"."isDeleted", "public"."Order"."deletedAt", "public"."Order"."sessionId", "public"."Order"."uuid" FROM "public"."Order" WHERE ("public"."Order"."tenantId" = $1 AND "public"."Order"."isDeleted" = $2 AND "public"."Order"."status" = $3) ORDER BY "public"."Order"."createdAt" DESC LIMIT $4 OFFSET $5
+📤 [2025-10-02T06:33:21.663Z] GET /api/v1/admin/orders - 200 (4ms)
+prisma:query SELECT COUNT(*), "public"."device_rooms"."status" FROM "public"."device_rooms" WHERE "public"."device_rooms"."tenantId" = $1 GROUP BY "public"."device_rooms"."status" OFFSET $2
+📤 [2025-10-02T06:33:21.664Z] GET /api/v1/devices/count - 200 (7ms)
+📥 [2025-10-02T06:33:21.897Z] GET /api/v1/admin/summary
+📤 [2025-10-02T06:33:21.898Z] GET /api/v1/admin/summary - 401 (1ms)
+📥 [2025-10-02T06:33:21.899Z] GET /api/v1/admin/orders/monthly-count
+📤 [2025-10-02T06:33:21.900Z] GET /api/v1/admin/orders/monthly-count - 401 (1ms)

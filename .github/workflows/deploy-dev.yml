@@ -1,164 +1,19 @@
-name: 開発環境デプロイ
-
+name: Deploy (dokku dev)
 on:
   push:
-    branches: [develop]
-  workflow_dispatch:  # 手動実行も可能
-    inputs:
-      service:
-        description: 'デプロイするサービス (all, hotel-saas, hotel-common, hotel-pms, hotel-member)'
-        required: false
-        default: 'all'
-      version:
-        description: 'デプロイするバージョン (タグ名またはブランチ名)'
-        required: false
-        default: 'develop'
-
-env:
-  SERVER_IP: 163.44.117.60
-  DEPLOY_USER: deploy
-
+    branches: [ "main" ]  # 開発用ブランチがあるなら変更
 jobs:
-  deploy-saas:
-    name: hotel-saas デプロイ
+  deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
-    
     steps:
-      - name: リポジトリのチェックアウト
-        uses: actions/checkout@v3
-        
-      - name: SSH経由でデプロイ実行
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ env.SERVER_IP }}
-          username: ${{ env.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            set -e
-            
-            # hotel-saasデプロイ
-            echo "hotel-saasをデプロイしています..."
-            
-            # バージョン指定デプロイ
-            VERSION="${{ github.event.inputs.version || 'main' }}"
-            echo "デプロイバージョン: $VERSION"
-            
-            # リポジトリクローンまたは更新
-            if [ ! -d /opt/omotenasuai/hotel-saas/.git ]; then
-              echo "hotel-saasリポジトリをクローンしています..."
-              rm -rf /opt/omotenasuai/hotel-saas
-              git clone git@github.com:watchout/hotel-saas.git /opt/omotenasuai/hotel-saas
-            else
-              echo "hotel-saasリポジトリを更新しています..."
-              cd /opt/omotenasuai/hotel-saas
-              git fetch --all
-            fi
-            
-            cd /opt/omotenasuai/hotel-saas
-            git checkout $VERSION
-            if [[ "$VERSION" == *"develop"* ]] || [[ "$VERSION" == *"main"* ]]; then
-              git pull origin $VERSION
-            fi
-            
-            # 依存関係インストール・ビルド
-            cd /opt/omotenasuai/hotel-saas
-            npm install --legacy-peer-deps
-            npm run build
-            
-            # 環境変数設定
-            if [ ! -f .env ]; then
-              cp .env.example .env
-              echo "DATABASE_URL=postgresql://hotel_app:xwJM6BoQPtiSSNVU7cgzI6L6qg6ncyJ9@localhost:5432/hotel_unified_db" >> .env
-              echo "JWT_SECRET=OSQAiP2pbm3kwyKBNnP7ZkoKOgg0P/aGb7sU8c9XSHMMIZaTcBriWxexQA2gweMDgFLFoRs5+caCLbT0jnxW7g==" >> .env
-              echo "PORT=3100" >> .env
-              echo "NODE_ENV=development" >> .env
-              echo "BASE_URL=https://dev-app.omotenasuai.com" >> .env
-            fi
-            
-            # PM2でサービス起動/再起動
-            pm2 start ecosystem.config.js --only hotel-saas --env development || pm2 restart hotel-saas
-            
-            # ヘルスチェック
-            sleep 5
-            curl -f http://localhost:3100/health || exit 1
-            
-            echo "hotel-saasデプロイ完了"
-
-  deploy-common:
-    name: hotel-common デプロイ
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
-    
-    steps:
-      - name: リポジトリのチェックアウト
-        uses: actions/checkout@v3
-        
-      - name: SSH経由でデプロイ実行
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ env.SERVER_IP }}
-          username: ${{ env.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            set -e
-            
-            # hotel-commonデプロイ
-            echo "hotel-commonをデプロイしています..."
-            
-            # バージョン指定デプロイ
-            VERSION="${{ github.event.inputs.version || 'main' }}"
-            echo "デプロイバージョン: $VERSION"
-            
-            # リポジトリクローンまたは更新
-            if [ ! -d /opt/omotenasuai/hotel-common/.git ]; then
-              echo "hotel-commonリポジトリをクローンしています..."
-              rm -rf /opt/omotenasuai/hotel-common
-              git clone git@github.com:watchout/hotel-common.git /opt/omotenasuai/hotel-common
-            else
-              echo "hotel-commonリポジトリを更新しています..."
-              cd /opt/omotenasuai/hotel-common
-              git fetch --all
-            fi
-            
-            cd /opt/omotenasuai/hotel-common
-            git checkout $VERSION
-            if [[ "$VERSION" == *"develop"* ]] || [[ "$VERSION" == *"main"* ]]; then
-              git pull origin $VERSION
-            fi
-            
-            # 依存関係インストール・ビルド
-            npm install --legacy-peer-deps
-            npm run build
-            
-            # Prismaマイグレーション実行
-            npx prisma migrate deploy
-            
-            # PM2でサービス起動/再起動
-            pm2 start ecosystem.config.js --only hotel-common --env development || pm2 restart hotel-common
-            
-            # ヘルスチェック
-            sleep 5
-            curl -f http://localhost:3400/health || exit 1
-            
-            echo "hotel-commonデプロイ完了"
-
-  notify:
-    name: デプロイ通知
-    runs-on: ubuntu-latest
-    needs: [deploy-saas, deploy-common]
-    if: false  # Slack通知を一時的に無効化
-    
-    steps:
-      - name: Slack通知
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: |
-            開発環境デプロイが${{ job.status == 'success' && '成功' || '失敗' }}しました
-            - hotel-saas: ${{ needs.deploy-saas.result }}
-            - hotel-common: ${{ needs.deploy-common.result }}
+      - uses: actions/checkout@v4
+      - name: Add dokku remote
+        run: git remote add dokku dokku@${{ secrets.DOKKU_DEV_HOST }}:${{ secrets.DOKKU_DEV_APP }}
+      - name: Push to dokku
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
+          GIT_SSH_COMMAND: 'ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519'
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DOKKU_DEV_DEPLOY_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          git push dokku HEAD:refs/heads/main

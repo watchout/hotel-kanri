@@ -1,0 +1,37 @@
+{
+  "taskId": "BATCH-STAFF",
+  "ssotPath": "docs/03_ssot/00_foundation/SSOT_SAAS_STAFF_MANAGEMENT.md",
+  "classification": {
+    "success": true,
+    "taskType": "fullstack",
+    "agents": {
+      "backend": "claude-code",
+      "frontend": "claude-code",
+      "primary": "claude-code"
+    },
+    "estimatedHours": 47,
+    "priority": "P3"
+  },
+  "audit": {
+    "success": false,
+    "initialScore": 15,
+    "finalScore": 20,
+    "ssotScore": 0,
+    "passedBySSOT": false,
+    "iterations": 3,
+    "cost": {
+      "inputTokens": 23024,
+      "outputTokens": 2051,
+      "totalCostUSD": 0.07807,
+      "totalCostJPY": 11.7105,
+      "byModel": {
+        "gpt-4o": {
+          "calls": 4,
+          "costUSD": 0.07807
+        }
+      }
+    }
+  },
+  "generatedAt": "2026-01-19T22:28:16.068Z",
+  "promptPath": "/Users/kaneko/hotel-kanri/prompts/generated/BATCH-STAFF-ssot_saas_staff_management.md"
+}
