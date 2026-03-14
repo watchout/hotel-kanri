@@ -13,7 +13,8 @@ const path = require('path');
 
 // パス設定 - CI環境でも動作するように __dirname ベースに修正
 const HOTEL_KANRI = path.resolve(__dirname, '../..');
-const SSOT_DIR = path.join(HOTEL_KANRI, 'docs/03_ssot');
+// Page Registry は legacy に移動済み（アーカイブ）
+const SSOT_DIR = path.join(HOTEL_KANRI, 'docs/03_ssot_legacy');
 const PAGE_REGISTRY_PATH = path.join(SSOT_DIR, '00_foundation/SSOT_GUEST_PAGE_REGISTRY.md');
 
 /**
