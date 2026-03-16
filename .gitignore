@@ -1,7 +1,16 @@
 node_modules
 
+# 環境変数ファイル（秘密情報）
+.env
+.env.*
+!.env.example
+!.env.mcp.example
+
 # MCP環境変数（秘密情報）
 .env.mcp
+
+# Claude Code secrets
+.claude/settings.local.json
 
 # Nuxt generated files
 .nuxt/

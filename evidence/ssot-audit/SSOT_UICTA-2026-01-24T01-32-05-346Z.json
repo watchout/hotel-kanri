@@ -1,0 +1,22 @@
+{
+  "ssotName": "SSOT_UICTA",
+  "ssotPath": "/Users/kaneko/hotel-kanri/docs/03_ssot/00_foundation/SSOT_UICTA.md",
+  "timestamp": "2026-01-24T01:32:04.781Z",
+  "audits": {
+    "technical": {
+      "error": "404 The model `gemini-2.0-flash` does not exist or you do not have access to it.",
+      "score": 0
+    },
+    "implementability": {
+      "error": "404 The model `gemini-2.0-flash` does not exist or you do not have access to it.",
+      "score": 0
+    }
+  },
+  "totalScore": 0,
+  "totalCost": 0,
+  "issues": {
+    "critical": [],
+    "warning": [],
+    "info": []
+  }
+}
