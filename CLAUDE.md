@@ -142,6 +142,47 @@ hotel-common-rebuild/           # API基盤
 
 ---
 
+## 📋 タスク管理（GitHub Projects V2）
+
+**Plane から移行済み（2026-02-07）**
+
+| 項目 | 値 |
+|:-----|:---|
+| プロジェクト | Hotel System Development (#3) |
+| URL | https://github.com/users/watchout/projects/3 |
+| カスタムフィールド | DEV Number, Phase, SSOT, Status |
+
+### タスク操作コマンド
+
+```bash
+# 次のタスク取得
+cd /Users/kaneko/hotel-kanri/scripts/github
+node get-next-task.cjs
+
+# タスク完了（Done）
+node update-issue-done.cjs DEV-0181
+
+# 親タスク自動完了チェック
+node check-parent-completion.cjs --dry-run
+```
+
+### プログラムから使用
+
+```javascript
+const ghApi = require('./scripts/github/lib/github-projects-client.cjs');
+
+const issues = ghApi.listIssues('open');
+const issue = ghApi.findByDevNumber('DEV-0181');
+ghApi.closeIssue(issueNumber);
+ghApi.setItemFields(itemId, { 'DEV Number': 'DEV-0181', Phase: 'Phase 2' });
+```
+
+### API クライアント
+
+`/scripts/github/lib/github-projects-client.cjs` - GitHub GraphQL/REST API 標準ライブラリ
+
+---
+
 ## 📖 詳細ドキュメント
 
 詳細な設定は `.claude/README.md` を参照してください。

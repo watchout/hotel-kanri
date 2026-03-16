@@ -133,9 +133,18 @@ async function getTaskInfo(taskId) {
 
 async function getSubTasks(taskId) {
   // 子タスクを取得（例: DEV-0170 → DEV-0171, DEV-0172, ...）
+  const parentDevNo = parseInt(taskId.replace('DEV-', ''));
+  
+  // 親タスクは末尾が0の場合のみ子タスクを持つ
+  // 例: DEV-0170 → 子タスクあり（0171-0179）
+  // 例: DEV-0174 → 子タスクなし（自身を実行）
+  if (parentDevNo % 10 !== 0) {
+    // 末尾が0でない → 子タスクなし
+    return [];
+  }
+  
   const allIssuesResult = await listAllIssues();
   const allIssues = allIssuesResult.results || allIssuesResult;
-  const parentDevNo = parseInt(taskId.replace('DEV-', ''));
   
   // 子タスクをフィルタ（DEV番号の範囲で判定: DEV-0170 → 0171-0179）
   const subTasks = allIssues.filter(i => {
@@ -147,15 +156,14 @@ async function getSubTasks(taskId) {
   return subTasks;
 }
 
-async function updateTaskState(issueId, state) {
-  // issueId: Plane API用のUUID（subTask.id）
+async function updateTaskState(taskId, state) {
   const stateIds = {
     'Backlog': '2564ad4a-abd6-4b05-9af0-2c3dcd28e2be',
     'In Progress': 'c576eed5-315c-44b9-a3cb-db67d73423b7',
     'Done': '86937979-4727-4ec9-81be-585f7aae981d'
   };
   
-  await planeApi.updateIssue(issueId, { state: stateIds[state] });
+  await planeApi.updateIssue(taskId, { state: stateIds[state] });
 }
 
 // ===== GPT呼び出し（監査用） =====
@@ -184,7 +192,7 @@ async function callClaudeCode(prompt, workingDir = null) {
       const result = execSync(`cat "${tempFile}" | claude --print --dangerously-skip-permissions`, {
         encoding: 'utf8',
         maxBuffer: 50 * 1024 * 1024,
-        timeout: 600000, // 10分
+        timeout: 900000, // 15分（Claude Codeの実装時間を考慮）
         cwd
       });
       fs.unlinkSync(tempFile);
@@ -227,7 +235,7 @@ ${task.description || 'なし'}
 `;
 
   try {
-    const result = await callClaudeCode(prompt); // 作業ディレクトリはデフォルト（hotel-kanri）
+    const result = await callClaudeCode(prompt, 'ssot-generation');
     
     // ファイル名生成
     const taskMatch = task.name.match(/\[DEV-\d+\].*?\[COM-\d+\]\s*(.+)/);
@@ -280,16 +288,35 @@ async function multiLLMAudit(ssotPath, logger) {
   
   logger.log('info', `Gemini: ${geminiResult.score}点, GPT-4o: ${gpt4oResult.score}点`);
   
-  // AND合成: 両方Passした項目のみPass
-  const andScore = Math.min(geminiResult.score, gpt4oResult.score);
+  // エラーチェック: 片方がエラー（0点 + error）の場合、もう片方のみ使用
+  const geminiHasError = geminiResult.error || geminiResult.score === 0;
+  const gpt4oHasError = gpt4oResult.error || gpt4oResult.score === 0;
+  
+  let andScore;
+  if (geminiHasError && gpt4oHasError) {
+    // 両方エラーの場合は0点
+    logger.log('error', '両モデルでエラー発生、監査失敗');
+    andScore = 0;
+  } else if (geminiHasError) {
+    // Geminiのみエラー → GPT-4oのスコアを使用
+    logger.log('warning', `Geminiエラー、GPT-4oのみで判定: ${gpt4oResult.score}点`);
+    andScore = gpt4oResult.score;
+  } else if (gpt4oHasError) {
+    // GPT-4oのみエラー → Geminiのスコアを使用
+    logger.log('warning', `GPT-4oエラー、Geminiのみで判定: ${geminiResult.score}点`);
+    andScore = geminiResult.score;
+  } else {
+    // 両方正常 → AND合成（厳しい方を採用）
+    andScore = Math.min(geminiResult.score, gpt4oResult.score);
+  }
   
   // 指摘事項を統合
   const combinedOutput = `
-## Gemini監査結果（${geminiResult.score}点）
-${geminiResult.output || ''}
+## Gemini監査結果（${geminiResult.score}点）${geminiResult.error ? ' [ERROR]' : ''}
+${geminiResult.output || geminiResult.error || ''}
 
-## GPT-4o監査結果（${gpt4oResult.score}点）
-${gpt4oResult.output || ''}
+## GPT-4o監査結果（${gpt4oResult.score}点）${gpt4oResult.error ? ' [ERROR]' : ''}
+${gpt4oResult.output || gpt4oResult.error || ''}
 
 ## AND合成スコア: ${andScore}点
 `;
@@ -300,7 +327,9 @@ ${gpt4oResult.output || ''}
     score: andScore,
     output: combinedOutput,
     geminiScore: geminiResult.score,
-    gpt4oScore: gpt4oResult.score
+    gpt4oScore: gpt4oResult.score,
+    geminiError: geminiResult.error,
+    gpt4oError: gpt4oResult.error
   };
 }
 
@@ -510,8 +539,8 @@ async function executeSubTask(subTask, logger, dryRun = false) {
   }
 
   try {
-    // 1. タスクをIn Progressに（subTask.idはPlane APIのUUID）
-    await updateTaskState(subTask.id, 'In Progress');
+    // 1. タスクをIn Progressに
+    await updateTaskState(taskId, 'In Progress');
     logger.log('info', 'ステータス: In Progress');
 
     // 2. SSOT確認（未存在なら生成）
@@ -530,13 +559,13 @@ async function executeSubTask(subTask, logger, dryRun = false) {
     
     // 4. スコア不足なら修正（95点以上が合格）
     let retries = 0;
-    while (auditResult.score < CONFIG.auditPassScore && retries < CONFIG.maxRetries) {
-      logger.log('warning', `スコア${auditResult.score}点 < ${CONFIG.auditPassScore}点、修正を試行（${retries + 1}/${CONFIG.maxRetries}）`);
+    while (auditResult.score < CONFIG.ssotAuditPassScore && retries < CONFIG.maxRetries) {
+      logger.log('warning', `スコア${auditResult.score}点 < ${CONFIG.ssotAuditPassScore}点、修正を試行（${retries + 1}/${CONFIG.maxRetries}）`);
       
       // Claude Codeで修正
       const fixPrompt = `
 以下のSSOT監査で指摘された問題を修正してください。
-目標スコア: ${CONFIG.auditPassScore}点以上
+目標スコア: ${CONFIG.ssotAuditPassScore}点以上
 
 ## 監査結果
 ${auditResult.output}
@@ -552,19 +581,19 @@ ${ssotPath}
 
 ファイルを直接編集して修正してください。
 `;
-      await callClaudeCode(fixPrompt); // 作業ディレクトリはデフォルト
+      await callClaudeCode(fixPrompt, 'ssot-fix');
       
       // 再監査（マルチLLM）
       auditResult = await multiLLMAudit(ssotPath, logger);
       retries++;
     }
     
-    if (auditResult.score < CONFIG.auditPassScore) {
-      logger.log('error', `監査スコア不足（${auditResult.score}点 < ${CONFIG.auditPassScore}点）、人間の介入が必要`);
+    if (auditResult.score < CONFIG.ssotAuditPassScore) {
+      logger.log('error', `監査スコア不足（${auditResult.score}点 < ${CONFIG.ssotAuditPassScore}点）、人間の介入が必要`);
       return { success: false, reason: 'audit_failed', score: auditResult.score };
     }
     
-    logger.log('success', `SSOT監査合格: ${auditResult.score}点`)
+    logger.log('success', `SSOT監査合格: ${auditResult.score}点（基準: ${CONFIG.ssotAuditPassScore}点）`)
 
     // 5. プロンプト生成
     logger.log('step', 'プロンプト生成');
@@ -625,7 +654,7 @@ ${promptResult}
 実装完了後、変更したファイルを報告してください。
 `;
     
-    await callClaudeCode(implementPrompt); // 作業ディレクトリはデフォルト
+    await callClaudeCode(implementPrompt, 'implementation');
     logger.log('info', '実装完了');
 
     // 8. テスト
@@ -658,8 +687,8 @@ ${testResult.error}
     // 8. PR作成
     const prResult = await createPR(taskId, subTask.name, logger);
 
-    // 9. タスクをDoneに（subTask.idはPlane APIのUUID）
-    await updateTaskState(subTask.id, 'Done');
+    // 9. タスクをDoneに
+    await updateTaskState(taskId, 'Done');
     logger.log('success', `${taskId} 完了!`);
 
     return { success: true, pr: prResult.url };
@@ -748,10 +777,10 @@ async function main() {
       }
     }
 
-    // 全子タスク完了なら親もDone（parentTask.idはPlane APIのUUID）
+    // 全子タスク完了なら親もDone
     const allSuccess = results.every(r => r.success);
     if (allSuccess && !dryRun) {
-      await updateTaskState(parentTask.id, 'Done');
+      await updateTaskState(taskId, 'Done');
       logger.log('success', `親タスク ${taskId} 完了!`);
     }
 

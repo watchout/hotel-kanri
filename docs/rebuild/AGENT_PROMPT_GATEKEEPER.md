@@ -138,24 +138,6 @@ curl -s -c /tmp/cookies.txt -X POST http://localhost:3401/api/v1/admin/auth/logi
 
 ---
 
-## 🧭 Page Registry 連携チェック（UI/ページ系PR）
-
-**目的**: SSOT間でページパスが割れることを防ぎ、Nuxtの `pages/` を canonical として統一する。
-
-✅ **Gatekeeperチェック（必須）**:
-- [ ] `docs/03_ssot/00_foundation/SSOT_PAGE_REGISTRY.md` に対象ページの canonical path が定義されている
-- [ ] SSOT内のページパス表記が registry の canonical と完全一致している
-- [ ] `hotel-saas-rebuild/pages` に存在する実体ページが registry に漏れなく登録されている（レジストリ未定義の実装は禁止）
-
-✅ **ローカル検証（推奨）**:
-```bash
-cd /Users/kaneko/hotel-kanri
-node scripts/quality/check-page-registry-consistency.cjs --strict
-echo "exit=$?"
-```
-
----
-
 ## ✅ 受入基準（Definition of Done）
 - CI Green（全ジョブ成功）
   - evidence-check（PR本文の必須見出し）

@@ -1,0 +1,6 @@
+date=2026-01-11T23:38:55Z
+branch=chore/dev-0154-evidence
+head=4f68f47b20e3a1b6f9797fe098e12133d150abc4
+remote_origin=git@github.com:watchout/hotel-kanri.git
+worktree_status_porcelain:
+?? evidence/

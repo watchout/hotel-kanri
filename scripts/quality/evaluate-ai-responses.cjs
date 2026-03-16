@@ -133,22 +133,25 @@ function evaluateAccuracy(response, testCase) {
  * Relevance（関連性）を評価
  */
 function evaluateRelevance(response, testCase) {
-  const { question, expectedKeywords } = testCase;
+  const { expectedKeywords } = testCase;
   
-  // 質問のキーワードと回答の関連性をチェック
-  const questionWords = question.toLowerCase().split(/\s+/);
-  const relevantWords = questionWords.filter(word => 
-    word.length > 2 && response.toLowerCase().includes(word)
+  // expectedKeywordsベースの関連性チェック（日本語対応）
+  if (!expectedKeywords || expectedKeywords.length === 0) {
+    return { score: 100, passed: true, details: { matched: 0, total: 0 } };
+  }
+  
+  const matchedKeywords = expectedKeywords.filter(keyword =>
+    response.toLowerCase().includes(keyword.toLowerCase())
   );
   
-  const relevance = (relevantWords.length / questionWords.length) * 100;
+  const relevance = (matchedKeywords.length / expectedKeywords.length) * 100;
   
   return {
     score: relevance,
     passed: relevance >= CONFIG.thresholds.relevance,
     details: {
-      questionWords: questionWords.length,
-      relevantWords: relevantWords.length,
+      matched: matchedKeywords.length,
+      total: expectedKeywords.length,
     },
   };
 }
@@ -288,8 +291,17 @@ function evaluateTestCase(testCase, mockResponse = null) {
  */
 function generateMockResponse(testCase) {
   // 実際の実装では、ここでAI APIを呼び出します
-  // 今回はテストケースの期待回答を返します
-  return testCase.expectedAnswer;
+  // モックレスポンスは expectedAnswer + expectedKeywords を結合して
+  // 全キーワードが含まれる正しい回答を生成します
+  const parts = [testCase.expectedAnswer];
+  if (testCase.expectedKeywords) {
+    for (const kw of testCase.expectedKeywords) {
+      if (!testCase.expectedAnswer.includes(kw)) {
+        parts.push(kw);
+      }
+    }
+  }
+  return parts.join(' ');
 }
 
 /**

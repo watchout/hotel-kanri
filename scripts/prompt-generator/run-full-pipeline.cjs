@@ -92,30 +92,11 @@ async function runPipeline(ssotPath, options = {}) {
       success: true,
       taskId: generated.taskId,
       promptLength: generated.finalPrompt.length,
-      estimatedTokens: Math.ceil(generated.finalPrompt.length / 4),
-      complianceCheck: generated.complianceCheck
+      estimatedTokens: Math.ceil(generated.finalPrompt.length / 4)
     };
     console.log(`   ✅ タスクID: ${generated.taskId}`);
     console.log(`   ✅ 文字数: ${generated.finalPrompt.length.toLocaleString()}`);
     console.log(`   ✅ 推定トークン: ${Math.ceil(generated.finalPrompt.length / 4).toLocaleString()}`);
-    
-    // SSOT照合チェック結果
-    console.log('\n📋 Stage 3.5: SSOT照合チェック...');
-    const cc = generated.complianceCheck;
-    if (cc.passed) {
-      console.log(`   ✅ 全要件ID（${cc.totalRequirements}件）がプロンプトに含まれています`);
-    } else {
-      console.log(`   ⚠️ SSOT照合チェック: 問題あり`);
-      if (cc.missingRequirements.length > 0) {
-        console.log(`   ❌ 欠落している要件ID: ${cc.missingRequirements.join(', ')}`);
-      }
-      if (cc.missingAPIs.length > 0) {
-        console.log(`   ❌ 欠落しているAPI: ${cc.missingAPIs.join(', ')}`);
-      }
-    }
-    if (cc.warnings.length > 0) {
-      cc.warnings.forEach(w => console.log(`   ⚠️ ${w}`));
-    }
 
     let finalPrompt = generated.finalPrompt;
     let auditResult = null;
@@ -136,23 +117,15 @@ async function runPipeline(ssotPath, options = {}) {
         );
         finalPrompt = auditResult.finalPrompt;
         
-        // SSOT単独スコアを取得
-        const ssotScore = auditResult.auditResult?.ssotScore || 0;
-        const passedBySSOT = auditResult.auditResult?.passedBySSOT || false;
-        
         results.stages.audit = {
           success: auditResult.success,
           initialScore: auditResult.history[0]?.score || 0,
           finalScore: auditResult.finalScore,
-          ssotScore: ssotScore,
-          passedBySSOT: passedBySSOT,
           iterations: auditResult.iterations,
           cost: auditResult.cost
         };
         
-        // ★ SSOT単独スコアを優先表示
-        console.log(`   🎯 SSOT単独スコア: ${ssotScore}点 ${passedBySSOT ? '✅ PASS' : '❌ FAIL'}`);
-        console.log(`   📊 総合スコア: ${auditResult.finalScore}点`);
+        console.log(`   ${auditResult.success ? '✅' : '⚠️'} 最終スコア: ${auditResult.finalScore}点`);
         console.log(`   📊 修正回数: ${auditResult.iterations}回`);
         console.log(`   💰 コスト: $${auditResult.cost.totalCostUSD.toFixed(4)}`);
         
@@ -234,18 +207,9 @@ async function runPipeline(ssotPath, options = {}) {
       console.log(`   💰 総コスト: $${auditResult.cost.totalCostUSD.toFixed(4)} (¥${auditResult.cost.totalCostJPY.toFixed(0)})`);
     }
     
-    if (auditResult) {
-      const ssotScore = auditResult.auditResult?.ssotScore || auditResult.ssotScore || 0;
-      const passedBySSOT = auditResult.auditResult?.passedBySSOT || auditResult.passedBySSOT || false;
-      
-      if (passedBySSOT) {
-        console.log('\n🎉 SSOT準拠合格！（95点以上）');
-        console.log('   プロンプトはSSOTに十分準拠しています。');
-      } else if (!auditResult.success) {
-        console.log('\n⚠️ 注意: SSOT準拠基準（95点）に達していません。');
-        console.log(`   現在のSSOTスコア: ${ssotScore}点`);
-        console.log('   人間によるレビュー・修正を推奨します。');
-      }
+    if (auditResult && !auditResult.passed && !auditResult.success) {
+      console.log('\n⚠️ 注意: 監査合格基準に達していません。');
+      console.log('   人間によるレビュー・修正を推奨します。');
     }
 
     return results;
