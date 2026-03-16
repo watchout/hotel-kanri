@@ -1,0 +1,111 @@
+name: CI - Essential Gates (Option A)
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  # ==========================================
+  # Job 1: ops-policy-lint (必須)
+  # ==========================================
+  ops-policy-lint:
+    name: ops-policy-lint (必須)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm ci || npm install
+      
+      - name: Validate OPS policy
+        run: node ops/scripts/validate-policy.js
+
+  # ==========================================
+  # Job 2: ssot-compliance (必須)
+  # ==========================================
+  ssot-compliance:
+    name: ssot-compliance (必須)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+      
+      - name: SSOT参照・要件IDチェック
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/check-ssot-citations.cjs
+      
+      - name: チェック成功
+        if: success()
+        run: |
+          echo "✅ SSOT準拠チェックに合格しました！"
+      
+      - name: チェック失敗
+        if: failure()
+        run: |
+          echo "❌ SSOT準拠チェックに失敗しました。"
+          echo "PRテンプレートを確認してください"
+          exit 1
+
+  # ==========================================
+  # Job 3: security-scan (必須)
+  # ==========================================
+  security-scan:
+    name: security-scan (必須)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm ci || npm install
+      
+      - name: Security audit
+        run: |
+          npm audit --production --audit-level=high || {
+            echo "⚠️ 高リスク脆弱性が検出されました"
+            npm audit --production
+            exit 1
+          }
+
+  # ==========================================
+  # 最終ゲート
+  # ==========================================
+  essential-gate:
+    name: Essential Gate - All Required Checks Passed
+    runs-on: ubuntu-latest
+    needs:
+      - ops-policy-lint
+      - ssot-compliance
+      - security-scan
+    steps:
+      - run: |
+          echo "✅ 全ての必須チェック(Option A)が合格しました"
+          echo "🎉 PR Ready for Review"
