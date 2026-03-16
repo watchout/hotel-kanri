@@ -21,6 +21,17 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/auto-dev/setup-cloud-env.sh"
+          }
+        ]
+      }
     ]
   }
 }

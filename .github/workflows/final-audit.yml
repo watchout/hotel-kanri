@@ -7,14 +7,14 @@ on:
 
 jobs:
   # ============================================================
-  # Guard: CI must have passed, not on main branch
+  # Guard: CI must have passed, must be from a PR
   # ============================================================
   guard:
-    name: Guard — CI passed & not main branch
+    name: Guard — CI passed & from PR
     runs-on: ubuntu-latest
     if: |
       github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch != 'main'
+      github.event.workflow_run.event == 'pull_request'
     outputs:
       pr_number: ${{ steps.find_pr.outputs.pr_number }}
       skip: ${{ steps.check_hold.outputs.skip }}

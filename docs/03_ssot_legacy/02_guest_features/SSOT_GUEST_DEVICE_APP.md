@@ -56,8 +56,7 @@ hotel-saasの客室UIを**Capacitor WebViewアプリ**化し、Google TV / Andro
 [hotel-saas Pages (Nuxt 3)]
   ├─ /tv/concierge.vue (AIコンシェルジュ)
   ├─ /tv/settings.vue (設定画面)
-  ├─ /order/index.vue (注文メニュー)
-  ├─ /menu/index.vue (メニュー閲覧)
+  ├─ pages/menu/index.vue (URL: /menu, 注文メニュー/メニュー閲覧)
   └─ / (ホーム画面)
 [hotel-saas Composables]
   ├─ useWebView() (WebView検出)
