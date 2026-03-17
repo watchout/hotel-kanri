@@ -42,3 +42,10 @@ docs/audits/
 .framework/
 *.local
 *.tmp
+
+# エージェント作業ファイル（絶対にコミット禁止）
+.claude/
+.cursor/
+.framework/
+*.local
+*.tmp
