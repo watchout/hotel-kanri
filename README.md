@@ -58,6 +58,30 @@ hotel-kanri/
 └── README.md                 # 本ファイル
 ```
 
+## ⚠️ 実装禁止
+
+**hotel-kanriは管理リポジトリです。このリポジトリでは実装を行わないでください。**
+
+### 許可されている作業
+- ✅ SSOT（Single Source of Truth）の作成・更新
+- ✅ ドキュメント管理（設計・ルール・標準）
+- ✅ Issue管理（プロジェクト全体の課題追跡）
+- ✅ GitHub Actions・CI/CD管理
+- ✅ 設定ファイル・テンプレート管理
+
+### 禁止されている作業
+- ❌ データベース実装（Prismaスキーマ編集は hotel-common-rebuild のみ）
+- ❌ API実装（エンドポイント追加）
+- ❌ UI実装（ページ・コンポーネント開発）
+- ❌ ビジネスロジック実装
+
+### 実装先
+実装は以下のリポジトリで行ってください：
+- **DB/API**: hotel-common-rebuild（共通API・DB層）
+- **UI/顧客体験**: hotel-saas-rebuild（客室UI・AIコンシェルジュ）
+- **UI/予約・フロント**: hotel-pms（PMS管理画面）
+- **UI/会員管理**: hotel-member（会員CRM）
+
 ## 主要ドキュメント
 
 ### システム設計
