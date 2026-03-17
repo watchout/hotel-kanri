@@ -21,3 +21,10 @@ node_modules
 .framework/feedback/
 docs/audits/
 .github/workflows/eval-results.json
+
+# エージェント作業ファイル（絶対にコミット禁止）
+.claude/
+.cursor/
+.framework/
+*.local
+*.tmp
