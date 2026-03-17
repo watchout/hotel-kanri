@@ -32,6 +32,8 @@ model Tenant {
   billings          Billing[]
   systemSettings    SystemSetting[]
   membershipRanks   MembershipRank[]
+  handoffs          StaffHandoff[]
+  checklists        HandoffChecklist[] @relation("Checklists")
 
   @@map("tenants")
 }
@@ -487,4 +489,163 @@ model SystemEvent {
   @@index([eventType])
   @@index([entityType, entityId])
   @@map("system_events")
+}
+
+// ===== F-020: ハンドオフ（スタッフ引継） =====
+
+// ハンドオフ情報
+model StaffHandoff {
+  id                String             @id @default(uuid())
+  tenantId          String
+  handoffNumber     String             // ハンドオフID（例: HO-20260317-001）
+  fromUserId        String             // 引き継ぎ元スタッフ
+  toUserId          String             // 引き継ぎ先スタッフ
+  roomId            String?            // 対象客室（null = 全体/部門単位）
+  handoffType       HandoffType        // ハンドオフの種別
+  status            HandoffStatus      @default(PENDING)
+  priority          Int                @default(3) // 1=高, 3=中, 5=低
+  description       String?            // ハンドオフ内容の説明
+  estimatedDuration Int?               // 推定時間（分）
+  actualDuration    Int?               // 実際の所要時間（分）
+  startedAt         DateTime?          // ハンドオフ開始時刻
+  completedAt       DateTime?          // ハンドオフ完了時刻
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  tasks             HandoffTask[]
+  acknowledgments   HandoffAcknowledgment[]
+  
+  @@unique([tenantId, handoffNumber])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@index([fromUserId, toUserId])
+  @@map("staff_handoffs")
+}
+
+enum HandoffType {
+  SHIFT_CHANGE         // シフト交代（日勤→夜勤など）
+  GUEST_TRANSFER       // 客室管理の引継
+  TASK_DELEGATION      // タスク委譲
+  EMERGENCY_TAKEOVER   // 緊急引継
+  END_OF_SHIFT         // シフト終了時の全体引継
+}
+
+enum HandoffStatus {
+  PENDING              // 未開始
+  IN_PROGRESS          // 進行中
+  COMPLETED            // 完了
+  ACKNOWLEDGED         // 確認完了
+  CANCELED             // キャンセル
+}
+
+// ハンドオフに含まれるタスク
+model HandoffTask {
+  id                String             @id @default(uuid())
+  handoffId         String
+  taskNumber        String             // タスク番号（例: T-001）
+  title             String             // タスク名
+  description       String?            // 詳細説明
+  category          TaskCategory       // タスクカテゴリ
+  priority          Int                @default(3) // 1=高, 3=中, 5=低
+  status            TaskStatus         @default(PENDING)
+  dueDate           DateTime?          // 期限
+  completedAt       DateTime?          // 完了時刻
+  notes             String?            // メモ・指示内容
+  attachmentUrls    Json?              // 関連ファイル/画像URL
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  handoff           StaffHandoff       @relation(fields: [handoffId], references: [id], onDelete: Cascade)
+  
+  @@unique([handoffId, taskNumber])
+  @@index([handoffId])
+  @@index([category])
+  @@index([status])
+  @@map("handoff_tasks")
+}
+
+enum TaskCategory {
+  GUEST_INFO         // ゲスト情報・対応
+  ROOM_STATUS        // 客室状況
+  MAINTENANCE        // メンテナンス・修繕
+  CLEANING           // 清掃状況
+  BILLING            // 請求・決済
+  EMERGENCY          // 緊急対応
+  DOCUMENTATION      // 書類・記録
+  OTHER              // その他
+}
+
+enum TaskStatus {
+  PENDING            // 未着手
+  IN_PROGRESS        // 進行中
+  PAUSED             // 一時中断
+  COMPLETED          // 完了
+  DELEGATED          // 他者に委譲
+  CANCELED           // キャンセル
+}
+
+// ハンドオフ確認（チェックイン・チェックアウト）
+model HandoffAcknowledgment {
+  id                String             @id @default(uuid())
+  handoffId         String
+  acknowledgedById   String             // 確認者（通常は toUserId と同じ）
+  acknowledgeType   AcknowledgeType
+  status            AcknowledgeStatus
+  checkedItems      Int                @default(0) // チェック済みタスク数
+  totalItems        Int                @default(0) // 全タスク数
+  comments          String?            // 確認時のコメント
+  signatureUrl      String?            // 署名画像URL
+  acknowledgedAt    DateTime           @default(now())
+  createdAt         DateTime           @default(now())
+  
+  // リレーション
+  handoff           StaffHandoff       @relation(fields: [handoffId], references: [id], onDelete: Cascade)
+  
+  @@index([handoffId])
+  @@index([acknowledgeType])
+  @@map("handoff_acknowledgments")
+}
+
+enum AcknowledgeType {
+  CHECK_IN           // チェックイン時の確認
+  CHECK_OUT          // チェックアウト時の確認
+  PARTIAL_CONFIRM    // 部分確認
+}
+
+enum AcknowledgeStatus {
+  PENDING            // 未確認
+  CONFIRMED          // 確認済み
+  NEEDS_REVISION     // 修正必要
+  DISPUTED           // 異議あり
+}
+
+// ハンドオフチェックリスト（テンプレート）
+model HandoffChecklist {
+  id                String             @id @default(uuid())
+  tenantId          String
+  name              String             // チェックリスト名
+  category          TaskCategory
+  description       String?
+  items             Json               // チェックリスト項目の配列
+  isDefault         Boolean            @default(false)
+  status            ChecklistStatus    @default(ACTIVE)
+  usageCount        Int                @default(0) // 使用回数
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  // リレーション
+  tenant            Tenant             @relation("Checklists", fields: [tenantId], references: [id])
+  
+  @@unique([tenantId, name])
+  @@index([tenantId, category])
+  @@map("handoff_checklists")
+}
+
+enum ChecklistStatus {
+  ACTIVE             // 使用中
+  ARCHIVED           // アーカイブ
+  DEPRECATED         // 廃止予定
 }
