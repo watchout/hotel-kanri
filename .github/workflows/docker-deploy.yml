@@ -100,19 +100,23 @@ jobs:
             fi
             
             # 環境変数ファイルの準備
+            # サーバー構成: ~/Developer/tech-lead/docs/decisions/active/001-server-infrastructure.md（CTO ADR-001）参照
             cd /opt/omotenasuai/hotel-kanri
             if [ ! -f .env ]; then
               cp templates/env/.env.template .env
-              # 必要な環境変数を設定
-              echo "DB_USER=hotel_app" >> .env
-              echo "DB_PASSWORD=xwJM6BoQPtiSSNVU7cgzI6L6qg6ncyJ9" >> .env
-              echo "DB_NAME=hotel_unified_db" >> .env
-              echo "REDIS_PASSWORD=r3d1sP@ssw0rd" >> .env
-              echo "RABBITMQ_USER=hotel_app" >> .env
-              echo "RABBITMQ_PASSWORD=r@bb1tMQP@ss" >> .env
-              echo "JWT_SECRET=OSQAiP2pbm3kwyKBNnP7ZkoKOgg0P/aGb7sU8c9XSHMMIZaTcBriWxexQA2gweMDgFLFoRs5+caCLbT0jnxW7g==" >> .env
+              # 必要な環境変数を設定（GitHub Secretsから取得）
+              echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+              echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+              echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+              echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> .env
+              echo "RABBITMQ_USER=${{ secrets.RABBITMQ_USER }}" >> .env
+              echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> .env
+              echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
               echo "NODE_ENV=production" >> .env
-              echo "BASE_URL=https://dev-app.omotenasuai.com" >> .env
+              echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
+              echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> .env
+              echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
+              echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
             fi
             
             # バージョン設定

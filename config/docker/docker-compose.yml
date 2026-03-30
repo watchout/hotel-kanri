@@ -1,3 +1,5 @@
+# サーバー構成の正: ~/Developer/tech-lead/docs/decisions/active/001-server-infrastructure.md（CTO ADR-001）
+# 本ファイルは旧Docker Compose方式のデプロイ設定。現在はDokku方式（ADR-005）を使用。
 version: '3.8'
 
 services:
@@ -140,6 +142,9 @@ services:
       DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       JWT_SECRET: ${JWT_SECRET}
       BASE_URL: ${BASE_URL:-https://dev-app.omotenasuai.com}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
     ports:
       - "3100:3100"
     depends_on:

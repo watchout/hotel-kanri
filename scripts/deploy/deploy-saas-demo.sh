@@ -96,6 +96,11 @@ MEMBER_API_URL=https://member.dev.omotenasuai.com/api
 # イベントバス設定
 EVENT_BUS_URL=amqp://localhost
 EVENT_BUS_EXCHANGE=hotel_events
+
+# Cloudinary設定
+CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
 EOF
 
 scp /tmp/env_file deploy@$SERVER_IP:$APP_DIR/.env
