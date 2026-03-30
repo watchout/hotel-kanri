@@ -103,7 +103,7 @@ rm /tmp/env_file
 
 # マイグレーションの実行
 echo "マイグレーションを実行しています..."
-ssh deploy@$SERVER_IP "cd $APP_DIR && npx prisma migrate deploy || npx prisma db push --accept-data-loss"
+ssh deploy@$SERVER_IP "cd $APP_DIR && npx prisma migrate deploy"
 
 # アプリケーションのビルドと起動
 echo "アプリケーションをビルドして起動しています..."
