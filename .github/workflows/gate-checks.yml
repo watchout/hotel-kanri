@@ -1,0 +1,48 @@
+name: Gate Checks
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+
+jobs:
+  gate-quality:
+    name: Gate Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout hotel-common-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-common-rebuild
+          path: hotel-common-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout hotel-saas-rebuild
+        uses: actions/checkout@v4
+        with:
+          repository: watchout/hotel-saas-rebuild
+          path: hotel-saas-rebuild
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run gate-quality
+        env:
+          HOTEL_COMMON_DIR: ./hotel-common-rebuild
+          HOTEL_SAAS_DIR: ./hotel-saas-rebuild
+        run: bash scripts/gates/gate-quality.sh
+
+  gate-release:
+    name: Gate Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: gate-quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run gate-release
+        env:
+          STG_API_URL: https://stg-api.omotenasuai.com
+          STG_APP_URL: https://stg-app.omotenasuai.com
+        run: bash scripts/gates/gate-release.sh
