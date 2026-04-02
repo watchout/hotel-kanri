@@ -1,7 +1,7 @@
 {
-  "status": "generated",
+  "status": "active",
   "generatedAt": "2026-03-05T08:01:56.248Z",
-  "updatedAt": "2026-03-05T08:01:56.248Z",
+  "updatedAt": "2026-04-02T04:00:00.000Z",
   "waves": [
     {
       "number": 1,
@@ -17,7 +17,8 @@
           "dependencies": [
             "SSOT_SAAS_AUTHENTICATION.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-002",
@@ -28,7 +29,8 @@
           "dependencies": [
             "SSOT_SAAS_ADMIN_AUTHENTICATION.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-003",
@@ -39,7 +41,8 @@
           "dependencies": [
             "SSOT_SAAS_DEVICE_AUTHENTICATION.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-004",
@@ -50,7 +53,8 @@
           "dependencies": [
             "SSOT_SAAS_MULTITENANT.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-005",
@@ -61,7 +65,8 @@
           "dependencies": [
             "SSOT_SAAS_DATABASE_SCHEMA.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-006",
@@ -72,7 +77,8 @@
           "dependencies": [
             "SSOT_SAAS_PERMISSION_SYSTEM.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-007",
@@ -83,7 +89,8 @@
           "dependencies": [
             "SSOT_DATABASE_MIGRATION_OPERATION.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-008",
@@ -94,7 +101,8 @@
           "dependencies": [
             "SSOT_OPERATIONAL_LOG_ARCHITECTURE.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "C-013",
@@ -105,7 +113,8 @@
           "dependencies": [
             "SSOT_PRODUCTION_PARITY_RULES.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "C-014",
@@ -116,7 +125,8 @@
           "dependencies": [
             "SSOT_SAAS_STAFF_MANAGEMENT.md (foundation)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-001",
@@ -127,7 +137,8 @@
           "dependencies": [
             "SSOT_SAAS_DASHBOARD.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-002",
@@ -138,7 +149,8 @@
           "dependencies": [
             "SSOT_SAAS_MENU_MANAGEMENT.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-003",
@@ -149,7 +161,8 @@
           "dependencies": [
             "SSOT_SAAS_ORDER_MANAGEMENT.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-004",
@@ -160,7 +173,8 @@
           "dependencies": [
             "SSOT_SAAS_ROOM_MANAGEMENT.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "F-005",
@@ -171,7 +185,8 @@
           "dependencies": [
             "SSOT_SAAS_FRONT_DESK_OPERATIONS.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "F-006",
@@ -182,7 +197,8 @@
           "dependencies": [
             "SSOT_SAAS_STAFF_MANAGEMENT.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-007",
@@ -193,7 +209,8 @@
           "dependencies": [
             "SSOT_ADMIN_BASIC_SETTINGS.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-021",
@@ -204,7 +221,8 @@
           "dependencies": [
             "SSOT_SAAS_PERMISSION_SYSTEM.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "G-001",
@@ -215,7 +233,8 @@
           "dependencies": [
             "SSOT_GUEST_ROOM_SERVICE_UI.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "in_progress"
         },
         {
           "id": "G-002",
@@ -226,7 +245,8 @@
           "dependencies": [
             "SSOT_GUEST_ORDER_FLOW.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "G-003",
@@ -237,7 +257,8 @@
           "dependencies": [
             "SSOT_GUEST_MENU_VIEW.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "G-004",
@@ -248,7 +269,8 @@
           "dependencies": [
             "SSOT_GUEST_DEVICE_APP.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "C-009",
@@ -259,7 +281,8 @@
           "dependencies": [
             "SSOT_MULTILINGUAL_SYSTEM.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "C-010",
@@ -270,7 +293,8 @@
           "dependencies": [
             "SSOT_MULTICULTURAL_AI.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "C-011",
@@ -281,7 +305,8 @@
           "dependencies": [
             "SSOT_SAAS_MEDIA_MANAGEMENT.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "C-012",
@@ -292,7 +317,8 @@
           "dependencies": [
             "SSOT_SAAS_EMAIL_SYSTEM.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-008",
@@ -303,7 +329,8 @@
           "dependencies": [
             "ai_concierge/SSOT_ADMIN_AI_CONCIERGE_OVERVIEW.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-009",
@@ -314,7 +341,8 @@
           "dependencies": [
             "ai_concierge/SSOT_ADMIN_AI_KNOWLEDGE_BASE.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-011",
@@ -325,7 +353,8 @@
           "dependencies": [
             "ai_concierge/SSOT_ADMIN_AI_CHARACTER.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-012",
@@ -336,7 +365,8 @@
           "dependencies": [
             "ai_concierge/SSOT_ADMIN_AI_CONCIERGE_DATABASE.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-013",
@@ -347,7 +377,8 @@
           "dependencies": [
             "SSOT_ADMIN_STATISTICS_CORE.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "F-016",
@@ -358,7 +389,8 @@
           "dependencies": [
             "SSOT_ADMIN_UI_DESIGN.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-017",
@@ -369,7 +401,8 @@
           "dependencies": [
             "SSOT_ADMIN_SYSTEM_LOGS.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "F-018",
@@ -380,7 +413,8 @@
           "dependencies": [
             "SSOT_ADMIN_BILLING.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-019",
@@ -391,7 +425,8 @@
           "dependencies": [
             "SSOT_SAAS_SUPER_ADMIN.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "done"
         },
         {
           "id": "G-005",
@@ -402,7 +437,8 @@
           "dependencies": [
             "SSOT_GUEST_CAMPAIGN_VIEW.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "G-006",
@@ -413,7 +449,8 @@
           "dependencies": [
             "SSOT_GUEST_INFO_PORTAL.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "G-007",
@@ -424,7 +461,8 @@
           "dependencies": [
             "SSOT_GUEST_AI_CHAT.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "C-015",
@@ -435,7 +473,8 @@
           "dependencies": [
             "SSOT_WORLD_CLASS_UI_DESIGN_PRINCIPLES.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-014",
@@ -446,7 +485,8 @@
           "dependencies": [
             "SSOT_ADMIN_STATISTICS_AI.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-015",
@@ -457,7 +497,8 @@
           "dependencies": [
             "SSOT_ADMIN_STATISTICS_DELIVERY.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "F-020",
@@ -468,7 +509,8 @@
           "dependencies": [
             "SSOT_ADMIN_AI_SETTINGS.md"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "G-008",
@@ -479,7 +521,8 @@
           "dependencies": [
             "SSOT_GUEST_APP_LAUNCHER.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "backlog"
         },
         {
           "id": "G-009",
@@ -490,7 +533,8 @@
           "dependencies": [
             "SSOT_GUEST_PAGE_ROUTING.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         },
         {
           "id": "G-010",
@@ -501,7 +545,8 @@
           "dependencies": [
             "SSOT_GUEST_DEVICE_RESET.md (planned)"
           ],
-          "dependencyCount": 0
+          "dependencyCount": 0,
+          "status": "todo"
         }
       ]
     }
