@@ -69,5 +69,21 @@
     ],
     "checkedAt": "2026-03-05T09:47:09.843Z"
   },
-  "updatedAt": "2026-03-05T09:47:09.843Z"
+  "gateQuality": {
+    "status": "not_run",
+    "description": "DB整合性、マイグレーション完全性、ルート存在、禁止パターン検出",
+    "script": "scripts/gates/gate-quality.sh",
+    "runOn": ["pre-commit", "pre-pr"],
+    "checks": [],
+    "checkedAt": null
+  },
+  "gateRelease": {
+    "status": "not_run",
+    "description": "ステージング環境のAPI/UI/デモトークン動作確認",
+    "script": "scripts/gates/gate-release.sh",
+    "runOn": ["pre-deploy"],
+    "checks": [],
+    "checkedAt": null
+  },
+  "updatedAt": "2026-04-02T00:05:00.000Z"
 }
