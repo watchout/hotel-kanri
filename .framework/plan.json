@@ -1,7 +1,7 @@
 {
   "status": "active",
   "generatedAt": "2026-03-05T08:01:56.248Z",
-  "updatedAt": "2026-04-02T04:00:00.000Z",
+  "updatedAt": "2026-04-03T00:00:00.000Z",
   "waves": [
     {
       "number": 1,
@@ -174,7 +174,7 @@
             "SSOT_SAAS_ROOM_MANAGEMENT.md"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
         },
         {
           "id": "F-005",
@@ -186,7 +186,7 @@
             "SSOT_SAAS_FRONT_DESK_OPERATIONS.md"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
         },
         {
           "id": "F-006",
@@ -234,7 +234,7 @@
             "SSOT_GUEST_ROOM_SERVICE_UI.md"
           ],
           "dependencyCount": 0,
-          "status": "in_progress"
+          "status": "done"
         },
         {
           "id": "G-002",
@@ -270,7 +270,7 @@
             "SSOT_GUEST_DEVICE_APP.md"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "backlog"
         },
         {
           "id": "C-009",
@@ -282,7 +282,7 @@
             "SSOT_MULTILINGUAL_SYSTEM.md"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
         },
         {
           "id": "C-010",
@@ -306,7 +306,7 @@
             "SSOT_SAAS_MEDIA_MANAGEMENT.md (planned)"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
         },
         {
           "id": "C-012",
@@ -378,7 +378,7 @@
             "SSOT_ADMIN_STATISTICS_CORE.md"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
         },
         {
           "id": "F-016",
@@ -450,7 +450,7 @@
             "SSOT_GUEST_INFO_PORTAL.md (planned)"
           ],
           "dependencyCount": 0,
-          "status": "backlog"
+          "status": "done"
         },
         {
           "id": "G-007",
@@ -534,7 +534,7 @@
             "SSOT_GUEST_PAGE_ROUTING.md (planned)"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
         },
         {
           "id": "G-010",
@@ -546,7 +546,92 @@
             "SSOT_GUEST_DEVICE_RESET.md (planned)"
           ],
           "dependencyCount": 0,
-          "status": "todo"
+          "status": "done"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "phase": "ai-concierge",
+      "title": "Wave 2: AI Concierge",
+      "features": [
+        {
+          "id": "AC-001",
+          "name": "Figma Make Layout Exploration",
+          "priority": "P0",
+          "size": "M",
+          "status": "todo",
+          "issueNumber": 662,
+          "dependencies": [
+            "SSOT-7",
+            "SSOT-8"
+          ]
+        },
+        {
+          "id": "AC-002",
+          "name": "Design System Construction",
+          "priority": "P0",
+          "size": "L",
+          "status": "todo",
+          "issueNumber": 663,
+          "dependencies": [
+            "AC-001"
+          ]
+        },
+        {
+          "id": "AC-003",
+          "name": "MCP Code Generation",
+          "priority": "P0",
+          "size": "M",
+          "status": "todo",
+          "issueNumber": 664,
+          "dependencies": [
+            "AC-002"
+          ]
+        },
+        {
+          "id": "AC-004",
+          "name": "MVP Screen Implementation",
+          "priority": "P0",
+          "size": "L",
+          "status": "todo",
+          "issueNumber": 665,
+          "dependencies": [
+            "AC-003"
+          ]
+        },
+        {
+          "id": "AC-005",
+          "name": "Focus Navigation Implementation",
+          "priority": "P0",
+          "size": "M",
+          "status": "todo",
+          "issueNumber": 666,
+          "dependencies": [
+            "AC-004"
+          ]
+        },
+        {
+          "id": "AC-006",
+          "name": "Theme JSON Admin UI",
+          "priority": "P0",
+          "size": "M",
+          "status": "todo",
+          "issueNumber": 667,
+          "dependencies": [
+            "AC-002"
+          ]
+        },
+        {
+          "id": "AC-007",
+          "name": "Chrome Kiosk Configuration",
+          "priority": "P0",
+          "size": "S",
+          "status": "todo",
+          "issueNumber": 668,
+          "dependencies": [
+            "AC-004"
+          ]
         }
       ]
     }
