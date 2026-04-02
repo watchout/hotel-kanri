@@ -1,8 +1,9 @@
 # SSOT-2: UI / State Transitions
 
 **Doc-ID**: SSOT-2
-**Version**: 1.0.1
+**Version**: 1.1.0
 **Created**: 2026-03-05
+**Updated**: 2026-04-02
 **Status**: Approved
 **Source**: Consolidated from SSOT_ADMIN_UI_DESIGN.md, SSOT_GUEST_ROOM_SERVICE_UI.md, SSOT_GUEST_ORDER_FLOW.md, SSOT_GUEST_MENU_VIEW.md, SSOT_GUEST_DEVICE_APP.md
 
@@ -112,49 +113,65 @@ Sidebar Navigation
 
 | Route | Page | Feature ID | Status |
 |-------|------|-----------|--------|
-| `/` | Home / Top Page | G-001 | Implemented |
-| `/menu/index` | Menu Top (Carousel) | G-003 | 85% |
-| `/menu/category/[id]` | Category Detail | G-003 | 90% |
-| `/order` | Order Menu List | G-002 | Implemented |
-| `/order/cart` | Cart / Confirmation | G-002 | Implemented |
-| `/order/complete` | Order Complete | G-002 | Implemented |
+| `/` | Home / Top Page（ウェルカム + 5サービスボタン + おすすめ） | G-001 | Implemented |
+| `/menu/index` | Menu Top（おすすめカルーセル + カテゴリ + 全メニュー） | G-003 | Implemented |
+| `/menu/category/[id]` | Category Detail | G-003 | Implemented |
+| `/menu/item/[id]` | Menu Item Detail | G-003 | Implemented |
+| `/order/cart` | Cart Modal（数量変更 + 注文確認） | G-002 | Implemented |
+| `/order/complete` | Order Complete（ETA表示） | G-002 | Implemented |
 | `/order/history` | Order History | G-002 | Implemented |
-| `/receipt/[orderId]` | Receipt | G-001 | Implemented |
+| `/facilities` | 館内施設（準備中プレースホルダー） | - | Placeholder |
+| `/tourism` | 観光案内（準備中プレースホルダー） | - | Placeholder |
+| `/info/wifi` | WiFi接続情報 | - | Implemented |
 | `/tv/concierge` | AI Concierge | G-007 | Not Started |
-| `/tv/settings` | Device Settings | G-004 | Partial |
+| `/device-reset` | Device Reset | G-010 | Implemented |
+| `/unauthorized-device` | Unauthorized Device | - | Implemented |
 
 ### §3.2 Guest Navigation Structure
 
 ```
 Home Page (/)
-├── Footer Service Buttons (5 buttons)
-│   ├── Room Service → /order
-│   ├── Info → /info (planned)
-│   ├── Facilities → /facilities (planned)
-│   ├── Tourism → /tourism (planned)
-│   └── WiFi → /wifi (planned)
-├── Menu Browse → /menu/index
-│   └── Category → /menu/category/[id]
-├── AI Concierge → /tv/concierge (planned)
-├── Campaign Banners (inline)
-└── Language Toggle (JP/EN)
+├── Service Buttons (5 buttons, カード形式)
+│   ├── ルームサービス → /menu ✅
+│   ├── インフォメーション → /info/wifi ✅
+│   ├── 館内施設 → /facilities (準備中)
+│   ├── 観光案内 → /tourism (準備中)
+│   └── WiFi接続 → /info/wifi ✅
+├── おすすめメニュー → 各 /menu/item/[id] に直接遷移 ✅
+├── Language Toggle (JP/EN) ✅
+├── Menu Browse → /menu/index ✅
+│   ├── Category → /menu/category/[id]
+│   └── Item Detail → /menu/item/[id]
+├── Cart (モーダル表示) → /order/cart ✅
+│   └── Order Complete → /order/complete
+├── Order History → /order/history ✅
+└── AI Concierge → /tv/concierge (未実装)
 ```
+
+**変更履歴 (2026-04-02)**:
+- おすすめメニュー: 商品一覧ではなく商品詳細に直接遷移
+- カート: ボトムドロワーからセンターモーダル（v-dialog）に変更
+- インフォメーション: 荷物預かりを削除（メニュー画面に不適切）
+- 各おすすめカードにカート追加ボタンを直接配置
 
 ### §3.3 Guest Key Components
 
 | Component | File | Feature | Status |
 |-----------|------|---------|--------|
-| CategoryTabs | `CategoryTabs.vue` | 3-level category tabs | 95% |
-| MenuCard | `MenuCard.vue` | Product card with hover | 100% |
-| AvailabilityMask | `AvailabilityMask.vue` | Time-based availability | 100% |
-| GachaMenuCard | `GachaMenuCard.vue` | Daily lucky menu | 100% |
-| OrderStepTracker | `OrderStepTracker.vue` | 5-step progress | 100% |
-| OrderStatusBadge | `OrderStatusBadge.vue` | Status badge | 100% |
-| UpsellModal | `UpsellModal.vue` | Related products (max 3) | 100% |
-| CartItem | `CartItem.vue` | Cart item management | 100% |
-| SortTabs | `SortTabs.vue` | Period selection tabs | 100% |
-| LuxuryCard | `LuxuryCard.vue` | Luxury styled card | 100% |
-| LuxuryButton | `LuxuryButton.vue` | Luxury styled button | 100% |
+| CartDrawer | `components/guest/CartDrawer.vue` | カートモーダル（v-dialog） | Implemented |
+| MenuItemCard | `components/MenuItemCard.vue` | 商品カード | Implemented |
+| MenuItemModal | `components/MenuItemModal.vue` | 商品詳細モーダル | Implemented |
+| DndIcon | `components/DndIcon.vue` | DND表示 | Implemented |
+| LocaleToggle | `components/LocaleToggle.vue` | JP/EN切替ボタン | Implemented |
+
+### §3.4 Guest Composables
+
+| Composable | File | Purpose |
+|-----------|------|---------|
+| useCart | `composables/guest/useCart.ts` | カート管理（追加/削除/注文送信） |
+| useDemoMode | `composables/useDemoMode.ts` | デモトークン認証状態 |
+| useLocale | `composables/useLocale.ts` | JP/EN翻訳テキスト管理 |
+| useDeviceType | `composables/useDeviceType.ts` | 端末種別検出（TV/タブレット/スマホ） |
 
 ---
 
@@ -295,15 +312,42 @@ Request
 
 ## §7 Responsive / Device Strategy
 
-| Device | Resolution | Target | UI Approach |
-|--------|-----------|--------|-------------|
-| Google TV | 1920x1080 | Guest | 10ft UI, remote control |
-| Android Tablet | 1280x800+ | Guest | Touch optimized |
-| Desktop Browser | 1366x768+ | Admin | Standard responsive |
-| Mobile Browser | 375x667+ | Admin (limited) | Responsive sidebar |
+### §7.1 対応端末（5種類）
 
-**MUST**: ゲスト端末は横向き (landscape) 固定とすること。 **Accept**: ゲストアプリの `AndroidManifest.xml` で `screenOrientation="landscape"` が設定され、CSS メディアクエリ `orientation: portrait` のスタイルが 0 件であること。
-**MUST**: 管理画面はデスクトップファーストで設計すること。 **Accept**: 管理画面の全ページが 1366x768 ビューポートで水平スクロールなしに表示され、Lighthouse アクセシビリティスコアが 90 以上であること。
+| # | Device | Category | Resolution | UI Approach | Detection |
+|---|--------|----------|-----------|-------------|-----------|
+| 1 | Chrome TV | tv | 1920x1080 | 10ft UI, リモコン操作, フォーカスナビ | UserAgent + width |
+| 2 | Android TV | tv | 1920x1080 | 10ft UI, リモコン操作, フォーカスナビ | UserAgent |
+| 3 | Chrome TV Streamer | tv | 1920x1080 | 10ft UI, リモコン操作, フォーカスナビ | UserAgent (CrKey) |
+| 4 | タブレット | tablet | 1280x800+ | タッチ操作, 横向き | width >= 768 |
+| 5 | 宿泊者スマホ | phone | ~375x667 | タッチ操作, 縦向き | width < 768 |
+
+### §7.2 カテゴリ別UIサイズトークン
+
+| Token | TV | Tablet | Phone |
+|-------|-----|--------|-------|
+| Heading | 36px | 28px | 24px |
+| Subheading | 28px | 22px | 20px |
+| Body | 24px | 20px | 16px |
+| Caption | 18px | 16px | 14px |
+| Button min-height | 64px | 56px | 44px |
+| Touch target min | 120px | 80px | 48px |
+| Icon size | 64px | 48px | 32px |
+
+### §7.3 検出ロジック（useDeviceType composable）
+
+```
+UserAgent: /Android TV|CrKey|GoogleTV|BRAVIA|SmartTV/ → tv
+Width >= 1920 → tv (fallback)
+Width < 768 → phone
+Otherwise → tablet
+```
+
+### §7.4 デバイス要件
+
+**MUST**: ゲスト端末は横向き (landscape) 固定とすること。 **Accept**: ゲストアプリの `AndroidManifest.xml` で `screenOrientation="landscape"` が設定されること（Capacitor対応時）。
+**MUST**: TV端末はリモコン操作に最適化すること。 **Accept**: 全インタラクティブ要素に `:focus-visible` スタイルが適用され、Tab/Arrowキーで操作完了できること。（未実装 → 次PR対応）
+**MUST**: 管理画面はデスクトップファーストで設計すること。 **Accept**: 管理画面の全ページが 1366x768 ビューポートで水平スクロールなしに表示されること。
 
 ---
 
@@ -312,9 +356,16 @@ Request
 | Aspect | Current | Target |
 |--------|---------|--------|
 | Admin UI | Japanese only | Japanese + English (Phase 3) |
-| Guest UI | Japanese + English toggle | 15 languages (Phase 3) |
+| Guest UI | **Japanese + English toggle (実装済み)** | 15 languages (Phase 3) |
 | Content | `name_ja`, `name_en` columns | `translations` table (unified) |
 | Direction | LTR only | LTR + RTL (Phase 3 for Arabic) |
+| Implementation | `useLocale` composable + `LocaleToggle` component | nuxt-i18n (Phase 3) |
+
+**現在の多言語実装 (MVP)**:
+- `composables/useLocale.ts`: JP/EN翻訳テキスト管理（composableベース）
+- `components/LocaleToggle.vue`: ヘッダーのJP/ENトグルボタン
+- メニューアイテム: DB側の `name_ja`/`name_en` を `localizedName()` で切替
+- 外部依存なし（nuxt-i18nはPhase 3で導入予定）
 
 ---
 
