@@ -105,7 +105,10 @@ EOF
 curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 apt-get install -y nodejs
 
-# PM2インストール
+# PM2インストール（旧構造用 - 非推奨）
+<!-- 
+⚠️ 2025年1月18日より非推奨
+新しい統合Docker構造ではPM2は使用しません
 npm install -g pm2
 
 # PM2設定
@@ -125,6 +128,14 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 EOF
+-->
+
+# Docker & Docker Compose インストール（新構造）
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+usermod -aG docker deploy
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 systemctl enable pm2-api
 ```
@@ -514,4 +525,4 @@ aws s3 sync $BACKUP_DIR/$TIMESTAMP s3://omotenasuai-backups/files/$TIMESTAMP
 
 ---
 
-本ドキュメントは定期的にレビューし、必要に応じて更新してください。最終更新日: YYYY-MM-DD
+本ドキュメントは定期的にレビューし、必要に応じて更新してください。最終更新日: 2025-09-12

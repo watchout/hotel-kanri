@@ -1,0 +1,115 @@
+// AIコンシェルジュ レスポンスツリー スキーマ定義
+// hotel-common統合データベース用
+
+// レスポンスツリー
+model ResponseTree {
+  id          String    @id @default(cuid())
+  tenantId    String    @default("test-tenant-001") // 将来的にはテナントごとに管理
+  name        String
+  description String?
+  isActive    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+  version     Int       @default(1)
+
+  // 関連
+  nodes    ResponseNode[]
+  versions ResponseTreeVersion[]
+
+  @@index([tenantId])
+  @@index([isActive])
+}
+
+// ノード（カテゴリーまたは質問）
+model ResponseNode {
+  id          String  @id @default(cuid())
+  treeId      String
+  type        String // 'category' or 'question'
+  title       String
+  description String?
+  icon        String?
+  order       Int     @default(0)
+  parentId    String?
+  isRoot      Boolean @default(false)
+
+  // 質問ノード固有のフィールド
+  answer Json? // テキスト、メディア、関連質問を含む
+
+  // 関連
+  tree         ResponseTree              @relation(fields: [treeId], references: [id], onDelete: Cascade)
+  parent       ResponseNode?             @relation("NodeHierarchy", fields: [parentId], references: [id])
+  children     ResponseNode[]            @relation("NodeHierarchy")
+  translations ResponseNodeTranslation[]
+  sessions     ConciergeSession[]
+
+  @@index([treeId])
+  @@index([parentId])
+  @@index([type])
+}
+
+// ノード翻訳
+model ResponseNodeTranslation {
+  id       String @id @default(cuid())
+  nodeId   String
+  language String
+  title    String
+  answer   Json?
+
+  // 関連
+  node ResponseNode @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+
+  @@unique([nodeId, language])
+  @@index([language])
+}
+
+// ツリーバージョン
+model ResponseTreeVersion {
+  id        String   @id @default(cuid())
+  treeId    String
+  version   Int
+  data      Json // ツリー全体のスナップショット
+  createdAt DateTime @default(now())
+  createdBy String
+  comment   String?
+
+  // 関連
+  tree ResponseTree @relation(fields: [treeId], references: [id], onDelete: Cascade)
+
+  @@unique([treeId, version])
+}
+
+// セッション管理
+model ConciergeSession {
+  id            String   @id @default(cuid())
+  sessionId     String   @unique
+  deviceId      String?
+  language      String   @default("ja")
+  currentNodeId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastActiveAt  DateTime @default(now())
+
+  // 関連
+  currentNode ResponseNode?           @relation(fields: [currentNodeId], references: [id])
+  messages    ConciergeSessionMessage[]
+
+  @@index([sessionId])
+  @@index([deviceId])
+  @@index([lastActiveAt])
+}
+
+// セッションメッセージ
+model ConciergeSessionMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String
+  content   String
+  timestamp DateTime @default(now())
+
+  // 関連
+  session ConciergeSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([timestamp])
+}

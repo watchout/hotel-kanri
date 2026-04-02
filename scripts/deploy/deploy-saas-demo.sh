@@ -96,6 +96,11 @@ MEMBER_API_URL=https://member.dev.omotenasuai.com/api
 # イベントバス設定
 EVENT_BUS_URL=amqp://localhost
 EVENT_BUS_EXCHANGE=hotel_events
+
+# Cloudinary設定
+CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
 EOF
 
 scp /tmp/env_file deploy@$SERVER_IP:$APP_DIR/.env
@@ -103,7 +108,7 @@ rm /tmp/env_file
 
 # マイグレーションの実行
 echo "マイグレーションを実行しています..."
-ssh deploy@$SERVER_IP "cd $APP_DIR && npx prisma migrate deploy || npx prisma db push --accept-data-loss"
+ssh deploy@$SERVER_IP "cd $APP_DIR && npx prisma migrate deploy"
 
 # アプリケーションのビルドと起動
 echo "アプリケーションをビルドして起動しています..."

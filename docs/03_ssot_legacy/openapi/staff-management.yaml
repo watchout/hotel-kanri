@@ -1,0 +1,323 @@
+openapi: 3.1.0
+info:
+  title: Hotel-SaaS Staff Management API
+  version: 1.3.0
+  description: |
+    SSOT_SAAS_STAFF_MANAGEMENT.md v1.2.1 に準拠したAPI仕様
+    対象要件:
+      - コア: STAFF-001..020
+      - セキュリティ: STAFF-SEC-001..010
+      - UI: STAFF-UI-001..021
+servers:
+  - url: http://localhost:3400/api/v1/admin
+    description: hotel-common (development)
+  - url: http://localhost:3000/api/v1/admin
+    description: hotel-saas proxy (development)
+components:
+  securitySchemes:
+    SessionAuth:
+      type: apiKey
+      in: cookie
+      name: hotel_session
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          nullable: true
+    Pagination:
+      type: object
+      properties:
+        page: { type: integer, default: 1 }
+        limit: { type: integer, default: 20 }
+        total: { type: integer }
+        totalPages: { type: integer }
+    StaffRole:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        displayName: { type: string, nullable: true }
+    Staff:
+      type: object
+      required: [id, email, tenantId, createdAt, status]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        name: { type: string, nullable: true }
+        tenantId: { type: string, format: uuid }
+        status: { type: string, enum: [active, invited, locked, deleted] }
+        isActive: { type: boolean, nullable: true }
+        isLocked: { type: boolean, nullable: true }
+        lockedUntil: { type: string, format: date-time, nullable: true }
+        failedLoginCount: { type: integer, nullable: true }
+        lastLoginAt: { type: string, format: date-time, nullable: true }
+        createdAt: { type: string, format: date-time }
+        role:
+          allOf:
+            - $ref: '#/components/schemas/StaffRole'
+          nullable: true
+    StaffListResponse:
+      type: object
+      required: [staff, pagination]
+      properties:
+        staff:
+          type: array
+          items: { $ref: '#/components/schemas/Staff' }
+        pagination: { $ref: '#/components/schemas/Pagination' }
+    InviteStaffRequest:
+      type: object
+      required: [email, roleId]
+      properties:
+        email: { type: string, format: email }
+        roleId: { type: string, format: uuid }
+        firstName: { type: string, nullable: true }
+        lastName: { type: string, nullable: true }
+    AcceptInvitationRequest:
+      type: object
+      required: [token, password]
+      properties:
+        token: { type: string }
+        password:
+          type: string
+          minLength: 12
+          maxLength: 64
+    UpdateStaffRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        name: { type: string }
+        roleId: { type: string, format: uuid }
+    Success:
+      type: object
+      properties:
+        success: { type: boolean, default: true }
+security:
+  - SessionAuth: []
+paths:
+  /staffs:
+    get:
+      operationId: listStaffs
+      summary: スタッフ一覧取得
+      deprecated: true
+      description: |
+        STAFF-003, STAFF-020, STAFF-SEC-001, STAFF-SEC-002
+        自テナントのみ/検索・ソート・ページネーション
+        移行案内: 汎用CRUD `/api/v1/admin/resources/staff` を利用してください
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, default: 1 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20 }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: status
+          schema: { type: string, enum: [active, invited, locked, deleted] }
+        - in: query
+          name: roleId
+          schema: { type: string, format: uuid }
+        - in: query
+          name: sortBy
+          schema: { type: string, default: createdAt }
+        - in: query
+          name: sortOrder
+          schema: { type: string, enum: [asc, desc], default: desc }
+        - in: query
+          name: includeDeleted
+          schema: { type: boolean, default: false }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StaffListResponse' }
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+  /staffs/invite:
+    post:
+      operationId: inviteStaff
+      summary: スタッフ招待
+      description: |
+        STAFF-001, STAFF-SEC-005, STAFF-SEC-006, STAFF-SEC-008
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InviteStaffRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  invitationToken: { type: string, nullable: true }
+        '400': { description: Validation Error }
+        '403': { description: Forbidden }
+        '409': { description: Duplicate Email }
+  /staffs/accept-invitation:
+    post:
+      operationId: acceptInvitation
+      summary: 招待受諾（初回ログイン）
+      description: |
+        STAFF-002, STAFF-SEC-005, STAFF-SEC-006, STAFF-SEC-007
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AcceptInvitationRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Success' }
+        '400': { description: Token invalid/expired }
+        '409': { description: Already used }
+  /staffs/{id}:
+    get:
+      operationId: getStaff
+      summary: スタッフ詳細
+      deprecated: true
+      description: STAFF-004, STAFF-SEC-001, STAFF-SEC-002
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Staff' }
+        '404': { description: Not Found }
+    put:
+      operationId: updateStaff
+      summary: スタッフ更新
+      deprecated: true
+      description: STAFF-005, STAFF-SEC-001, STAFF-SEC-002
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateStaffRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Staff' }
+        '400': { description: Validation Error }
+        '404': { description: Not Found }
+    delete:
+      operationId: deleteStaff
+      summary: スタッフ削除（論理削除）
+      deprecated: true
+      description: STAFF-006, STAFF-SEC-001, STAFF-SEC-002, STAFF-SEC-003, STAFF-SEC-004
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204': { description: No Content }
+        '400': { description: CANNOT_DELETE_SELF / CANNOT_DELETE_LAST_OWNER }
+        '404': { description: Not Found }
+  /staffs/{id}/restore:
+    post:
+      operationId: restoreStaff
+      summary: スタッフ復元
+      description: STAFF-007
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Staff' }
+        '404': { description: Not Found }
+  /staffs/{id}/lock:
+    post:
+      operationId: lockStaff
+      summary: アカウントロック
+      description: STAFF-013
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not Found }
+  /staffs/{id}/unlock:
+    post:
+      operationId: unlockStaff
+      summary: アカウントロック解除
+      description: STAFF-014
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not Found }
+  /staffs/{id}/resend-invite:
+    post:
+      operationId: resendInvitation
+      summary: 招待再送
+      description: STAFF-018
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not Found }
+  /staffs/{id}/cancel-invite:
+    post:
+      operationId: cancelInvitation
+      summary: 招待キャンセル
+      description: STAFF-017
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not Found }
+
+

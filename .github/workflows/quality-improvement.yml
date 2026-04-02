@@ -1,0 +1,135 @@
+# =============================================================================
+# Quality Improvement Gates (Non-Blocking)
+# =============================================================================
+# 設計方針：
+# - これらのチェックは品質改善の推奨事項
+# - 失敗してもPRはブロックしない（警告のみ）
+# - 技術的負債の可視化と段階的改善を目的とする
+# =============================================================================
+
+name: Quality Improvement (Non-Blocking)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  # ==========================================
+  # Check 1: TypeScript型チェック（警告のみ）
+  # ==========================================
+  typescript-check:
+    name: TypeScript型チェック（警告）
+    runs-on: ubuntu-latest
+    continue-on-error: true  # ← 失敗してもPRをブロックしない
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run TypeScript check
+        run: |
+          echo "⚠️  hotel-kanriは管理リポジトリのため、型チェック不要"
+          echo "💡 各システムリポジトリ（hotel-saas, hotel-common）で実行"
+          exit 0
+  
+  # ==========================================
+  # Check 2: ESLint（警告のみ）
+  # ==========================================
+  eslint:
+    name: ESLint（警告）
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run ESLint
+        run: |
+          echo "⚠️  hotel-kanriは管理リポジトリのため、lint不要"
+          echo "💡 各システムリポジトリ（hotel-saas, hotel-common）で実行"
+          exit 0
+  
+  # ==========================================
+  # Check 3: テストカバレッジ（警告のみ）
+  # ==========================================
+  test-coverage:
+    name: テストカバレッジ（警告）
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run tests
+        run: |
+          echo "⚠️  hotel-kanriは管理リポジトリのため、テスト不要"
+          echo "💡 各システムリポジトリ（hotel-saas, hotel-common）で実行"
+          exit 0
+  
+  # ==========================================
+  # Check 4: OpenAPI Lint（警告のみ）
+  # ==========================================
+  openapi-lint:
+    name: OpenAPI Lint（警告）
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install Spectral
+        run: npm install -g @stoplight/spectral-cli
+      
+      - name: Lint OpenAPI specs
+        run: |
+          if [ -f ".spectral.yaml" ]; then
+            spectral lint docs/03_ssot/openapi/*.yaml --ruleset .spectral.yaml || {
+              echo "⚠️  OpenAPI Lint warnings detected"
+              echo "💡 これは警告のみです。段階的に改善してください。"
+            }
+          else
+            echo "⚠️  .spectral.yaml not found, skipping"
+          fi
+  
+  # ==========================================
+  # Summary
+  # ==========================================
+  quality-improvement-summary:
+    name: Quality Improvement Summary
+    runs-on: ubuntu-latest
+    needs: [typescript-check, eslint, test-coverage, openapi-lint]
+    if: always()
+    steps:
+      - name: Summary
+        run: |
+          echo "## 📊 Quality Improvement Results (Non-Blocking)"
+          echo ""
+          echo "⚠️  TypeScript: ${{ needs.typescript-check.result }}"
+          echo "⚠️  ESLint: ${{ needs.eslint.result }}"
+          echo "⚠️  Test Coverage: ${{ needs.test-coverage.result }}"
+          echo "⚠️  OpenAPI Lint: ${{ needs.openapi-lint.result }}"
+          echo ""
+          echo "💡 これらは警告のみです。段階的に改善してください。"
+          echo "📖 技術的負債レジストリ: docs/tech-debt/DEBT_REGISTRY.md"
+

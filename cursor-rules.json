@@ -74,6 +74,82 @@
         "システム間の直接DBアクセスは禁止し、APIまたはイベント経由で連携すること。",
         "各システムは指定されたポート番号を厳守すること（saas:3100, member:3200, pms-browser:3300, pms-electron:3301, common:3400）。"
       ]
+    },
+    {
+      "description": "ドキュメント作成の絶対ルール（SSOT作成時必須）",
+      "content": [
+        "【絶対禁止】想像や推測でドキュメントを作成すること。",
+        "【必須】既存ドキュメント（/docs配下）と実装ソースコードを必ず確認してから記述すること。",
+        "【必須】APIパスや実装仕様は必ず実ファイルから取得すること（例：COMPLETE_API_ENDPOINT_LIST.md、実装ファイル）。",
+        "【必須】「ドキュメントはシステムのあるべき姿を示す」原則を守り、正しい仕様を定義すること。",
+        "【必須】現在の実装が仕様に違反している場合は、明確に「❌ 仕様違反」として指摘すること。",
+        "【必須】ドキュメントは「問題を予測・防止する」目的で作成すること。単なる記録ではない。",
+        "【禁止例】存在しないAPIパスを記載、実装を確認せずに「〜だと思われる」と記述、ドキュメントにない情報を創作する。"
+      ]
+    },
+    {
+      "description": "環境統一の絶対ルール",
+      "content": [
+        "【絶対禁止】開発環境と本番環境で異なる実装を使用すること（例：開発だけメモリDB、本番だけRedis）。",
+        "【必須】開発環境で動作するコードがそのまま本番環境でも動作すること。",
+        "【必須】環境差異は環境変数のみで吸収し、実装コードは全環境で統一すること。",
+        "【理由】本番デプロイ時の予期せぬバグを防ぐ、開発環境で本番と同じ動作を保証、デプロイリスクを最小化。",
+        "【禁止例】開発環境用のSimpleRedis実装を作る、NODE_ENVで処理を分岐させる、開発環境だけモック実装を使う。"
+      ]
+    },
+    {
+      "description": "認証・セッション管理の統一ルール",
+      "content": [
+        "【必須】認証方式はSession認証（Redis + HttpOnly Cookie）に統一。JWT方式は非推奨（/docs/AUTHENTICATION_MASTER_SPECIFICATION.md参照）。",
+        "【必須】全システムは同じRedisインスタンスを使用すること（開発・本番共通）。",
+        "【必須】セッションキー形式は「hotel:session:{sessionId}」で統一。",
+        "【必須】セッションTTLは3600秒（1時間）で統一。",
+        "【絶対禁止】システムごとに異なるセッションストアを使用すること（例：hotel-commonはメモリ、hotel-saasはRedis）。",
+        "【検証必須】ログイン後すぐに401エラーが出る場合は、Redis不一致を最初に疑うこと。"
+      ]
+    },
+    {
+      "description": "SSOT（Single Source of Truth）作成プロセス",
+      "content": [
+        "【必須】SSOT作成前に /docs/03_ssot/SSOT_CREATION_RULES.md を必ず読むこと。",
+        "【Phase 0】既存の全SSOTを読み込み、命名規則・データ構造・API仕様を把握する（最重要）。",
+        "【Phase 1】既存ドキュメント（/docs配下）を全て読み込み、関連仕様を把握する。",
+        "【Phase 2】実装ファイルを読み込み、実際のAPIパス・データ構造・処理フローを確認する。",
+        "【Phase 3】ドキュメントと実装の差異を分析し、「あるべき仕様」と「現在の実装」を区別する。",
+        "【Phase 4】SSOTには「正しい仕様」を記載し、実装が違反している場合は明確に指摘する。",
+        "【Phase 5】必須要件・環境統一要件・検証方法を明記し、問題を予防できるドキュメントにする。",
+        "【Phase 6】既存SSOTとの整合性を確認（同じ概念は必ず同じ名称・データ型を使用）。",
+        "【Phase 7】最終チェックリストで品質保証（SSOT_CREATION_RULES.md参照）。",
+        "【絶対禁止】Phase 0-3をスキップして想像でSSOTを作成すること。",
+        "【絶対禁止】既存SSOTと異なる命名規則・データ型を使用すること（例: tenant_id vs tenantId の不一致）。",
+        "【絶対禁止】フロントエンド仕様（Composable、クライアントミドルウェア）を省略すること。"
+      ]
+    },
+    {
+      "description": "SSOT間の整合性チェック（必須）",
+      "content": [
+        "【必須】新しいSSOTを作成する前に、/docs/03_ssot/配下の全SSOTを読み込むこと。",
+        "【必須】既存SSOTで使用されている変数名・フィールド名・データ型を完全に把握すること。",
+        "【必須】同じ概念を表す場合は、既存SSOTと必ず同じ名称を使用すること。",
+        "【必須】命名規則は全SSOT間で統一すること（DB: snake_case, API/JSON: camelCase）。",
+        "【必須】既存SSOTへのクロスリファレンスを明記すること（例: 認証SSOTの tenant_id と同じ概念）。",
+        "【必須】新SSOTに「命名規則統一」セクションを追加し、既存SSOTとの対応関係を明記すること。",
+        "【禁止例】tenant_id（認証SSOT）と tenantId（他SSOT）で表記が異なる、session_id と sessionId が混在。",
+        "【検証必須】SSOT作成後、grep等で既存SSOT内の同じ概念の命名をチェックすること。"
+      ]
+    },
+    {
+      "description": "SSOT命名規則の絶対ルール",
+      "content": [
+        "【データベース（PostgreSQL）】snake_case（例: tenant_id, created_at, session_id）。",
+        "【Prisma Model】camelCase + @map指定（例: tenantId @map('tenant_id')）。",
+        "【API/JSON】camelCase（例: tenantId, createdAt, sessionId）。",
+        "【変数名（TypeScript/JavaScript）】camelCase（言語標準に従う）。",
+        "【絶対ルール】同じ概念を表すフィールドは、全SSOT・全システムで同じ命名パターンを使用。",
+        "【例】テナントID: DB=tenant_id, Prisma=tenantId, API/JSON=tenantId, 変数=tenantId（全て統一）。",
+        "【例】セッションID: DB=session_id, Prisma=sessionId, API/JSON=sessionId, 変数=sessionId（全て統一）。",
+        "【禁止】あるSSOTで tenant_id、別SSOTで tenantId のように、同じ概念で表記が異なること。"
+      ]
     }
   ]
 }

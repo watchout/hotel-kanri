@@ -2,7 +2,7 @@
 
 ## 基本情報
 
-- **デプロイ日時**: YYYY-MM-DD HH:MM
+- **デプロイ日時**: 2025-09-12 HH:MM
 - **担当者**: [担当者名]
 - **承認者**: [承認者名]
 
@@ -42,12 +42,12 @@
   - リポジトリ: [リポジトリURL]
   - ブランチ/タグ: [ブランチ名/タグ名]
   - コミットハッシュ: [コミットハッシュ]
-  - ビルド日時: YYYY-MM-DD HH:MM
+  - ビルド日時: 2025-09-12 HH:MM
 
 - **Nginx設定**:
   - 設定ファイル: /etc/nginx/conf.d/dev-app.omotenasuai.com.conf
   - SSL証明書: Let's Encrypt
-  - 証明書有効期限: YYYY-MM-DD
+  - 証明書有効期限: 2025-09-12
 
 - **PM2設定**:
   - 設定ファイル: /opt/omotenasuai/hotel-saas/ecosystem.config.js

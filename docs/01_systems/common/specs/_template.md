@@ -1,0 +1,53 @@
+# [仕様書タイトル]
+
+**Doc-ID**: SPEC-YYYY-MM-DD-XXX  
+**Version**: v1.0  
+**Status**: Draft | Review | Approved | Superseded  
+**Owner**: [担当者名]  
+**Linked-Docs**: [関連ADR/Minutes/Release Doc-IDsをカンマ区切り]  
+
+---
+
+## 概要
+[仕様の概要を簡潔に記述]
+
+## 背景・目的
+[なぜこの仕様が必要か]
+
+## 要件
+### 機能要件
+- [機能要件1]
+- [機能要件2]
+
+### 非機能要件
+- [非機能要件1]
+- [非機能要件2]
+
+## 仕様詳細
+### [セクション1]
+[詳細仕様]
+
+### [セクション2]
+[詳細仕様]
+
+## API仕様
+```yaml
+# OpenAPI形式での記述
+```
+
+## データモデル
+```prisma
+# Prismaスキーマでの記述
+```
+
+## 制約・前提条件
+- [制約1]
+- [制約2]
+
+## 関連技術判断
+- [ADR-YYYY-MM-DD-XXX]: [判断内容の要約]
+
+## 変更履歴
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| v1.0 | YYYY-MM-DD | 初版作成 | [Author] |

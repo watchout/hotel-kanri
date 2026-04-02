@@ -1,0 +1,20 @@
+{
+  "name": "hotel-kanri-linear-scripts",
+  "version": "1.0.0",
+  "description": "Linear integration scripts for hotel-kanri project",
+  "scripts": {
+    "migrate": "node migrate-to-linear.js",
+    "migrate:dry-run": "node migrate-to-linear.js --dry-run",
+    "migrate:matrix": "node parse-matrix.js && node migrate-matrix-to-linear.js",
+    "migrate:matrix:dry-run": "node parse-matrix.js && node migrate-matrix-to-linear.js --dry-run",
+    "export": "node export-from-linear.js",
+    "export:full": "node export-from-linear.js --full"
+  },
+  "keywords": ["linear", "project-management", "migration"],
+  "author": "hotel-kanri team",
+  "license": "MIT",
+  "dependencies": {
+    "@linear/sdk": "^30.0.0"
+  }
+}
+

@@ -1,0 +1,17 @@
+name: CI - Debug Phase 1 (Minimal)
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  # Phase 1: 最小構成 - echoのみで動作確認
+  test-minimal:
+    name: Test Minimal (Phase 1)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo test
+        run: |
+          echo "✅ Phase 1: Minimal workflow is working!"
+          echo "GitHub Actions is properly triggered"
+          echo "Next: Add checkout and node setup"

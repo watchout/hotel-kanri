@@ -1,0 +1,35 @@
+/* 会計履歴の矢印レイアウト修正 */
+.billing-arrow {
+  color: #9ca3af !important;
+  transition: all 0.2s ease !important;
+  margin-left: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 24px !important;
+  height: 24px !important;
+}
+
+.billing-item.clickable:hover .billing-arrow {
+  color: #374151 !important;
+  transform: translateX(2px) !important;
+}
+
+.billing-date {
+  font-size: 14px !important;
+  color: #6b7280 !important;
+  font-weight: 500 !important;
+  margin-bottom: 2px !important;
+}
+
+.billing-total {
+  font-weight: 600 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  margin-bottom: 2px !important;
+}
+
+.billing-items-count {
+  font-size: 12px !important;
+  color: #9ca3af !important;
+}

@@ -1,0 +1,80 @@
+name: Gate Checks
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+
+jobs:
+  gate-quality:
+    name: Gate Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run gate-quality
+        run: |
+          echo "============================================"
+          echo " Gate: Quality Check (CI)"
+          echo "============================================"
+          PASS=0; FAIL=0
+
+          # 1. Gate scripts exist
+          echo ""
+          echo "=== 1. Gate Scripts ==="
+          for S in scripts/gates/gate-quality.sh scripts/gates/gate-release.sh; do
+            if [ -f "$S" ]; then
+              echo "  PASS: $S"
+              PASS=$((PASS + 1))
+            else
+              echo "  FAIL: $S missing"
+              FAIL=$((FAIL + 1))
+            fi
+          done
+
+          # 2. SSOT files
+          echo ""
+          echo "=== 2. SSOT Files ==="
+          SSOT_COUNT=$(find docs/ -name "SSOT*.md" -o -name "SSOT_*.md" 2>/dev/null | wc -l | tr -d ' ')
+          echo "  Found: $SSOT_COUNT SSOT files"
+          if [ "$SSOT_COUNT" -gt 5 ]; then
+            echo "  PASS"
+            PASS=$((PASS + 1))
+          else
+            echo "  FAIL: Expected >5"
+            FAIL=$((FAIL + 1))
+          fi
+
+          # 3. Core docs exist
+          echo ""
+          echo "=== 3. Core Docs ==="
+          for D in CLAUDE.md docs/requirements/SSOT-0_PRD.md docs/design/core/SSOT-2_UI_STATE.md; do
+            if [ -f "$D" ]; then
+              echo "  PASS: $D"
+              PASS=$((PASS + 1))
+            else
+              echo "  FAIL: $D missing"
+              FAIL=$((FAIL + 1))
+            fi
+          done
+
+          echo ""
+          echo "============================================"
+          echo " Result: PASS=$PASS FAIL=$FAIL"
+          echo "============================================"
+          if [ "$FAIL" -gt 0 ]; then exit 1; fi
+
+  gate-release:
+    name: Gate Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: gate-quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run gate-release
+        env:
+          STG_API_URL: https://stg-api.omotenasuai.com
+          STG_APP_URL: https://stg-app.omotenasuai.com
+        run: bash scripts/gates/gate-release.sh

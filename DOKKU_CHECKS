@@ -1,0 +1,4 @@
+WAIT=10
+ATTEMPTS=12
+TIMEOUT=3
+GET /healthz

@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-03-17T07:13:19.977Z",
+  "totalSsots": 8,
+  "errors": [],
+  "warnings": [
+    {
+      "type": "DEPRECATED_AUTH_METHOD_MENTIONED",
+      "method": "JWT認証",
+      "files": [
+        "02_guest_features/ai_chat/drafts/HANDOFF_TECH_ARCHITECT.md"
+      ],
+      "message": "非推奨の認証方式（JWT認証）が言及されています（過去の仕様説明等は許容）"
+    }
+  ],
+  "score": 98
+}

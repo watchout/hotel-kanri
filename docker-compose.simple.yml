@@ -1,0 +1,73 @@
+services:
+  # hotel-saas サービス
+  saas:
+    build:
+      context: ../hotel-saas
+      dockerfile: Dockerfile
+      target: build
+    working_dir: /app
+    volumes:
+      - ../hotel-saas:/app
+      - saas_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - NODE_ENV=development
+      - NUXT_PORT=3100
+      - NUXT_HOST=0.0.0.0
+      - DATABASE_URL=postgresql://hotel_app:password@db:5432/hotel_unified_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+    ports:
+      - "3100:3100"
+    depends_on:
+      - db
+      - redis
+      # - common  # 一時的に無効化
+
+  # hotel-common サービス
+  common:
+    build:
+      context: ../hotel-common
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - ../hotel-common:/app
+      - common_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run start:dev"
+    environment:
+      - NODE_ENV=development
+      - PORT=3400
+      - DATABASE_URL=postgresql://hotel_app:password@db:5432/hotel_unified_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=password
+    ports:
+      - "3400:3400"
+    depends_on:
+      - db
+      - redis
+
+  # PostgreSQL データベース
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=hotel_app
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=hotel_unified_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Redis キャッシュ
+  redis:
+    image: redis:8.2.0
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass password
+
+volumes:
+  pgdata:
+  saas_node_modules:
+  common_node_modules:

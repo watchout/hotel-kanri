@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: Hotel SaaS API
+  description: ホテルSaaS特化API - 顧客体験最適化
+  version: 1.0.0
+
+servers:
+  - url: https://saas.hotel-common.jp/api/v1
+    description: Production server
+  - url: http://localhost:3100/api/v1
+    description: Local development server
+
+paths:
+  /bookings:
+    get:
+      summary: 予約一覧取得
+      tags: [Bookings]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 予約一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    
+    post:
+      summary: 新規予約作成
+      tags: [Bookings]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        '201':
+          description: 予約作成成功
+
+  /guest-services:
+    get:
+      summary: ゲストサービス一覧
+      tags: [Guest Services]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: サービス一覧
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+        guestName:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [confirmed, pending, cancelled]
+        tenantId:
+          type: string
+
+    CreateBookingRequest:
+      type: object
+      required: [guestName, checkIn, checkOut]
+      properties:
+        guestName:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date

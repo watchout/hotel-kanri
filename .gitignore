@@ -1,0 +1,30 @@
+node_modules
+
+# 環境変数ファイル（秘密情報）
+.env
+.env.*
+!.env.example
+!.env.mcp.example
+
+# MCP環境変数（秘密情報）
+.env.mcp
+
+# Claude Code secrets
+.claude/settings.local.json
+
+# Nuxt generated files
+.nuxt/
+.output/
+
+# AI Development Framework artifacts
+.framework/audits/
+.framework/feedback/
+docs/audits/
+.github/workflows/eval-results.json
+
+# エージェント作業ファイル（絶対にコミット禁止）
+.claude/
+.cursor/
+.framework/
+*.local
+*.tmp

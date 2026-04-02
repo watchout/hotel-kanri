@@ -1,0 +1,156 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-10-08",
+  "description": "SSOT進捗管理の設定ファイル",
+  
+  "target_counts": {
+    "description": "各カテゴリの目標SSOT数（将来変更可能）",
+    "00_foundation": 14,
+    "01_admin_features": 20,
+    "02_guest_features": 10,
+    "03_business_features": 4,
+    "04_monitoring": 4,
+    "total": 52
+  },
+  
+  "mvp_required": {
+    "description": "MVP達成に必要なSSO（12件）",
+    "files": [
+      "SSOT_SAAS_AUTHENTICATION.md",
+      "SSOT_SAAS_ADMIN_AUTHENTICATION.md",
+      "SSOT_SAAS_DEVICE_AUTHENTICATION.md",
+      "SSOT_SAAS_MULTITENANT.md",
+      "SSOT_SAAS_DATABASE_SCHEMA.md",
+      "SSOT_SAAS_DASHBOARD.md",
+      "SSOT_SAAS_ORDER_MANAGEMENT.md",
+      "SSOT_SAAS_MENU_MANAGEMENT.md",
+      "SSOT_SAAS_ROOM_MANAGEMENT.md",
+      "SSOT_SAAS_FRONT_DESK_OPERATIONS.md",
+      "SSOT_ADMIN_BASIC_SETTINGS.md",
+      "SSOT_GUEST_ROOM_SERVICE_UI.md"
+    ]
+  },
+  
+  "phase1_required": {
+    "description": "Phase 1完成に必要なSSOT（6件）",
+    "files": [
+      "SSOT_SAAS_SUPER_ADMIN.md",
+      "SSOT_ADMIN_SYSTEM_LOGS.md",
+      "SSOT_ADMIN_BILLING.md",
+      "SSOT_SAAS_PERMISSION_SYSTEM.md",
+      "SSOT_SAAS_MEDIA_MANAGEMENT.md",
+      "SSOT_SAAS_PAYMENT_INTEGRATION.md"
+    ]
+  },
+  
+  "phase2_required": {
+    "description": "Phase 2完成に必要なSSOT（11件）",
+    "files": [
+      "SSOT_ADMIN_CAMPAIGNS.md",
+      "SSOT_ADMIN_CONTENT_APPS.md",
+      "SSOT_ADMIN_AI_SETTINGS.md",
+      "SSOT_ADMIN_PLAN_BILLING.md",
+      "SSOT_ADMIN_SYSTEM_INTEGRATION.md",
+      "SSOT_GUEST_ORDER_FLOW.md",
+      "SSOT_GUEST_MENU_VIEW.md",
+      "SSOT_GUEST_DEVICE_APP.md",
+      "SSOT_GUEST_CAMPAIGN_VIEW.md",
+      "SSOT_GUEST_INFO_PORTAL.md",
+      "SSOT_ADMIN_AI_CONCIERGE.md"
+    ]
+  },
+  
+  "phase3_required": {
+    "description": "Phase 3完成に必要なSSOT（8件）",
+    "files": [
+      "SSOT_ADMIN_FACILITY_RESERVATION.md",
+      "SSOT_ADMIN_BUSINESS_MANAGEMENT.md",
+      "SSOT_ADMIN_MULTILINGUAL.md",
+      "SSOT_GUEST_AI_CHAT.md",
+      "SSOT_GUEST_APP_LAUNCHER.md",
+      "SSOT_GUEST_PAGE_ROUTING.md",
+      "SSOT_GUEST_DEVICE_RESET.md",
+      "SSOT_SAAS_EMAIL_SYSTEM.md"
+    ]
+  },
+  
+  "phase4_required": {
+    "description": "Phase 4完成に必要なSSOT（4件）",
+    "files": [
+      "SSOT_SAAS_AUDIT_LOG.md",
+      "SSOT_SAAS_ERROR_HANDLING.md",
+      "SSOT_SAAS_LOG_SYSTEM.md",
+      "SSOT_OPERATIONAL_LOG_ARCHITECTURE.md"
+    ]
+  },
+  
+  "phase5_required": {
+    "description": "Phase 5完成に必要なSSOT（4件）",
+    "files": [
+      "SSOT_GUEST_AI_CONCIERGE.md",
+      "SSOT_ADMIN_AI_CONCIERGE_SETTINGS.md",
+      "SSOT_ADMIN_AI_KNOWLEDGE_BASE.md",
+      "SSOT_ADMIN_SYSTEM_BASIC_SETTINGS.md"
+    ]
+  },
+  
+  "milestones": {
+    "description": "マイルストーンと目標日",
+    "M0": {
+      "name": "MVP完成",
+      "target_date": "完了",
+      "uptime_target": "70%",
+      "status": "completed"
+    },
+    "M0.5": {
+      "name": "Phase 0完了（緊急修正）",
+      "target_date": "2025-10-14",
+      "uptime_target": "90%",
+      "status": "in_progress"
+    },
+    "M1": {
+      "name": "Phase 1完了（基盤完成）",
+      "target_date": "2025-10-28",
+      "uptime_target": "92%",
+      "status": "pending"
+    },
+    "M2": {
+      "name": "Phase 2完了（コア機能）",
+      "target_date": "2025-11-18",
+      "uptime_target": "95%",
+      "status": "pending"
+    },
+    "M3": {
+      "name": "Phase 3完了（拡張機能）",
+      "target_date": "2025-12-02",
+      "uptime_target": "97%",
+      "status": "pending"
+    },
+    "M4": {
+      "name": "Phase 4完了（運用・監視）",
+      "target_date": "2025-12-09",
+      "uptime_target": "98%",
+      "status": "pending"
+    },
+    "M5": {
+      "name": "Phase 5完了（ビジネス機能）",
+      "target_date": "2025-12-16",
+      "uptime_target": "100%",
+      "status": "pending"
+    }
+  },
+  
+  "update_notes": [
+    {
+      "date": "2025-10-08",
+      "version": "1.0.0",
+      "changes": [
+        "初回作成",
+        "MVP、Phase 1-5の定義を追加",
+        "目標SSOT数を各カテゴリに設定",
+        "マイルストーン情報を追加"
+      ]
+    }
+  ]
+}
+

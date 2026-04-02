@@ -1,0 +1,5573 @@
+{
+  "timestamp": "2025-09-01T09:11:38.867Z",
+  "database_tables": 41,
+  "prisma_models": [
+    {
+      "modelName": "DatabaseChangeLog",
+      "tableName": "DatabaseChangeLog",
+      "definition": "model DatabaseChangeLog {\n  id          Int      @id @default(autoincrement())\n  changeType  String\n  description String\n  details     Json?\n  createdBy   String?\n  createdAt   DateTime @default(now())\n\n  @@index([changeType])\n  @@index([createdAt])\n  @@map(\"DatabaseChangeLog\")\n}"
+    },
+    {
+      "modelName": "Order",
+      "tableName": "Order",
+      "definition": "model Order {\n  id        Int         @id @default(autoincrement())\n  tenantId  String\n  roomId    String\n  placeId   Int?\n  status    String      @default(\"received\")\n  items     Json\n  total     Int\n  createdAt DateTime    @default(now())\n  updatedAt DateTime\n  paidAt    DateTime?\n  isDeleted Boolean     @default(false)\n  deletedAt DateTime?\n  uuid      String?     @unique\n  sessionId String?\n  OrderItem OrderItem[]\n\n  @@index([createdAt])\n  @@index([isDeleted, paidAt])\n  @@index([status])\n  @@index([tenantId])\n  @@index([sessionId])\n  @@map(\"Order\")\n}"
+    },
+    {
+      "modelName": "OrderItem",
+      "tableName": "OrderItem",
+      "definition": "model OrderItem {\n  id          Int       @id @default(autoincrement())\n  tenantId    String\n  orderId     Int\n  menuItemId  Int\n  name        String\n  price       Int\n  quantity    Int\n  status      String    @default(\"pending\")\n  notes       String?\n  deliveredAt DateTime?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime\n  deleted_at  DateTime?\n  deleted_by  String?\n  is_deleted  Boolean   @default(false)\n  Order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)\n\n  @@index([is_deleted])\n  @@index([orderId])\n  @@index([status])\n  @@index([tenantId])\n  @@map(\"OrderItem\")\n}"
+    },
+    {
+      "modelName": "SystemPlanRestrictions",
+      "tableName": "SystemPlanRestrictions",
+      "definition": "model SystemPlanRestrictions {\n  id                       String             @id\n  systemType               String\n  businessType             String\n  planType                 String\n  planCategory             String\n  monthlyPrice             Int\n  maxDevices               Int                @default(30)\n  additionalDeviceCost     Int                @default(1200)\n  roomTerminalCost         Int                @default(1200)\n  frontDeskCost            Int                @default(5000)\n  kitchenCost              Int                @default(2000)\n  barCost                  Int                @default(2000)\n  housekeepingCost         Int                @default(2000)\n  managerCost              Int                @default(5000)\n  commonAreaCost           Int                @default(3500)\n  enableAiConcierge        Boolean            @default(false)\n  enableMultilingual       Boolean            @default(false)\n  enableLayoutEditor       Boolean            @default(false)\n  enableFacilityGuide      Boolean            @default(false)\n  enableAiBusinessSupport  Boolean            @default(false)\n  maxMonthlyOrders         Int                @default(1000)\n  maxMonthlyAiRequests     Int                @default(0)\n  maxStorageGB             Float              @default(5.0)\n  multilingualUpgradePrice Int                @default(3000)\n  description              String?\n  createdAt                DateTime           @default(now())\n  updatedAt                DateTime\n  deleted_at               DateTime?\n  deleted_by               String?\n  is_deleted               Boolean            @default(false)\n  TenantSystemPlan         TenantSystemPlan[]\n\n  @@unique([systemType, businessType, planType, planCategory], map: \"SystemPlanRestrictions_systemType_businessType_planType_planCat\")\n  @@index([is_deleted])\n  @@map(\"SystemPlanRestrictions\")\n}"
+    },
+    {
+      "modelName": "Tenant",
+      "tableName": "Tenant",
+      "definition": "model Tenant {\n  id                       String                     @id\n  name                     String\n  domain                   String?                    @unique\n  contactEmail             String?\n  createdAt                DateTime                   @default(now())\n  deleted_at               DateTime?\n  deleted_by               String?\n  features                 String[]\n  is_deleted               Boolean                    @default(false)\n  planType                 String?\n  settings                 Json?\n  status                   String                     @default(\"active\")\n  TenantSystemPlan         TenantSystemPlan[]\n  device_rooms             device_rooms[]\n  pages                    pages[]\n  service_usage_statistics service_usage_statistics[]\n  tenant_services          tenant_services[]\n\n  @@index([is_deleted])\n  @@map(\"Tenant\")\n}"
+    },
+    {
+      "modelName": "TenantSystemPlan",
+      "tableName": "TenantSystemPlan",
+      "definition": "model TenantSystemPlan {\n  id                     String                 @id\n  tenantId               String\n  systemType             String\n  planId                 String\n  startDate              DateTime               @default(now())\n  endDate                DateTime?\n  isActive               Boolean                @default(true)\n  monthlyPrice           Int\n  createdAt              DateTime               @default(now())\n  updatedAt              DateTime\n  deleted_at             DateTime?\n  deleted_by             String?\n  is_deleted             Boolean                @default(false)\n  SystemPlanRestrictions SystemPlanRestrictions @relation(fields: [planId], references: [id])\n  Tenant                 Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)\n\n  @@unique([tenantId, systemType])\n  @@index([isActive])\n  @@index([is_deleted])\n  @@index([planId])\n  @@index([systemType])\n  @@index([tenantId])\n  @@map(\"TenantSystemPlan\")\n}"
+    },
+    {
+      "modelName": "admin",
+      "tableName": "admin",
+      "definition": "model admin {\n  id                    String      @id\n  email                 String      @unique\n  username              String      @unique\n  display_name          String\n  password_hash         String\n  admin_level           AdminLevel\n  accessible_group_ids  String[]\n  accessible_chain_ids  String[]\n  accessible_tenant_ids String[]\n  last_login_at         DateTime?\n  login_attempts        Int         @default(0)\n  locked_until          DateTime?\n  totp_secret           String?\n  totp_enabled          Boolean     @default(false)\n  created_at            DateTime    @default(now())\n  updated_at            DateTime\n  created_by            String?\n  is_active             Boolean     @default(true)\n  deleted_at            DateTime?\n  deleted_by            String?\n  is_deleted            Boolean     @default(false)\n  admin_log             admin_log[]\n\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "admin_log",
+      "tableName": "admin_log",
+      "definition": "model admin_log {\n  id            String    @id\n  admin_id      String\n  action        String\n  target_type   String?\n  target_id     String?\n  ip_address    String?\n  user_agent    String?\n  success       Boolean   @default(true)\n  error_message String?\n  created_at    DateTime  @default(now())\n  deleted_at    DateTime?\n  deleted_by    String?\n  is_deleted    Boolean   @default(false)\n  admin         admin     @relation(fields: [admin_id], references: [id])\n\n  @@index([action])\n  @@index([admin_id])\n  @@index([created_at])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "campaign_categories",
+      "tableName": "campaign_categories",
+      "definition": "model campaign_categories {\n  id                          String                        @id\n  tenantId                    String\n  code                        String                        @unique\n  name                        String\n  description                 String?\n  createdAt                   DateTime                      @default(now())\n  updatedAt                   DateTime\n  deleted_at                  DateTime?\n  deleted_by                  String?\n  is_deleted                  Boolean                       @default(false)\n  campaign_category_relations campaign_category_relations[]\n\n  @@index([is_deleted])\n  @@index([tenantId])\n}"
+    },
+    {
+      "modelName": "campaign_category_relations",
+      "tableName": "campaign_category_relations",
+      "definition": "model campaign_category_relations {\n  id                  String              @id\n  campaignId          String\n  categoryId          String\n  createdAt           DateTime            @default(now())\n  deleted_at          DateTime?\n  deleted_by          String?\n  is_deleted          Boolean             @default(false)\n  campaigns           campaigns           @relation(fields: [campaignId], references: [id], onDelete: Cascade)\n  campaign_categories campaign_categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n\n  @@unique([campaignId, categoryId])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "campaign_items",
+      "tableName": "campaign_items",
+      "definition": "model campaign_items {\n  id         String    @id\n  campaignId String\n  itemId     String\n  itemType   String\n  priority   Int       @default(0)\n  createdAt  DateTime  @default(now())\n  deleted_at DateTime?\n  deleted_by String?\n  is_deleted Boolean   @default(false)\n  campaigns  campaigns @relation(fields: [campaignId], references: [id], onDelete: Cascade)\n\n  @@unique([campaignId, itemId, itemType])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "campaign_translations",
+      "tableName": "campaign_translations",
+      "definition": "model campaign_translations {\n  id           String    @id\n  campaignId   String\n  locale       String\n  title        String\n  description  String?\n  imageUrl     String?\n  languageCode String?\n  name         String?\n  deleted_at   DateTime?\n  deleted_by   String?\n  is_deleted   Boolean   @default(false)\n  campaigns    campaigns @relation(fields: [campaignId], references: [id], onDelete: Cascade)\n\n  @@unique([campaignId, locale])\n  @@index([is_deleted])\n  @@index([languageCode])\n}"
+    },
+    {
+      "modelName": "campaign_usage_logs",
+      "tableName": "campaign_usage_logs",
+      "definition": "model campaign_usage_logs {\n  id         String    @id\n  campaignId String\n  userId     String?\n  deviceId   String?\n  action     String\n  createdAt  DateTime  @default(now())\n  deleted_at DateTime?\n  deleted_by String?\n  is_deleted Boolean   @default(false)\n  campaigns  campaigns @relation(fields: [campaignId], references: [id], onDelete: Cascade)\n\n  @@index([campaignId])\n  @@index([deviceId])\n  @@index([is_deleted])\n  @@index([userId])\n}"
+    },
+    {
+      "modelName": "campaigns",
+      "tableName": "campaigns",
+      "definition": "model campaigns {\n  id                          String                        @id\n  tenantId                    String\n  code                        String                        @unique\n  status                      CampaignStatus                @default(DRAFT)\n  displayType                 CampaignDisplayType\n  startDate                   DateTime?\n  endDate                     DateTime?\n  priority                    Int                           @default(0)\n  ctaType                     CampaignCtaType               @default(NONE)\n  ctaAction                   String?\n  ctaLabel                    String?\n  discountType                String?\n  discountValue               Decimal?                      @db.Decimal(10, 2)\n  createdAt                   DateTime                      @default(now())\n  updatedAt                   DateTime\n  dayRestrictions             Json?\n  description                 String?\n  displayPriority             Int                           @default(0)\n  maxUsageCount               Int?\n  name                        String\n  timeRestrictions            Json?\n  welcomeSettings             Json?\n  deleted_at                  DateTime?\n  deleted_by                  String?\n  is_deleted                  Boolean                       @default(false)\n  campaign_category_relations campaign_category_relations[]\n  campaign_items              campaign_items[]\n  campaign_translations       campaign_translations[]\n  campaign_usage_logs         campaign_usage_logs[]\n\n  @@index([is_deleted])\n  @@index([startDate, endDate])\n  @@index([status])\n  @@index([tenantId])\n}"
+    },
+    {
+      "modelName": "customers",
+      "tableName": "customers",
+      "definition": "model customers {\n  id                   String         @id\n  tenant_id            String\n  name                 String\n  email                String?\n  phone                String?\n  address              String?\n  birth_date           DateTime?\n  member_id            String?\n  rank_id              String?\n  total_points         Int            @default(0)\n  total_stays          Int            @default(0)\n  pms_updatable_fields String[]       @default([\"name\", \"phone\", \"address\"])\n  origin_system        String         @default(\"hotel-member\")\n  synced_at            DateTime       @default(now())\n  updated_by_system    String         @default(\"hotel-member\")\n  preferences          Json           @default(\"{}"
+    },
+    {
+      "modelName": "device_rooms",
+      "tableName": "device_rooms",
+      "definition": "model device_rooms {\n  id         Int       @id @default(autoincrement())\n  tenantId   String\n  roomId     String\n  roomName   String?\n  deviceId   String?\n  deviceType String?\n  placeId    String?\n  status     String?   @default(\"active\")\n  ipAddress  String?\n  macAddress String?\n  lastUsedAt DateTime?\n  isActive   Boolean   @default(true)\n  createdAt  DateTime  @default(now())\n  updatedAt  DateTime\n  is_deleted Boolean   @default(false)\n  deleted_at DateTime?\n  deleted_by String?\n  Tenant     Tenant    @relation(fields: [tenantId], references: [id])\n\n  @@index([deviceId])\n  @@index([is_deleted])\n  @@index([placeId])\n  @@index([roomId])\n  @@index([status])\n  @@index([tenantId])\n}"
+    },
+    {
+      "modelName": "device_video_caches",
+      "tableName": "device_video_caches",
+      "definition": "model device_video_caches {\n  id           String    @id\n  deviceId     String\n  videoIds     String[]\n  lastShownAt  DateTime  @default(now())\n  updatedAt    DateTime\n  lastViewedAt DateTime?\n  userId       String?\n  viewed       Boolean   @default(false)\n  deleted_at   DateTime?\n  deleted_by   String?\n  is_deleted   Boolean   @default(false)\n\n  @@unique([deviceId, userId])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "notification_templates",
+      "tableName": "notification_templates",
+      "definition": "model notification_templates {\n  id         String    @id\n  tenant_id  String\n  type       String\n  code       String\n  subject    String?\n  content    String\n  variables  String[]\n  is_active  Boolean   @default(true)\n  created_at DateTime  @default(now())\n  updated_at DateTime\n  body       String\n  html       Boolean   @default(false)\n  locale     String\n  deleted_at DateTime?\n  deleted_by String?\n  is_deleted Boolean   @default(false)\n\n  @@unique([tenant_id, type, code, locale])\n  @@index([is_deleted])\n  @@index([tenant_id])\n  @@index([type])\n}"
+    },
+    {
+      "modelName": "page_histories",
+      "tableName": "page_histories",
+      "definition": "model page_histories {\n  Id         String    @id\n  PageId     String\n  Html       String?\n  Css        String?\n  Content    String?\n  Template   String?\n  Version    Int\n  CreatedAt  DateTime  @default(now())\n  CreatedBy  String?\n  deleted_at DateTime?\n  deleted_by String?\n  is_deleted Boolean   @default(false)\n  pages      pages     @relation(fields: [PageId], references: [Id], onDelete: Cascade)\n\n  @@index([PageId])\n  @@index([Version])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "pages",
+      "tableName": "pages",
+      "definition": "model pages {\n  Id             String           @id\n  TenantId       String\n  Slug           String\n  Title          String\n  Html           String?\n  Css            String?\n  Content        String?\n  Template       String?\n  IsPublished    Boolean          @default(false)\n  PublishedAt    DateTime?\n  Version        Int              @default(1)\n  CreatedAt      DateTime         @default(now())\n  UpdatedAt      DateTime\n  deleted_at     DateTime?\n  deleted_by     String?\n  is_deleted     Boolean          @default(false)\n  page_histories page_histories[]\n  Tenant         Tenant           @relation(fields: [TenantId], references: [id])\n\n  @@unique([TenantId, Slug])\n  @@index([IsPublished])\n  @@index([Slug])\n  @@index([TenantId])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "reservations",
+      "tableName": "reservations",
+      "definition": "model reservations {\n  id                  String     @id\n  tenant_id           String\n  customer_id         String?\n  guest_name          String\n  guest_phone         String?\n  guest_email         String?\n  checkin_date        DateTime\n  checkout_date       DateTime\n  adult_count         Int        @default(1)\n  child_count         Int        @default(0)\n  room_type           String\n  room_number         String?\n  total_amount        Decimal    @db.Decimal(10, 2)\n  deposit_amount      Decimal    @default(0) @db.Decimal(10, 2)\n  status              String     @default(\"PENDING\")\n  origin              String\n  ota_id              String?\n  confirmation_number String\n  special_requests    String?\n  internal_notes      String?\n  origin_system       String     @default(\"hotel-pms\")\n  synced_at           DateTime   @default(now())\n  updated_by_system   String     @default(\"hotel-pms\")\n  created_at          DateTime   @default(now())\n  updated_at          DateTime\n  deleted_at          DateTime?\n  is_deleted          Boolean    @default(false)\n  deleted_by          String?\n  customers           customers? @relation(fields: [customer_id], references: [id])\n\n  @@index([checkin_date])\n  @@index([checkout_date])\n  @@index([is_deleted])\n  @@index([status])\n  @@index([tenant_id])\n}"
+    },
+    {
+      "modelName": "response_node_translations",
+      "tableName": "response_node_translations",
+      "definition": "model response_node_translations {\n  id             String         @id\n  nodeId         String\n  locale         String\n  content        String?\n  createdAt      DateTime       @default(now())\n  updatedAt      DateTime\n  answer         Json?\n  language       String?\n  title          String?\n  deleted_at     DateTime?\n  deleted_by     String?\n  is_deleted     Boolean        @default(false)\n  response_nodes response_nodes @relation(fields: [nodeId], references: [id], onDelete: Cascade)\n\n  @@unique([nodeId, language])\n  @@unique([nodeId, locale])\n  @@index([is_deleted])\n}"
+    },
+    {
+      "modelName": "response_nodes",
+      "tableName": "response_nodes",
+      "definition": "model response_nodes {\n  id                         String                       @id\n  treeId                     String\n  nodeType                   String\n  content                    String?\n  metadata                   Json?\n  isRoot                     Boolean                      @default(false)\n  parentId                   String?\n  position                   Int                          @default(0)\n  createdAt                  DateTime                     @default(now())\n  updatedAt                  DateTime\n  answer                     Json?\n  description                String?\n  icon                       String?\n  order                      Int                          @default(0)\n  title                      String?\n  type                       String?\n  response_node_translations response_node_translations[]\n  response_nodes             response_nodes?              @relation(\"response_nodesToresponse_nodes\", fields: [parentId], references: [id])\n  other_response_nodes       response_nodes[]             @relation(\"response_nodesToresponse_nodes\")\n  response_trees             response_trees               @relation(fields: [treeId], references: [id], onDelete: Cascade)\n  response_tree_history      response_tree_history[]\n  response_tree_sessions     response_tree_sessions[]\n\n  @@index([isRoot])\n  @@index([parentId])\n  @@index([treeId])\n}"
+    },
+    {
+      "modelName": "response_tree_history",
+      "tableName": "response_tree_history",
+      "definition": "model response_tree_history {\n  id                     String                 @id\n  sessionId              String\n  nodeId                 String\n  response               String?\n  metadata               Json?\n  createdAt              DateTime               @default(now())\n  action                 String?\n  timestamp              DateTime               @default(now())\n  response_nodes         response_nodes         @relation(fields: [nodeId], references: [id])\n  response_tree_sessions response_tree_sessions @relation(fields: [sessionId], references: [id], onDelete: Cascade)\n\n  @@index([sessionId])\n}"
+    },
+    {
+      "modelName": "response_tree_mobile_links",
+      "tableName": "response_tree_mobile_links",
+      "definition": "model response_tree_mobile_links {\n  id                     String                 @id\n  sessionId              String\n  code                   String                 @unique\n  qrCodeData             String?\n  isActive               Boolean                @default(true)\n  connectionId           String?\n  createdAt              DateTime               @default(now())\n  expiresAt              DateTime\n  connectedAt            DateTime?\n  deviceId               Int?\n  response_tree_sessions response_tree_sessions @relation(fields: [sessionId], references: [id], onDelete: Cascade)\n\n  @@index([code])\n  @@index([isActive])\n}"
+    },
+    {
+      "modelName": "response_tree_sessions",
+      "tableName": "response_tree_sessions",
+      "definition": "model response_tree_sessions {\n  id                         String                       @id\n  treeId                     String\n  userId                     String?\n  deviceId                   String?\n  currentNodeId              String?\n  metadata                   Json?\n  isComplete                 Boolean                      @default(false)\n  startedAt                  DateTime                     @default(now())\n  updatedAt                  DateTime\n  completedAt                DateTime?\n  endedAt                    DateTime?\n  interfaceType              String?\n  language                   String?\n  lastActivityAt             DateTime?\n  roomId                     String?\n  sessionId                  String                       @unique\n  response_tree_history      response_tree_history[]\n  response_tree_mobile_links response_tree_mobile_links[]\n  response_nodes             response_nodes?              @relation(fields: [currentNodeId], references: [id])\n  response_trees             response_trees               @relation(fields: [treeId], references: [id], onDelete: Cascade)\n\n  @@index([deviceId])\n  @@index([isComplete])\n  @@index([treeId])\n  @@index([userId])\n}"
+    },
+    {
+      "modelName": "response_tree_versions",
+      "tableName": "response_tree_versions",
+      "definition": "model response_tree_versions {\n  id             String         @id\n  treeId         String\n  version        Int\n  snapshot       Json\n  createdAt      DateTime       @default(now())\n  createdBy      String?\n  data           Json?\n  response_trees response_trees @relation(fields: [treeId], references: [id], onDelete: Cascade)\n\n  @@unique([treeId, version])\n}"
+    },
+    {
+      "modelName": "response_trees",
+      "tableName": "response_trees",
+      "definition": "model response_trees {\n  id                     String                   @id\n  tenantId               String\n  name                   String\n  description            String?\n  isPublished            Boolean                  @default(false)\n  publishedAt            DateTime?\n  version                Int                      @default(1)\n  createdAt              DateTime                 @default(now())\n  updatedAt              DateTime\n  isActive               Boolean                  @default(true)\n  deleted_at             DateTime?\n  deleted_by             String?\n  is_deleted             Boolean                  @default(false)\n  response_nodes         response_nodes[]\n  response_tree_sessions response_tree_sessions[]\n  response_tree_versions response_tree_versions[]\n\n  @@index([isPublished])\n  @@index([is_deleted])\n  @@index([tenantId])\n}"
+    },
+    {
+      "modelName": "room_grades",
+      "tableName": "room_grades",
+      "definition": "model room_grades {\n  id          String   @id\n  tenant_id   String\n  code        String\n  name        String\n  description String?\n  created_at  DateTime @default(now())\n  updated_at  DateTime\n\n  @@unique([tenant_id, code])\n  @@index([tenant_id])\n}"
+    },
+    {
+      "modelName": "schema_version",
+      "tableName": "schema_version",
+      "definition": "model schema_version {\n  version      String   @id\n  description  String\n  rollback_sql String?\n  applied_at   DateTime @default(now())\n  applied_by   String?\n}"
+    },
+    {
+      "modelName": "service_plan_restrictions",
+      "tableName": "service_plan_restrictions",
+      "definition": "model service_plan_restrictions {\n  id                        String   @id\n  service_type              String\n  plan_type                 String\n  plan_category             String\n  max_users                 Int      @default(10)\n  max_devices               Int      @default(5)\n  max_monthly_orders        Int?\n  enable_ai_concierge       Boolean?\n  enable_multilingual       Boolean?\n  max_rooms                 Int?\n  enable_revenue_management Boolean?\n  max_monthly_ai_requests   Int?\n  enable_ai_crm             Boolean?\n  monthly_price             Int      @default(9800)\n  created_at                DateTime @default(now())\n  updated_at                DateTime @default(now())\n\n  @@unique([service_type, plan_type, plan_category], map: \"service_plan_restrictions_service_type_plan_type_plan_category_\")\n}"
+    },
+    {
+      "modelName": "service_usage_statistics",
+      "tableName": "service_usage_statistics",
+      "definition": "model service_usage_statistics {\n  id                   String   @id\n  tenant_id            String\n  service_type         String\n  month                String\n  active_users_count   Int      @default(0)\n  active_devices_count Int      @default(0)\n  usage_data           Json     @default(\"{}"
+    },
+    {
+      "modelName": "staff",
+      "tableName": "staff",
+      "definition": "model staff {\n  id                 String    @id\n  tenant_id          String\n  email              String\n  name               String\n  role               String\n  department         String?\n  is_active          Boolean   @default(true)\n  created_at         DateTime  @default(now())\n  updated_at         DateTime\n  failed_login_count Int       @default(0)\n  last_login_at      DateTime?\n  locked_until       DateTime?\n  password_hash      String?\n  deleted_at         DateTime?\n  deleted_by         String?\n  is_deleted         Boolean   @default(false)\n\n  @@unique([tenant_id, email])\n  @@index([email])\n  @@index([is_deleted])\n  @@index([role])\n  @@index([tenant_id])\n}"
+    },
+    {
+      "modelName": "system_event",
+      "tableName": "system_event",
+      "definition": "model system_event {\n  id            String    @id\n  tenant_id     String\n  user_id       String?\n  event_type    String\n  source_system String\n  target_system String\n  entity_type   String\n  entity_id     String\n  action        String\n  event_data    Json?\n  created_at    DateTime  @default(now())\n  processed_at  DateTime?\n  status        String    @default(\"PENDING\")\n\n  @@index([created_at])\n  @@index([event_type])\n  @@index([status])\n  @@index([tenant_id])\n}"
+    },
+    {
+      "modelName": "tenant_access_logs",
+      "tableName": "tenant_access_logs",
+      "definition": "model tenant_access_logs {\n  id            String   @id\n  tenant_id     String\n  user_id       String?\n  action        String\n  resource      String?\n  ip_address    String?\n  user_agent    String?\n  created_at    DateTime @default(now())\n  source_system String?\n\n  @@index([created_at])\n  @@index([tenant_id])\n  @@index([user_id])\n}"
+    },
+    {
+      "modelName": "tenant_services",
+      "tableName": "tenant_services",
+      "definition": "model tenant_services {\n  id             String    @id\n  tenant_id      String\n  service_type   String\n  plan_type      String\n  is_active      Boolean   @default(true)\n  activated_at   DateTime  @default(now())\n  expires_at     DateTime?\n  service_config Json      @default(\"{}"
+    },
+    {
+      "modelName": "checkin_sessions",
+      "tableName": "checkin_sessions",
+      "definition": "model checkin_sessions {\n  id                String           @id @default(cuid())\n  tenant_id         String\n  session_number    String           @unique\n  reservation_id    String?\n  room_id           String\n  guest_info        Json\n  adults            Int              @default(1)\n  children          Int              @default(0)\n  check_in_at       DateTime\n  check_out_at      DateTime?\n  planned_check_out DateTime\n  status            String           @default(\"ACTIVE\")\n  special_requests  String?\n  notes             String?\n  created_at        DateTime         @default(now())\n  updated_at        DateTime         @updatedAt\n\n  @@index([tenant_id])\n  @@index([session_number])\n  @@index([room_id])\n  @@index([status])\n  @@index([check_in_at])\n}"
+    },
+    {
+      "modelName": "session_billings",
+      "tableName": "session_billings",
+      "definition": "model session_billings {\n  id              String    @id @default(cuid())\n  tenant_id       String\n  session_id      String\n  billing_number  String    @unique\n  room_charges    Json\n  service_charges Json\n  taxes           Json\n  discounts       Json\n  subtotal_amount Int\n  tax_amount      Int\n  total_amount    Int\n  paid_amount     Int       @default(0)\n  status          String    @default(\"PENDING\")\n  payment_method  String?\n  payment_date    DateTime?\n  due_date        DateTime\n  notes           String?\n  created_at      DateTime  @default(now())\n  updated_at      DateTime  @updatedAt\n\n  @@index([tenant_id])\n  @@index([session_id])\n  @@index([billing_number])\n  @@index([status])\n  @@index([due_date])\n}"
+    },
+    {
+      "modelName": "Room",
+      "tableName": "rooms",
+      "definition": "model Room {\n  id          String    @id @default(cuid())\n  tenantId    String\n  roomNumber  String\n  roomType    String\n  floor       Int?\n  status      String    @default(\"AVAILABLE\")\n  capacity    Int       @default(2)\n  amenities   Json?\n  notes       String?\n  lastCleaned DateTime?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n  deletedBy   String?\n\n  @@unique([tenantId, roomNumber])\n  @@index([tenantId])\n  @@index([status])\n  @@index([roomType])\n  @@index([floor])\n  @@index([isDeleted])\n  @@map(\"rooms\")\n}"
+    },
+    {
+      "modelName": "Transaction",
+      "tableName": "transactions",
+      "definition": "model Transaction {\n  id           String    @id @default(cuid())\n  tenantId     String\n  invoiceId    String?\n  paymentId    String?\n  type         String\n  amount       Int\n  taxAmount    Int       @default(0)\n  totalAmount  Int\n  status       String    @default(\"PENDING\")\n  description  String?\n  reference    String?\n  metadata     Json?\n  createdAt    DateTime  @default(now())\n  updatedAt    DateTime  @updatedAt\n  createdBy    String?\n  isDeleted    Boolean   @default(false)\n  deletedAt    DateTime?\n  deletedBy    String?\n\n  @@index([tenantId])\n  @@index([type])\n  @@index([status])\n  @@index([createdAt])\n  @@index([isDeleted])\n  @@map(\"transactions\")\n}"
+    },
+    {
+      "modelName": "Payment",
+      "tableName": "payments",
+      "definition": "model Payment {\n  id            String    @id @default(cuid())\n  tenantId      String\n  transactionId String?\n  paymentMethod String\n  amount        Int\n  status        String    @default(\"PENDING\")\n  reference     String?\n  metadata      Json?\n  processedAt   DateTime?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  createdBy     String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n  deletedBy     String?\n\n  @@index([tenantId])\n  @@index([paymentMethod])\n  @@index([status])\n  @@index([createdAt])\n  @@index([isDeleted])\n  @@map(\"payments\")\n}"
+    }
+  ],
+  "tables_in_db_only": [],
+  "models_in_prisma_only": [],
+  "matched_tables": [
+    "DatabaseChangeLog",
+    "Order",
+    "OrderItem",
+    "SystemPlanRestrictions",
+    "Tenant",
+    "TenantSystemPlan",
+    "admin",
+    "admin_log",
+    "campaign_categories",
+    "campaign_category_relations",
+    "campaign_items",
+    "campaign_translations",
+    "campaign_usage_logs",
+    "campaigns",
+    "checkin_sessions",
+    "customers",
+    "device_rooms",
+    "device_video_caches",
+    "notification_templates",
+    "page_histories",
+    "pages",
+    "payments",
+    "reservations",
+    "response_node_translations",
+    "response_nodes",
+    "response_tree_history",
+    "response_tree_mobile_links",
+    "response_tree_sessions",
+    "response_tree_versions",
+    "response_trees",
+    "room_grades",
+    "rooms",
+    "schema_version",
+    "service_plan_restrictions",
+    "service_usage_statistics",
+    "session_billings",
+    "staff",
+    "system_event",
+    "tenant_access_logs",
+    "tenant_services",
+    "transactions"
+  ],
+  "table_details": {
+    "DatabaseChangeLog": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "nextval('\"DatabaseChangeLog_id_seq\"'::regclass)",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "changeType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "details",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "DatabaseChangeLog_changeType_idx",
+          "column_name": "changeType",
+          "is_unique": false
+        },
+        {
+          "index_name": "DatabaseChangeLog_createdAt_idx",
+          "column_name": "createdAt",
+          "is_unique": false
+        },
+        {
+          "index_name": "DatabaseChangeLog_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "Order": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "nextval('\"Order_id_seq\"'::regclass)",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "placeId",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'received'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "items",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "total",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "paidAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isDeleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "sessionId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "uuid",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "Order_createdAt_idx",
+          "column_name": "createdAt",
+          "is_unique": false
+        },
+        {
+          "index_name": "Order_isDeleted_paidAt_idx",
+          "column_name": "isDeleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "Order_isDeleted_paidAt_idx",
+          "column_name": "paidAt",
+          "is_unique": false
+        },
+        {
+          "index_name": "Order_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "Order_sessionId_idx",
+          "column_name": "sessionId",
+          "is_unique": false
+        },
+        {
+          "index_name": "Order_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "Order_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        },
+        {
+          "index_name": "Order_uuid_key",
+          "column_name": "uuid",
+          "is_unique": true
+        }
+      ]
+    },
+    "OrderItem": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "nextval('\"OrderItem_id_seq\"'::regclass)",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "orderId",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "menuItemId",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "price",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "quantity",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'pending'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "notes",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deliveredAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "OrderItem_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "OrderItem_orderId_idx",
+          "column_name": "orderId",
+          "is_unique": false
+        },
+        {
+          "index_name": "OrderItem_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "OrderItem_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "OrderItem_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        }
+      ]
+    },
+    "SystemPlanRestrictions": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "systemType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "businessType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "planType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "planCategory",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "monthlyPrice",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "maxDevices",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "30",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "additionalDeviceCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1200",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomTerminalCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1200",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "frontDeskCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "5000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "kitchenCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "2000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "barCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "2000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "housekeepingCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "2000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "managerCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "5000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "commonAreaCost",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "3500",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enableAiConcierge",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enableMultilingual",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enableLayoutEditor",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enableFacilityGuide",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enableAiBusinessSupport",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "maxMonthlyOrders",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "maxMonthlyAiRequests",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "maxStorageGB",
+          "data_type": "double precision",
+          "is_nullable": "NO",
+          "column_default": "5.0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "multilingualUpgradePrice",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "3000",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "SystemPlanRestrictions_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "SystemPlanRestrictions_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "SystemPlanRestrictions_systemType_businessType_planType_planCat",
+          "column_name": "businessType",
+          "is_unique": true
+        },
+        {
+          "index_name": "SystemPlanRestrictions_systemType_businessType_planType_planCat",
+          "column_name": "planCategory",
+          "is_unique": true
+        },
+        {
+          "index_name": "SystemPlanRestrictions_systemType_businessType_planType_planCat",
+          "column_name": "planType",
+          "is_unique": true
+        },
+        {
+          "index_name": "SystemPlanRestrictions_systemType_businessType_planType_planCat",
+          "column_name": "systemType",
+          "is_unique": true
+        }
+      ]
+    },
+    "Tenant": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "domain",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "planType",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'active'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "contactEmail",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "features",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "settings",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "Tenant_domain_key",
+          "column_name": "domain",
+          "is_unique": true
+        },
+        {
+          "index_name": "Tenant_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "Tenant_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "TenantSystemPlan": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "systemType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "planId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "startDate",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "endDate",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isActive",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "monthlyPrice",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "TenantSystemPlan_isActive_idx",
+          "column_name": "isActive",
+          "is_unique": false
+        },
+        {
+          "index_name": "TenantSystemPlan_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "TenantSystemPlan_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "TenantSystemPlan_planId_idx",
+          "column_name": "planId",
+          "is_unique": false
+        },
+        {
+          "index_name": "TenantSystemPlan_systemType_idx",
+          "column_name": "systemType",
+          "is_unique": false
+        },
+        {
+          "index_name": "TenantSystemPlan_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        },
+        {
+          "index_name": "TenantSystemPlan_tenantId_systemType_key",
+          "column_name": "systemType",
+          "is_unique": true
+        },
+        {
+          "index_name": "TenantSystemPlan_tenantId_systemType_key",
+          "column_name": "tenantId",
+          "is_unique": true
+        }
+      ]
+    },
+    "_prisma_migrations": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "character varying",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": 36
+        },
+        {
+          "column_name": "checksum",
+          "data_type": "character varying",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": 64
+        },
+        {
+          "column_name": "finished_at",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "migration_name",
+          "data_type": "character varying",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": 255
+        },
+        {
+          "column_name": "logs",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "rolled_back_at",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "started_at",
+          "data_type": "timestamp with time zone",
+          "is_nullable": "NO",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "applied_steps_count",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "_prisma_migrations_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "admin": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "email",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "username",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "display_name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "password_hash",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "admin_level",
+          "data_type": "USER-DEFINED",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "accessible_group_ids",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "accessible_chain_ids",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "accessible_tenant_ids",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "last_login_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "login_attempts",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "locked_until",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "totp_secret",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "totp_enabled",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_active",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "admin_email_key",
+          "column_name": "email",
+          "is_unique": true
+        },
+        {
+          "index_name": "admin_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "admin_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "admin_username_key",
+          "column_name": "username",
+          "is_unique": true
+        }
+      ]
+    },
+    "admin_log": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "admin_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "action",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "target_type",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "target_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ip_address",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "user_agent",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "success",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "error_message",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "admin_log_action_idx",
+          "column_name": "action",
+          "is_unique": false
+        },
+        {
+          "index_name": "admin_log_admin_id_idx",
+          "column_name": "admin_id",
+          "is_unique": false
+        },
+        {
+          "index_name": "admin_log_created_at_idx",
+          "column_name": "created_at",
+          "is_unique": false
+        },
+        {
+          "index_name": "admin_log_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "admin_log_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "campaign_categories": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "code",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "campaign_categories_code_key",
+          "column_name": "code",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_categories_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_categories_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_categories_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        }
+      ]
+    },
+    "campaign_category_relations": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "campaignId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "categoryId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "campaign_category_relations_campaignId_categoryId_key",
+          "column_name": "campaignId",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_category_relations_campaignId_categoryId_key",
+          "column_name": "categoryId",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_category_relations_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_category_relations_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "campaign_items": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "campaignId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "itemId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "itemType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "priority",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "campaign_items_campaignId_itemId_itemType_key",
+          "column_name": "campaignId",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_items_campaignId_itemId_itemType_key",
+          "column_name": "itemId",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_items_campaignId_itemId_itemType_key",
+          "column_name": "itemType",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_items_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_items_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "campaign_translations": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "campaignId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "locale",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "title",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "imageUrl",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "languageCode",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "campaign_translations_campaignId_locale_key",
+          "column_name": "campaignId",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_translations_campaignId_locale_key",
+          "column_name": "locale",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_translations_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_translations_languageCode_idx",
+          "column_name": "languageCode",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_translations_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "campaign_usage_logs": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "campaignId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "userId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deviceId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "action",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "campaign_usage_logs_campaignId_idx",
+          "column_name": "campaignId",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_usage_logs_deviceId_idx",
+          "column_name": "deviceId",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_usage_logs_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaign_usage_logs_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaign_usage_logs_userId_idx",
+          "column_name": "userId",
+          "is_unique": false
+        }
+      ]
+    },
+    "campaigns": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "code",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "USER-DEFINED",
+          "is_nullable": "NO",
+          "column_default": "'DRAFT'::\"CampaignStatus\"",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "displayType",
+          "data_type": "USER-DEFINED",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "startDate",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "endDate",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "priority",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ctaType",
+          "data_type": "USER-DEFINED",
+          "is_nullable": "NO",
+          "column_default": "'NONE'::\"CampaignCtaType\"",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ctaAction",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ctaLabel",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "discountType",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "discountValue",
+          "data_type": "numeric",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "dayRestrictions",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "displayPriority",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "maxUsageCount",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "timeRestrictions",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "welcomeSettings",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "campaigns_code_key",
+          "column_name": "code",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaigns_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaigns_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "campaigns_startDate_endDate_idx",
+          "column_name": "endDate",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaigns_startDate_endDate_idx",
+          "column_name": "startDate",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaigns_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "campaigns_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        }
+      ]
+    },
+    "checkin_sessions": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "session_number",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "reservation_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "room_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "guest_info",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "adults",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "children",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "check_in_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "check_out_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "planned_check_out",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'ACTIVE'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "special_requests",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "notes",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "checkin_sessions_check_in_at_idx",
+          "column_name": "check_in_at",
+          "is_unique": false
+        },
+        {
+          "index_name": "checkin_sessions_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "checkin_sessions_room_id_idx",
+          "column_name": "room_id",
+          "is_unique": false
+        },
+        {
+          "index_name": "checkin_sessions_session_number_idx",
+          "column_name": "session_number",
+          "is_unique": false
+        },
+        {
+          "index_name": "checkin_sessions_session_number_key",
+          "column_name": "session_number",
+          "is_unique": true
+        },
+        {
+          "index_name": "checkin_sessions_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "checkin_sessions_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "customers": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "email",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "phone",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "address",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "birth_date",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "member_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "rank_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "total_points",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "total_stays",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "pms_updatable_fields",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": "ARRAY['name'::text, 'phone'::text, 'address'::text]",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "origin_system",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'hotel-member'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "synced_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_by_system",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'hotel-member'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "preferences",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": "'{}'::jsonb",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "customers_email_idx",
+          "column_name": "email",
+          "is_unique": false
+        },
+        {
+          "index_name": "customers_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "customers_member_id_idx",
+          "column_name": "member_id",
+          "is_unique": false
+        },
+        {
+          "index_name": "customers_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "customers_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "device_rooms": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "nextval('device_rooms_id_seq'::regclass)",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomName",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deviceId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deviceType",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "placeId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "'active'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ipAddress",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "macAddress",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "lastUsedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isActive",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "device_rooms_deviceId_idx",
+          "column_name": "deviceId",
+          "is_unique": false
+        },
+        {
+          "index_name": "device_rooms_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "device_rooms_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "device_rooms_placeId_idx",
+          "column_name": "placeId",
+          "is_unique": false
+        },
+        {
+          "index_name": "device_rooms_roomId_idx",
+          "column_name": "roomId",
+          "is_unique": false
+        },
+        {
+          "index_name": "device_rooms_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "device_rooms_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        }
+      ]
+    },
+    "device_video_caches": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deviceId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "videoIds",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "lastShownAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "lastViewedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "userId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "viewed",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "device_video_caches_deviceId_userId_key",
+          "column_name": "deviceId",
+          "is_unique": true
+        },
+        {
+          "index_name": "device_video_caches_deviceId_userId_key",
+          "column_name": "userId",
+          "is_unique": true
+        },
+        {
+          "index_name": "device_video_caches_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "device_video_caches_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "notification_templates": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "code",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "subject",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "content",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "variables",
+          "data_type": "ARRAY",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_active",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "body",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "html",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "locale",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "notification_templates_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "notification_templates_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "notification_templates_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        },
+        {
+          "index_name": "notification_templates_tenant_id_type_code_locale_key",
+          "column_name": "code",
+          "is_unique": true
+        },
+        {
+          "index_name": "notification_templates_tenant_id_type_code_locale_key",
+          "column_name": "locale",
+          "is_unique": true
+        },
+        {
+          "index_name": "notification_templates_tenant_id_type_code_locale_key",
+          "column_name": "tenant_id",
+          "is_unique": true
+        },
+        {
+          "index_name": "notification_templates_tenant_id_type_code_locale_key",
+          "column_name": "type",
+          "is_unique": true
+        },
+        {
+          "index_name": "notification_templates_type_idx",
+          "column_name": "type",
+          "is_unique": false
+        }
+      ]
+    },
+    "page_histories": {
+      "columns": [
+        {
+          "column_name": "Id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "PageId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Html",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Css",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Content",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Template",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Version",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "CreatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "CreatedBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "page_histories_PageId_idx",
+          "column_name": "PageId",
+          "is_unique": false
+        },
+        {
+          "index_name": "page_histories_Version_idx",
+          "column_name": "Version",
+          "is_unique": false
+        },
+        {
+          "index_name": "page_histories_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "page_histories_pkey",
+          "column_name": "Id",
+          "is_unique": true
+        }
+      ]
+    },
+    "pages": {
+      "columns": [
+        {
+          "column_name": "Id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "TenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Slug",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Title",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Html",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Css",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Content",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Template",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "IsPublished",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "PublishedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "Version",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "CreatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "UpdatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "pages_IsPublished_idx",
+          "column_name": "IsPublished",
+          "is_unique": false
+        },
+        {
+          "index_name": "pages_Slug_idx",
+          "column_name": "Slug",
+          "is_unique": false
+        },
+        {
+          "index_name": "pages_TenantId_Slug_key",
+          "column_name": "Slug",
+          "is_unique": true
+        },
+        {
+          "index_name": "pages_TenantId_Slug_key",
+          "column_name": "TenantId",
+          "is_unique": true
+        },
+        {
+          "index_name": "pages_TenantId_idx",
+          "column_name": "TenantId",
+          "is_unique": false
+        },
+        {
+          "index_name": "pages_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "pages_pkey",
+          "column_name": "Id",
+          "is_unique": true
+        }
+      ]
+    },
+    "payments": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "(gen_random_uuid())::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "transactionId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "paymentMethod",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "amount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "'PENDING'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "reference",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "metadata",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "processedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isDeleted",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_payments_createdat",
+          "column_name": "createdAt",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_payments_isdeleted",
+          "column_name": "isDeleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_payments_paymentmethod",
+          "column_name": "paymentMethod",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_payments_status",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_payments_tenantid",
+          "column_name": "tenantId",
+          "is_unique": false
+        },
+        {
+          "index_name": "payments_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "reservations": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "customer_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "guest_name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "guest_phone",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "guest_email",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "checkin_date",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "checkout_date",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "adult_count",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "child_count",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "room_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "room_number",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "total_amount",
+          "data_type": "numeric",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deposit_amount",
+          "data_type": "numeric",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'PENDING'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "origin",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ota_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "confirmation_number",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "special_requests",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "internal_notes",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "origin_system",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'hotel-pms'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "synced_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_by_system",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'hotel-pms'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "reservations_checkin_date_idx",
+          "column_name": "checkin_date",
+          "is_unique": false
+        },
+        {
+          "index_name": "reservations_checkout_date_idx",
+          "column_name": "checkout_date",
+          "is_unique": false
+        },
+        {
+          "index_name": "reservations_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "reservations_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "reservations_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "reservations_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "response_node_translations": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "nodeId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "locale",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "content",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "answer",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "language",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "title",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_node_translations_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_node_translations_nodeId_language_key",
+          "column_name": "language",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_node_translations_nodeId_language_key",
+          "column_name": "nodeId",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_node_translations_nodeId_locale_key",
+          "column_name": "locale",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_node_translations_nodeId_locale_key",
+          "column_name": "nodeId",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_node_translations_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "response_nodes": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "treeId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "nodeType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "content",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "metadata",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isRoot",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "parentId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "position",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "answer",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "icon",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "order",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "title",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "type",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_nodes_isRoot_idx",
+          "column_name": "isRoot",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_nodes_parentId_idx",
+          "column_name": "parentId",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_nodes_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_nodes_treeId_idx",
+          "column_name": "treeId",
+          "is_unique": false
+        }
+      ]
+    },
+    "response_tree_history": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "sessionId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "nodeId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "response",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "metadata",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "action",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "timestamp",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_tree_history_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_tree_history_sessionId_idx",
+          "column_name": "sessionId",
+          "is_unique": false
+        }
+      ]
+    },
+    "response_tree_mobile_links": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "sessionId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "code",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "qrCodeData",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isActive",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "connectionId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "expiresAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "connectedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deviceId",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_tree_mobile_links_code_idx",
+          "column_name": "code",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_tree_mobile_links_code_key",
+          "column_name": "code",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_tree_mobile_links_isActive_idx",
+          "column_name": "isActive",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_tree_mobile_links_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    },
+    "response_tree_sessions": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "treeId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "userId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deviceId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "currentNodeId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "metadata",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isComplete",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "startedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "completedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "endedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "interfaceType",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "language",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "lastActivityAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "sessionId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_tree_sessions_deviceId_idx",
+          "column_name": "deviceId",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_tree_sessions_isComplete_idx",
+          "column_name": "isComplete",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_tree_sessions_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_tree_sessions_sessionId_key",
+          "column_name": "sessionId",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_tree_sessions_treeId_idx",
+          "column_name": "treeId",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_tree_sessions_userId_idx",
+          "column_name": "userId",
+          "is_unique": false
+        }
+      ]
+    },
+    "response_tree_versions": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "treeId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "version",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "snapshot",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "data",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_tree_versions_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_tree_versions_treeId_version_key",
+          "column_name": "treeId",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_tree_versions_treeId_version_key",
+          "column_name": "version",
+          "is_unique": true
+        }
+      ]
+    },
+    "response_trees": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isPublished",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "publishedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "version",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "1",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isActive",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "response_trees_isPublished_idx",
+          "column_name": "isPublished",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_trees_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "response_trees_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "response_trees_tenantId_idx",
+          "column_name": "tenantId",
+          "is_unique": false
+        }
+      ]
+    },
+    "room_grades": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "code",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "room_grades_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "room_grades_tenant_id_code_key",
+          "column_name": "code",
+          "is_unique": true
+        },
+        {
+          "index_name": "room_grades_tenant_id_code_key",
+          "column_name": "tenant_id",
+          "is_unique": true
+        },
+        {
+          "index_name": "room_grades_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "rooms": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "(gen_random_uuid())::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomNumber",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "roomType",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "floor",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "'AVAILABLE'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "capacity",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": "2",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "amenities",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "notes",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "lastCleaned",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isDeleted",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_rooms_floor",
+          "column_name": "floor",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_rooms_isdeleted",
+          "column_name": "isDeleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_rooms_roomtype",
+          "column_name": "roomType",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_rooms_status",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_rooms_tenantid",
+          "column_name": "tenantId",
+          "is_unique": false
+        },
+        {
+          "index_name": "rooms_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "rooms_tenantId_roomNumber_key",
+          "column_name": "roomNumber",
+          "is_unique": true
+        },
+        {
+          "index_name": "rooms_tenantId_roomNumber_key",
+          "column_name": "tenantId",
+          "is_unique": true
+        }
+      ]
+    },
+    "schema_version": {
+      "columns": [
+        {
+          "column_name": "version",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "rollback_sql",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "applied_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "applied_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "schema_version_pkey",
+          "column_name": "version",
+          "is_unique": true
+        }
+      ]
+    },
+    "service_plan_restrictions": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "service_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "plan_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "plan_category",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "max_users",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "10",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "max_devices",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "5",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "max_monthly_orders",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enable_ai_concierge",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enable_multilingual",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "max_rooms",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enable_revenue_management",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "max_monthly_ai_requests",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "enable_ai_crm",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "monthly_price",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "9800",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "service_plan_restrictions_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "service_plan_restrictions_service_type_plan_type_plan_category_",
+          "column_name": "plan_category",
+          "is_unique": true
+        },
+        {
+          "index_name": "service_plan_restrictions_service_type_plan_type_plan_category_",
+          "column_name": "plan_type",
+          "is_unique": true
+        },
+        {
+          "index_name": "service_plan_restrictions_service_type_plan_type_plan_category_",
+          "column_name": "service_type",
+          "is_unique": true
+        }
+      ]
+    },
+    "service_usage_statistics": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "service_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "month",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "active_users_count",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "active_devices_count",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "usage_data",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": "'{}'::jsonb",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "service_usage_statistics_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "service_usage_statistics_tenant_id_service_type_month_key",
+          "column_name": "month",
+          "is_unique": true
+        },
+        {
+          "index_name": "service_usage_statistics_tenant_id_service_type_month_key",
+          "column_name": "service_type",
+          "is_unique": true
+        },
+        {
+          "index_name": "service_usage_statistics_tenant_id_service_type_month_key",
+          "column_name": "tenant_id",
+          "is_unique": true
+        }
+      ]
+    },
+    "session_billings": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "session_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "billing_number",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "room_charges",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "service_charges",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "taxes",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "discounts",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "subtotal_amount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tax_amount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "total_amount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "paid_amount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'PENDING'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "payment_method",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "payment_date",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "due_date",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "notes",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "session_billings_billing_number_idx",
+          "column_name": "billing_number",
+          "is_unique": false
+        },
+        {
+          "index_name": "session_billings_billing_number_key",
+          "column_name": "billing_number",
+          "is_unique": true
+        },
+        {
+          "index_name": "session_billings_due_date_idx",
+          "column_name": "due_date",
+          "is_unique": false
+        },
+        {
+          "index_name": "session_billings_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "session_billings_session_id_idx",
+          "column_name": "session_id",
+          "is_unique": false
+        },
+        {
+          "index_name": "session_billings_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "session_billings_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "staff": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "email",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "name",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "role",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "department",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_active",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "failed_login_count",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "last_login_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "locked_until",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "password_hash",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deleted_by",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_deleted",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "false",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "staff_email_idx",
+          "column_name": "email",
+          "is_unique": false
+        },
+        {
+          "index_name": "staff_is_deleted_idx",
+          "column_name": "is_deleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "staff_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "staff_role_idx",
+          "column_name": "role",
+          "is_unique": false
+        },
+        {
+          "index_name": "staff_tenant_id_email_key",
+          "column_name": "email",
+          "is_unique": true
+        },
+        {
+          "index_name": "staff_tenant_id_email_key",
+          "column_name": "tenant_id",
+          "is_unique": true
+        },
+        {
+          "index_name": "staff_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "system_event": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "user_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "event_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "source_system",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "target_system",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "entity_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "entity_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "action",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "event_data",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "processed_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "'PENDING'::text",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "system_event_created_at_idx",
+          "column_name": "created_at",
+          "is_unique": false
+        },
+        {
+          "index_name": "system_event_event_type_idx",
+          "column_name": "event_type",
+          "is_unique": false
+        },
+        {
+          "index_name": "system_event_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "system_event_status_idx",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "system_event_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "tenant_access_logs": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "user_id",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "action",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "resource",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "ip_address",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "user_agent",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "source_system",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "tenant_access_logs_created_at_idx",
+          "column_name": "created_at",
+          "is_unique": false
+        },
+        {
+          "index_name": "tenant_access_logs_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "tenant_access_logs_tenant_id_idx",
+          "column_name": "tenant_id",
+          "is_unique": false
+        },
+        {
+          "index_name": "tenant_access_logs_user_id_idx",
+          "column_name": "user_id",
+          "is_unique": false
+        }
+      ]
+    },
+    "tenant_services": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenant_id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "service_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "plan_type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "is_active",
+          "data_type": "boolean",
+          "is_nullable": "NO",
+          "column_default": "true",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "activated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "expires_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "service_config",
+          "data_type": "jsonb",
+          "is_nullable": "NO",
+          "column_default": "'{}'::jsonb",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updated_at",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "NO",
+          "column_default": "CURRENT_TIMESTAMP",
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "tenant_services_pkey",
+          "column_name": "id",
+          "is_unique": true
+        },
+        {
+          "index_name": "tenant_services_tenant_id_service_type_key",
+          "column_name": "service_type",
+          "is_unique": true
+        },
+        {
+          "index_name": "tenant_services_tenant_id_service_type_key",
+          "column_name": "tenant_id",
+          "is_unique": true
+        }
+      ]
+    },
+    "transactions": {
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": "(gen_random_uuid())::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "tenantId",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "invoiceId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "paymentId",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "type",
+          "data_type": "text",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "amount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "taxAmount",
+          "data_type": "integer",
+          "is_nullable": "YES",
+          "column_default": "0",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "totalAmount",
+          "data_type": "integer",
+          "is_nullable": "NO",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "status",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": "'PENDING'::text",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "description",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "reference",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "metadata",
+          "data_type": "jsonb",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "updatedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": "now()",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "createdBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "isDeleted",
+          "data_type": "boolean",
+          "is_nullable": "YES",
+          "column_default": "false",
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedAt",
+          "data_type": "timestamp without time zone",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        },
+        {
+          "column_name": "deletedBy",
+          "data_type": "text",
+          "is_nullable": "YES",
+          "column_default": null,
+          "character_maximum_length": null
+        }
+      ],
+      "indexes": [
+        {
+          "index_name": "idx_transactions_createdat",
+          "column_name": "createdAt",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_transactions_isdeleted",
+          "column_name": "isDeleted",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_transactions_status",
+          "column_name": "status",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_transactions_tenantid",
+          "column_name": "tenantId",
+          "is_unique": false
+        },
+        {
+          "index_name": "idx_transactions_type",
+          "column_name": "type",
+          "is_unique": false
+        },
+        {
+          "index_name": "transactions_pkey",
+          "column_name": "id",
+          "is_unique": true
+        }
+      ]
+    }
+  }
+}

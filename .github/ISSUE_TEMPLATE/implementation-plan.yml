@@ -1,0 +1,50 @@
+name: Implementation Plan
+description: 実装前に必ず作る計画（Plan Gate）
+title: "PLAN: <要約>"
+labels: ["PLAN"]
+body:
+  - type: checkboxes
+    id: phase2
+    attributes:
+      label: Phase 2（既存実装の100%調査 15分）※全て必須
+      options:
+        - label: 同ディレクトリの既存3ファイル以上を確認
+          required: true
+        - label: Prismaスキーマ/DBテーブルを確認
+          required: true
+        - label: 関連SSOT（OpenAPI/要件）を確認
+          required: true
+        - label: 認証方式・命名規則・連携境界を把握
+          required: true
+  - type: textarea
+    id: plan
+    attributes:
+      label: 実装プラン（手順/影響範囲/代替案）
+    validations:
+      required: true
+  - type: input
+    id: reqid
+    attributes:
+      label: 主要要件ID（例: REQ-API-001）
+    validations:
+      required: true
+  - type: checkboxes
+    id: agree
+    attributes:
+      label: 宣言
+      options:
+        - label: 実装は薄いプロキシで、直HTTP禁止を遵守する
+          required: true
+        - label: 失敗時はSSOT再読込→計画更新→再承認まで停止
+          required: true
+  - type: textarea
+    id: existing_patterns
+    attributes:
+      label: 既存パターン調査結果
+      description: 確認した3ファイル以上のパスとパターンを記載
+      placeholder: |
+        - /server/api/v1/admin/devices/list.get.ts: callHotelCommonAPI使用
+        - /server/utils/api-client.ts: Cookie自動転送
+    validations:
+      required: true
+

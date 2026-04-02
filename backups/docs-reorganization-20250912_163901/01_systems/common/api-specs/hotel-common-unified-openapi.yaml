@@ -1,0 +1,530 @@
+openapi: 3.0.3
+info:
+  title: Hotel Common Unified API
+  description: 統合ホテル管理システム API仕様
+  version: 1.0.0
+  contact:
+    name: Hotel Common Development Team
+    email: dev@hotel-common.jp
+
+servers:
+  - url: https://api.hotel-common.jp/v1
+    description: Production server
+  - url: https://staging-api.hotel-common.jp/v1
+    description: Staging server
+  - url: http://localhost:3400/api/v1
+    description: Local development server
+
+paths:
+  # 認証エンドポイント
+  /auth/login:
+    post:
+      summary: ユーザーログイン
+      tags: [Authentication]
+      description: |
+        2025-09-11 by common: パスワードは`bcrypt`で`staff.password_hash`と照合。不一致・未登録は401を返す。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@hotel.com
+                password:
+                  type: string
+                  minLength: 8
+                  example: password123
+                tenantId:
+                  type: string
+                  example: hotel_abc_123
+      responses:
+        '200':
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  refreshToken:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+                  tenant:
+                    $ref: '#/components/schemas/Tenant'
+                  availableTenants:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        domain:
+                          type: string
+                        staffRole:
+                          type: string
+        '401':
+          description: 認証失敗（メール未登録またはパスワード不一致）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      summary: トークンリフレッシュ
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: リフレッシュ成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+
+  # 顧客管理エンドポイント
+  /customers:
+    get:
+      summary: 顧客一覧取得
+      tags: [Customers]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: 名前・メールでの検索
+      responses:
+        '200':
+          description: 顧客一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      summary: 顧客新規作成
+      tags: [Customers]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerRequest'
+      responses:
+        '201':
+          description: 顧客作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /customers/{customerId}:
+    get:
+      summary: 顧客詳細取得
+      tags: [Customers]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 顧客詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+    put:
+      summary: 顧客情報更新
+      tags: [Customers]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  # 予約管理エンドポイント
+  /reservations:
+    get:
+      summary: 予約一覧取得
+      tags: [Reservations]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, confirmed, cancelled, completed]
+      responses:
+        '200':
+          description: 予約一覧
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Reservation'
+
+    post:
+      summary: 新規予約作成
+      tags: [Reservations]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReservationRequest'
+      responses:
+        '201':
+          description: 予約作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+
+  # 部屋管理エンドポイント
+  /rooms:
+    get:
+      summary: 部屋一覧取得
+      tags: [Rooms]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: checkIn
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: checkOut
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: roomType
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 利用可能な部屋一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Room'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: user_123
+        email:
+          type: string
+          format: email
+          example: user@hotel.com
+        firstName:
+          type: string
+          example: 太郎
+        lastName:
+          type: string
+          example: 田中
+        role:
+          type: string
+          enum: [admin, manager, staff, user]
+        tenantId:
+          type: string
+          example: hotel_abc_123
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Tenant:
+      type: object
+      properties:
+        id:
+          type: string
+          example: hotel_abc_123
+        name:
+          type: string
+          example: ホテルABC
+        domain:
+          type: string
+          example: hotel-abc.com
+        settings:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: customer_456
+        firstName:
+          type: string
+          example: 花子
+        lastName:
+          type: string
+          example: 佐藤
+        email:
+          type: string
+          format: email
+          example: customer@example.com
+        phone:
+          type: string
+          example: 090-1234-5678
+        address:
+          type: string
+          example: 東京都渋谷区...
+        tenantId:
+          type: string
+          example: hotel_abc_123
+        membershipLevel:
+          type: string
+          enum: [bronze, silver, gold, platinum]
+        totalStays:
+          type: integer
+          example: 5
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateCustomerRequest:
+      type: object
+      required: [firstName, lastName, email, phone]
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: string
+
+    UpdateCustomerRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          type: string
+
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: reservation_789
+        customerId:
+          type: string
+          example: customer_456
+        roomId:
+          type: string
+          example: room_101
+        checkIn:
+          type: string
+          format: date
+          example: 2024-03-15
+        checkOut:
+          type: string
+          format: date
+          example: 2024-03-17
+        guests:
+          type: integer
+          example: 2
+        totalAmount:
+          type: number
+          format: decimal
+          example: 25000.00
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled, completed]
+        tenantId:
+          type: string
+          example: hotel_abc_123
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateReservationRequest:
+      type: object
+      required: [customerId, roomId, checkIn, checkOut, guests]
+      properties:
+        customerId:
+          type: string
+        roomId:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        guests:
+          type: integer
+          minimum: 1
+        specialRequests:
+          type: string
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: string
+          example: room_101
+        number:
+          type: string
+          example: "101"
+        type:
+          type: string
+          example: standard
+        capacity:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: decimal
+          example: 12500.00
+        amenities:
+          type: array
+          items:
+            type: string
+          example: [WiFi, TV, エアコン]
+        isAvailable:
+          type: boolean
+          example: true
+        tenantId:
+          type: string
+          example: hotel_abc_123
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 100
+        totalPages:
+          type: integer
+          example: 5
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid request
+        message:
+          type: string
+          example: Required field is missing
+        code:
+          type: string
+          example: VALIDATION_ERROR

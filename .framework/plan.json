@@ -1,0 +1,4832 @@
+{
+  "status": "active",
+  "generatedAt": "2026-03-05T08:01:56.248Z",
+  "updatedAt": "2026-04-02T04:00:00.000Z",
+  "waves": [
+    {
+      "number": 1,
+      "phase": "individual",
+      "title": "Wave 1: Independent Features",
+      "features": [
+        {
+          "id": "C-001",
+          "name": "Authentication System",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_AUTHENTICATION.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-002",
+          "name": "Admin Authentication",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_ADMIN_AUTHENTICATION.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-003",
+          "name": "Device Authentication",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_DEVICE_AUTHENTICATION.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-004",
+          "name": "Multi-tenant Architecture",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_MULTITENANT.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-005",
+          "name": "Database Schema",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_DATABASE_SCHEMA.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-006",
+          "name": "Permission System (RBAC)",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_PERMISSION_SYSTEM.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-007",
+          "name": "DB Migration Operations",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_DATABASE_MIGRATION_OPERATION.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-008",
+          "name": "Operational Log Architecture",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_OPERATIONAL_LOG_ARCHITECTURE.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "C-013",
+          "name": "Production Parity Rules",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_PRODUCTION_PARITY_RULES.md"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "C-014",
+          "name": "Staff Management (Common)",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_STAFF_MANAGEMENT.md (foundation)"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-001",
+          "name": "Dashboard",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_DASHBOARD.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-002",
+          "name": "Menu Management",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_MENU_MANAGEMENT.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-003",
+          "name": "Order Management",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_ORDER_MANAGEMENT.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-004",
+          "name": "Room Management",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_ROOM_MANAGEMENT.md"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "F-005",
+          "name": "Front Desk Operations",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_FRONT_DESK_OPERATIONS.md"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "F-006",
+          "name": "Staff Management (Admin)",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_STAFF_MANAGEMENT.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-007",
+          "name": "Basic Settings",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_BASIC_SETTINGS.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-021",
+          "name": "Permission System UI",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_PERMISSION_SYSTEM.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "G-001",
+          "name": "Room Service UI",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_ROOM_SERVICE_UI.md"
+          ],
+          "dependencyCount": 0,
+          "status": "in_progress"
+        },
+        {
+          "id": "G-002",
+          "name": "Order Flow",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_ORDER_FLOW.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "G-003",
+          "name": "Menu View",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_MENU_VIEW.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "G-004",
+          "name": "Device App (Capacitor)",
+          "priority": "P0",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_DEVICE_APP.md"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "C-009",
+          "name": "Multilingual System",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_MULTILINGUAL_SYSTEM.md"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "C-010",
+          "name": "Multicultural AI",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_MULTICULTURAL_AI.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "C-011",
+          "name": "Media Management",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_MEDIA_MANAGEMENT.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "C-012",
+          "name": "Email System",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_EMAIL_SYSTEM.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-008",
+          "name": "AI Concierge Overview",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "ai_concierge/SSOT_ADMIN_AI_CONCIERGE_OVERVIEW.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-009",
+          "name": "AI Knowledge Base",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "ai_concierge/SSOT_ADMIN_AI_KNOWLEDGE_BASE.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-011",
+          "name": "AI Character Settings",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "ai_concierge/SSOT_ADMIN_AI_CHARACTER.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-012",
+          "name": "AI Concierge Database",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "ai_concierge/SSOT_ADMIN_AI_CONCIERGE_DATABASE.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-013",
+          "name": "Statistics Core",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_STATISTICS_CORE.md"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "F-016",
+          "name": "Admin UI Design / Layout",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_UI_DESIGN.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-017",
+          "name": "System Logs",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_SYSTEM_LOGS.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "F-018",
+          "name": "Billing",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_BILLING.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-019",
+          "name": "Super Admin",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_SAAS_SUPER_ADMIN.md"
+          ],
+          "dependencyCount": 0,
+          "status": "done"
+        },
+        {
+          "id": "G-005",
+          "name": "Campaign View",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_CAMPAIGN_VIEW.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "G-006",
+          "name": "Info Portal",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_INFO_PORTAL.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "G-007",
+          "name": "AI Chat",
+          "priority": "P1",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_AI_CHAT.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "C-015",
+          "name": "World-class UI Design Principles",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_WORLD_CLASS_UI_DESIGN_PRINCIPLES.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-014",
+          "name": "Statistics AI",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_STATISTICS_AI.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-015",
+          "name": "Statistics Delivery / A/B Test",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_STATISTICS_DELIVERY.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "F-020",
+          "name": "AI Settings",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_ADMIN_AI_SETTINGS.md"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "G-008",
+          "name": "App Launcher",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_APP_LAUNCHER.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "backlog"
+        },
+        {
+          "id": "G-009",
+          "name": "Page Routing / Navigation",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_PAGE_ROUTING.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        },
+        {
+          "id": "G-010",
+          "name": "Device Reset / Maintenance",
+          "priority": "P2",
+          "size": "M",
+          "type": "proprietary",
+          "dependencies": [
+            "SSOT_GUEST_DEVICE_RESET.md (planned)"
+          ],
+          "dependencyCount": 0,
+          "status": "todo"
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "C-001-DB",
+      "featureId": "C-001",
+      "kind": "db",
+      "name": "Authentication System - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-001-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-001-API",
+      "featureId": "C-001",
+      "kind": "api",
+      "name": "Authentication System - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-001-DB"
+      ],
+      "blocks": [
+        "C-001-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-001-UI",
+      "featureId": "C-001",
+      "kind": "ui",
+      "name": "Authentication System - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-001-API"
+      ],
+      "blocks": [
+        "C-001-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-001-INTEGRATION",
+      "featureId": "C-001",
+      "kind": "integration",
+      "name": "Authentication System - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-001-UI"
+      ],
+      "blocks": [
+        "C-001-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-001-REVIEW",
+      "featureId": "C-001",
+      "kind": "review",
+      "name": "Authentication System - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-001-INTEGRATION"
+      ],
+      "blocks": [
+        "C-001-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-001-TEST",
+      "featureId": "C-001",
+      "kind": "test",
+      "name": "Authentication System - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-001-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-002-DB",
+      "featureId": "C-002",
+      "kind": "db",
+      "name": "Admin Authentication - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-002-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-002-API",
+      "featureId": "C-002",
+      "kind": "api",
+      "name": "Admin Authentication - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-002-DB"
+      ],
+      "blocks": [
+        "C-002-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-002-UI",
+      "featureId": "C-002",
+      "kind": "ui",
+      "name": "Admin Authentication - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-002-API"
+      ],
+      "blocks": [
+        "C-002-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-002-INTEGRATION",
+      "featureId": "C-002",
+      "kind": "integration",
+      "name": "Admin Authentication - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-002-UI"
+      ],
+      "blocks": [
+        "C-002-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-002-REVIEW",
+      "featureId": "C-002",
+      "kind": "review",
+      "name": "Admin Authentication - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-002-INTEGRATION"
+      ],
+      "blocks": [
+        "C-002-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-002-TEST",
+      "featureId": "C-002",
+      "kind": "test",
+      "name": "Admin Authentication - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-002-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-003-DB",
+      "featureId": "C-003",
+      "kind": "db",
+      "name": "Device Authentication - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-003-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-003-API",
+      "featureId": "C-003",
+      "kind": "api",
+      "name": "Device Authentication - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-003-DB"
+      ],
+      "blocks": [
+        "C-003-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-003-UI",
+      "featureId": "C-003",
+      "kind": "ui",
+      "name": "Device Authentication - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-003-API"
+      ],
+      "blocks": [
+        "C-003-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-003-INTEGRATION",
+      "featureId": "C-003",
+      "kind": "integration",
+      "name": "Device Authentication - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-003-UI"
+      ],
+      "blocks": [
+        "C-003-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-003-REVIEW",
+      "featureId": "C-003",
+      "kind": "review",
+      "name": "Device Authentication - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-003-INTEGRATION"
+      ],
+      "blocks": [
+        "C-003-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-003-TEST",
+      "featureId": "C-003",
+      "kind": "test",
+      "name": "Device Authentication - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-003-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-004-DB",
+      "featureId": "C-004",
+      "kind": "db",
+      "name": "Multi-tenant Architecture - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-004-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-004-API",
+      "featureId": "C-004",
+      "kind": "api",
+      "name": "Multi-tenant Architecture - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-004-DB"
+      ],
+      "blocks": [
+        "C-004-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-004-UI",
+      "featureId": "C-004",
+      "kind": "ui",
+      "name": "Multi-tenant Architecture - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-004-API"
+      ],
+      "blocks": [
+        "C-004-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-004-INTEGRATION",
+      "featureId": "C-004",
+      "kind": "integration",
+      "name": "Multi-tenant Architecture - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-004-UI"
+      ],
+      "blocks": [
+        "C-004-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-004-REVIEW",
+      "featureId": "C-004",
+      "kind": "review",
+      "name": "Multi-tenant Architecture - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-004-INTEGRATION"
+      ],
+      "blocks": [
+        "C-004-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-004-TEST",
+      "featureId": "C-004",
+      "kind": "test",
+      "name": "Multi-tenant Architecture - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-004-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-005-DB",
+      "featureId": "C-005",
+      "kind": "db",
+      "name": "Database Schema - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-005-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-005-API",
+      "featureId": "C-005",
+      "kind": "api",
+      "name": "Database Schema - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-005-DB"
+      ],
+      "blocks": [
+        "C-005-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-005-UI",
+      "featureId": "C-005",
+      "kind": "ui",
+      "name": "Database Schema - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-005-API"
+      ],
+      "blocks": [
+        "C-005-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-005-INTEGRATION",
+      "featureId": "C-005",
+      "kind": "integration",
+      "name": "Database Schema - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-005-UI"
+      ],
+      "blocks": [
+        "C-005-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-005-REVIEW",
+      "featureId": "C-005",
+      "kind": "review",
+      "name": "Database Schema - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-005-INTEGRATION"
+      ],
+      "blocks": [
+        "C-005-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-005-TEST",
+      "featureId": "C-005",
+      "kind": "test",
+      "name": "Database Schema - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-005-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-006-DB",
+      "featureId": "C-006",
+      "kind": "db",
+      "name": "Permission System (RBAC) - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-006-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-006-API",
+      "featureId": "C-006",
+      "kind": "api",
+      "name": "Permission System (RBAC) - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-006-DB"
+      ],
+      "blocks": [
+        "C-006-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-006-UI",
+      "featureId": "C-006",
+      "kind": "ui",
+      "name": "Permission System (RBAC) - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-006-API"
+      ],
+      "blocks": [
+        "C-006-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-006-INTEGRATION",
+      "featureId": "C-006",
+      "kind": "integration",
+      "name": "Permission System (RBAC) - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-006-UI"
+      ],
+      "blocks": [
+        "C-006-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-006-REVIEW",
+      "featureId": "C-006",
+      "kind": "review",
+      "name": "Permission System (RBAC) - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-006-INTEGRATION"
+      ],
+      "blocks": [
+        "C-006-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-006-TEST",
+      "featureId": "C-006",
+      "kind": "test",
+      "name": "Permission System (RBAC) - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-006-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-007-DB",
+      "featureId": "C-007",
+      "kind": "db",
+      "name": "DB Migration Operations - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-007-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-007-API",
+      "featureId": "C-007",
+      "kind": "api",
+      "name": "DB Migration Operations - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-007-DB"
+      ],
+      "blocks": [
+        "C-007-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-007-UI",
+      "featureId": "C-007",
+      "kind": "ui",
+      "name": "DB Migration Operations - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-007-API"
+      ],
+      "blocks": [
+        "C-007-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-007-INTEGRATION",
+      "featureId": "C-007",
+      "kind": "integration",
+      "name": "DB Migration Operations - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-007-UI"
+      ],
+      "blocks": [
+        "C-007-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-007-REVIEW",
+      "featureId": "C-007",
+      "kind": "review",
+      "name": "DB Migration Operations - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-007-INTEGRATION"
+      ],
+      "blocks": [
+        "C-007-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-007-TEST",
+      "featureId": "C-007",
+      "kind": "test",
+      "name": "DB Migration Operations - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-007-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-008-DB",
+      "featureId": "C-008",
+      "kind": "db",
+      "name": "Operational Log Architecture - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-008-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-008-API",
+      "featureId": "C-008",
+      "kind": "api",
+      "name": "Operational Log Architecture - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-008-DB"
+      ],
+      "blocks": [
+        "C-008-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-008-UI",
+      "featureId": "C-008",
+      "kind": "ui",
+      "name": "Operational Log Architecture - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-008-API"
+      ],
+      "blocks": [
+        "C-008-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-008-INTEGRATION",
+      "featureId": "C-008",
+      "kind": "integration",
+      "name": "Operational Log Architecture - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-008-UI"
+      ],
+      "blocks": [
+        "C-008-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-008-REVIEW",
+      "featureId": "C-008",
+      "kind": "review",
+      "name": "Operational Log Architecture - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-008-INTEGRATION"
+      ],
+      "blocks": [
+        "C-008-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-008-TEST",
+      "featureId": "C-008",
+      "kind": "test",
+      "name": "Operational Log Architecture - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-008-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-013-DB",
+      "featureId": "C-013",
+      "kind": "db",
+      "name": "Production Parity Rules - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-013-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-013-API",
+      "featureId": "C-013",
+      "kind": "api",
+      "name": "Production Parity Rules - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-013-DB"
+      ],
+      "blocks": [
+        "C-013-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-013-UI",
+      "featureId": "C-013",
+      "kind": "ui",
+      "name": "Production Parity Rules - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-013-API"
+      ],
+      "blocks": [
+        "C-013-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-013-INTEGRATION",
+      "featureId": "C-013",
+      "kind": "integration",
+      "name": "Production Parity Rules - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-013-UI"
+      ],
+      "blocks": [
+        "C-013-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-013-REVIEW",
+      "featureId": "C-013",
+      "kind": "review",
+      "name": "Production Parity Rules - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-013-INTEGRATION"
+      ],
+      "blocks": [
+        "C-013-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-013-TEST",
+      "featureId": "C-013",
+      "kind": "test",
+      "name": "Production Parity Rules - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-013-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-014-DB",
+      "featureId": "C-014",
+      "kind": "db",
+      "name": "Staff Management (Common) - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-014-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-014-API",
+      "featureId": "C-014",
+      "kind": "api",
+      "name": "Staff Management (Common) - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-014-DB"
+      ],
+      "blocks": [
+        "C-014-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-014-UI",
+      "featureId": "C-014",
+      "kind": "ui",
+      "name": "Staff Management (Common) - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-014-API"
+      ],
+      "blocks": [
+        "C-014-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-014-INTEGRATION",
+      "featureId": "C-014",
+      "kind": "integration",
+      "name": "Staff Management (Common) - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-014-UI"
+      ],
+      "blocks": [
+        "C-014-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-014-REVIEW",
+      "featureId": "C-014",
+      "kind": "review",
+      "name": "Staff Management (Common) - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-014-INTEGRATION"
+      ],
+      "blocks": [
+        "C-014-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-014-TEST",
+      "featureId": "C-014",
+      "kind": "test",
+      "name": "Staff Management (Common) - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-014-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-001-DB",
+      "featureId": "F-001",
+      "kind": "db",
+      "name": "Dashboard - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-001-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-001-API",
+      "featureId": "F-001",
+      "kind": "api",
+      "name": "Dashboard - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-001-DB"
+      ],
+      "blocks": [
+        "F-001-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-001-UI",
+      "featureId": "F-001",
+      "kind": "ui",
+      "name": "Dashboard - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-001-API"
+      ],
+      "blocks": [
+        "F-001-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-001-INTEGRATION",
+      "featureId": "F-001",
+      "kind": "integration",
+      "name": "Dashboard - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-001-UI"
+      ],
+      "blocks": [
+        "F-001-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-001-REVIEW",
+      "featureId": "F-001",
+      "kind": "review",
+      "name": "Dashboard - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-001-INTEGRATION"
+      ],
+      "blocks": [
+        "F-001-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-001-TEST",
+      "featureId": "F-001",
+      "kind": "test",
+      "name": "Dashboard - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-001-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-002-DB",
+      "featureId": "F-002",
+      "kind": "db",
+      "name": "Menu Management - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-002-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-002-API",
+      "featureId": "F-002",
+      "kind": "api",
+      "name": "Menu Management - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-002-DB"
+      ],
+      "blocks": [
+        "F-002-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-002-UI",
+      "featureId": "F-002",
+      "kind": "ui",
+      "name": "Menu Management - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-002-API"
+      ],
+      "blocks": [
+        "F-002-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-002-INTEGRATION",
+      "featureId": "F-002",
+      "kind": "integration",
+      "name": "Menu Management - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-002-UI"
+      ],
+      "blocks": [
+        "F-002-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-002-REVIEW",
+      "featureId": "F-002",
+      "kind": "review",
+      "name": "Menu Management - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-002-INTEGRATION"
+      ],
+      "blocks": [
+        "F-002-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-002-TEST",
+      "featureId": "F-002",
+      "kind": "test",
+      "name": "Menu Management - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-002-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-003-DB",
+      "featureId": "F-003",
+      "kind": "db",
+      "name": "Order Management - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-003-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-003-API",
+      "featureId": "F-003",
+      "kind": "api",
+      "name": "Order Management - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-003-DB"
+      ],
+      "blocks": [
+        "F-003-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-003-UI",
+      "featureId": "F-003",
+      "kind": "ui",
+      "name": "Order Management - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-003-API"
+      ],
+      "blocks": [
+        "F-003-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-003-INTEGRATION",
+      "featureId": "F-003",
+      "kind": "integration",
+      "name": "Order Management - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-003-UI"
+      ],
+      "blocks": [
+        "F-003-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-003-REVIEW",
+      "featureId": "F-003",
+      "kind": "review",
+      "name": "Order Management - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-003-INTEGRATION"
+      ],
+      "blocks": [
+        "F-003-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-003-TEST",
+      "featureId": "F-003",
+      "kind": "test",
+      "name": "Order Management - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-003-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-004-DB",
+      "featureId": "F-004",
+      "kind": "db",
+      "name": "Room Management - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-004-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-004-API",
+      "featureId": "F-004",
+      "kind": "api",
+      "name": "Room Management - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-004-DB"
+      ],
+      "blocks": [
+        "F-004-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-004-UI",
+      "featureId": "F-004",
+      "kind": "ui",
+      "name": "Room Management - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-004-API"
+      ],
+      "blocks": [
+        "F-004-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-004-INTEGRATION",
+      "featureId": "F-004",
+      "kind": "integration",
+      "name": "Room Management - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-004-UI"
+      ],
+      "blocks": [
+        "F-004-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-004-REVIEW",
+      "featureId": "F-004",
+      "kind": "review",
+      "name": "Room Management - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-004-INTEGRATION"
+      ],
+      "blocks": [
+        "F-004-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-004-TEST",
+      "featureId": "F-004",
+      "kind": "test",
+      "name": "Room Management - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-004-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-005-DB",
+      "featureId": "F-005",
+      "kind": "db",
+      "name": "Front Desk Operations - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-005-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-005-API",
+      "featureId": "F-005",
+      "kind": "api",
+      "name": "Front Desk Operations - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-005-DB"
+      ],
+      "blocks": [
+        "F-005-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-005-UI",
+      "featureId": "F-005",
+      "kind": "ui",
+      "name": "Front Desk Operations - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-005-API"
+      ],
+      "blocks": [
+        "F-005-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-005-INTEGRATION",
+      "featureId": "F-005",
+      "kind": "integration",
+      "name": "Front Desk Operations - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-005-UI"
+      ],
+      "blocks": [
+        "F-005-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-005-REVIEW",
+      "featureId": "F-005",
+      "kind": "review",
+      "name": "Front Desk Operations - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-005-INTEGRATION"
+      ],
+      "blocks": [
+        "F-005-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-005-TEST",
+      "featureId": "F-005",
+      "kind": "test",
+      "name": "Front Desk Operations - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-005-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-006-DB",
+      "featureId": "F-006",
+      "kind": "db",
+      "name": "Staff Management (Admin) - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-006-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-006-API",
+      "featureId": "F-006",
+      "kind": "api",
+      "name": "Staff Management (Admin) - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-006-DB"
+      ],
+      "blocks": [
+        "F-006-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-006-UI",
+      "featureId": "F-006",
+      "kind": "ui",
+      "name": "Staff Management (Admin) - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-006-API"
+      ],
+      "blocks": [
+        "F-006-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-006-INTEGRATION",
+      "featureId": "F-006",
+      "kind": "integration",
+      "name": "Staff Management (Admin) - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-006-UI"
+      ],
+      "blocks": [
+        "F-006-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-006-REVIEW",
+      "featureId": "F-006",
+      "kind": "review",
+      "name": "Staff Management (Admin) - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-006-INTEGRATION"
+      ],
+      "blocks": [
+        "F-006-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-006-TEST",
+      "featureId": "F-006",
+      "kind": "test",
+      "name": "Staff Management (Admin) - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-006-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-007-DB",
+      "featureId": "F-007",
+      "kind": "db",
+      "name": "Basic Settings - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-007-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-007-API",
+      "featureId": "F-007",
+      "kind": "api",
+      "name": "Basic Settings - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-007-DB"
+      ],
+      "blocks": [
+        "F-007-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-007-UI",
+      "featureId": "F-007",
+      "kind": "ui",
+      "name": "Basic Settings - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-007-API"
+      ],
+      "blocks": [
+        "F-007-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-007-INTEGRATION",
+      "featureId": "F-007",
+      "kind": "integration",
+      "name": "Basic Settings - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-007-UI"
+      ],
+      "blocks": [
+        "F-007-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-007-REVIEW",
+      "featureId": "F-007",
+      "kind": "review",
+      "name": "Basic Settings - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-007-INTEGRATION"
+      ],
+      "blocks": [
+        "F-007-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-007-TEST",
+      "featureId": "F-007",
+      "kind": "test",
+      "name": "Basic Settings - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-007-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-021-DB",
+      "featureId": "F-021",
+      "kind": "db",
+      "name": "Permission System UI - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-021-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-021-API",
+      "featureId": "F-021",
+      "kind": "api",
+      "name": "Permission System UI - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-021-DB"
+      ],
+      "blocks": [
+        "F-021-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-021-UI",
+      "featureId": "F-021",
+      "kind": "ui",
+      "name": "Permission System UI - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-021-API"
+      ],
+      "blocks": [
+        "F-021-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-021-INTEGRATION",
+      "featureId": "F-021",
+      "kind": "integration",
+      "name": "Permission System UI - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-021-UI"
+      ],
+      "blocks": [
+        "F-021-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-021-REVIEW",
+      "featureId": "F-021",
+      "kind": "review",
+      "name": "Permission System UI - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-021-INTEGRATION"
+      ],
+      "blocks": [
+        "F-021-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-021-TEST",
+      "featureId": "F-021",
+      "kind": "test",
+      "name": "Permission System UI - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-021-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-001-DB",
+      "featureId": "G-001",
+      "kind": "db",
+      "name": "Room Service UI - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-001-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-001-API",
+      "featureId": "G-001",
+      "kind": "api",
+      "name": "Room Service UI - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-001-DB"
+      ],
+      "blocks": [
+        "G-001-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-001-UI",
+      "featureId": "G-001",
+      "kind": "ui",
+      "name": "Room Service UI - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-001-API"
+      ],
+      "blocks": [
+        "G-001-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-001-INTEGRATION",
+      "featureId": "G-001",
+      "kind": "integration",
+      "name": "Room Service UI - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-001-UI"
+      ],
+      "blocks": [
+        "G-001-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-001-REVIEW",
+      "featureId": "G-001",
+      "kind": "review",
+      "name": "Room Service UI - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-001-INTEGRATION"
+      ],
+      "blocks": [
+        "G-001-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-001-TEST",
+      "featureId": "G-001",
+      "kind": "test",
+      "name": "Room Service UI - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-001-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-002-DB",
+      "featureId": "G-002",
+      "kind": "db",
+      "name": "Order Flow - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-002-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-002-API",
+      "featureId": "G-002",
+      "kind": "api",
+      "name": "Order Flow - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-002-DB"
+      ],
+      "blocks": [
+        "G-002-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-002-UI",
+      "featureId": "G-002",
+      "kind": "ui",
+      "name": "Order Flow - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-002-API"
+      ],
+      "blocks": [
+        "G-002-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-002-INTEGRATION",
+      "featureId": "G-002",
+      "kind": "integration",
+      "name": "Order Flow - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-002-UI"
+      ],
+      "blocks": [
+        "G-002-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-002-REVIEW",
+      "featureId": "G-002",
+      "kind": "review",
+      "name": "Order Flow - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-002-INTEGRATION"
+      ],
+      "blocks": [
+        "G-002-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-002-TEST",
+      "featureId": "G-002",
+      "kind": "test",
+      "name": "Order Flow - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-002-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-003-DB",
+      "featureId": "G-003",
+      "kind": "db",
+      "name": "Menu View - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-003-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-003-API",
+      "featureId": "G-003",
+      "kind": "api",
+      "name": "Menu View - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-003-DB"
+      ],
+      "blocks": [
+        "G-003-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-003-UI",
+      "featureId": "G-003",
+      "kind": "ui",
+      "name": "Menu View - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-003-API"
+      ],
+      "blocks": [
+        "G-003-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-003-INTEGRATION",
+      "featureId": "G-003",
+      "kind": "integration",
+      "name": "Menu View - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-003-UI"
+      ],
+      "blocks": [
+        "G-003-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-003-REVIEW",
+      "featureId": "G-003",
+      "kind": "review",
+      "name": "Menu View - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-003-INTEGRATION"
+      ],
+      "blocks": [
+        "G-003-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-003-TEST",
+      "featureId": "G-003",
+      "kind": "test",
+      "name": "Menu View - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-003-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-004-DB",
+      "featureId": "G-004",
+      "kind": "db",
+      "name": "Device App (Capacitor) - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-004-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-004-API",
+      "featureId": "G-004",
+      "kind": "api",
+      "name": "Device App (Capacitor) - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-004-DB"
+      ],
+      "blocks": [
+        "G-004-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-004-UI",
+      "featureId": "G-004",
+      "kind": "ui",
+      "name": "Device App (Capacitor) - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-004-API"
+      ],
+      "blocks": [
+        "G-004-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-004-INTEGRATION",
+      "featureId": "G-004",
+      "kind": "integration",
+      "name": "Device App (Capacitor) - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-004-UI"
+      ],
+      "blocks": [
+        "G-004-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-004-REVIEW",
+      "featureId": "G-004",
+      "kind": "review",
+      "name": "Device App (Capacitor) - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-004-INTEGRATION"
+      ],
+      "blocks": [
+        "G-004-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-004-TEST",
+      "featureId": "G-004",
+      "kind": "test",
+      "name": "Device App (Capacitor) - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-004-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-009-DB",
+      "featureId": "C-009",
+      "kind": "db",
+      "name": "Multilingual System - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-009-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-009-API",
+      "featureId": "C-009",
+      "kind": "api",
+      "name": "Multilingual System - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-009-DB"
+      ],
+      "blocks": [
+        "C-009-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-009-UI",
+      "featureId": "C-009",
+      "kind": "ui",
+      "name": "Multilingual System - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-009-API"
+      ],
+      "blocks": [
+        "C-009-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-009-INTEGRATION",
+      "featureId": "C-009",
+      "kind": "integration",
+      "name": "Multilingual System - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-009-UI"
+      ],
+      "blocks": [
+        "C-009-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-009-REVIEW",
+      "featureId": "C-009",
+      "kind": "review",
+      "name": "Multilingual System - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-009-INTEGRATION"
+      ],
+      "blocks": [
+        "C-009-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-009-TEST",
+      "featureId": "C-009",
+      "kind": "test",
+      "name": "Multilingual System - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-009-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-010-DB",
+      "featureId": "C-010",
+      "kind": "db",
+      "name": "Multicultural AI - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-010-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-010-API",
+      "featureId": "C-010",
+      "kind": "api",
+      "name": "Multicultural AI - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-010-DB"
+      ],
+      "blocks": [
+        "C-010-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-010-UI",
+      "featureId": "C-010",
+      "kind": "ui",
+      "name": "Multicultural AI - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-010-API"
+      ],
+      "blocks": [
+        "C-010-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-010-INTEGRATION",
+      "featureId": "C-010",
+      "kind": "integration",
+      "name": "Multicultural AI - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-010-UI"
+      ],
+      "blocks": [
+        "C-010-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-010-REVIEW",
+      "featureId": "C-010",
+      "kind": "review",
+      "name": "Multicultural AI - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-010-INTEGRATION"
+      ],
+      "blocks": [
+        "C-010-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-010-TEST",
+      "featureId": "C-010",
+      "kind": "test",
+      "name": "Multicultural AI - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-010-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-011-DB",
+      "featureId": "C-011",
+      "kind": "db",
+      "name": "Media Management - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-011-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-011-API",
+      "featureId": "C-011",
+      "kind": "api",
+      "name": "Media Management - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-011-DB"
+      ],
+      "blocks": [
+        "C-011-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-011-UI",
+      "featureId": "C-011",
+      "kind": "ui",
+      "name": "Media Management - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-011-API"
+      ],
+      "blocks": [
+        "C-011-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-011-INTEGRATION",
+      "featureId": "C-011",
+      "kind": "integration",
+      "name": "Media Management - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-011-UI"
+      ],
+      "blocks": [
+        "C-011-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-011-REVIEW",
+      "featureId": "C-011",
+      "kind": "review",
+      "name": "Media Management - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-011-INTEGRATION"
+      ],
+      "blocks": [
+        "C-011-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-011-TEST",
+      "featureId": "C-011",
+      "kind": "test",
+      "name": "Media Management - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-011-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-012-DB",
+      "featureId": "C-012",
+      "kind": "db",
+      "name": "Email System - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-012-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-012-API",
+      "featureId": "C-012",
+      "kind": "api",
+      "name": "Email System - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-012-DB"
+      ],
+      "blocks": [
+        "C-012-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-012-UI",
+      "featureId": "C-012",
+      "kind": "ui",
+      "name": "Email System - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-012-API"
+      ],
+      "blocks": [
+        "C-012-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-012-INTEGRATION",
+      "featureId": "C-012",
+      "kind": "integration",
+      "name": "Email System - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-012-UI"
+      ],
+      "blocks": [
+        "C-012-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-012-REVIEW",
+      "featureId": "C-012",
+      "kind": "review",
+      "name": "Email System - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-012-INTEGRATION"
+      ],
+      "blocks": [
+        "C-012-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-012-TEST",
+      "featureId": "C-012",
+      "kind": "test",
+      "name": "Email System - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-012-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-008-DB",
+      "featureId": "F-008",
+      "kind": "db",
+      "name": "AI Concierge Overview - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-008-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-008-API",
+      "featureId": "F-008",
+      "kind": "api",
+      "name": "AI Concierge Overview - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-008-DB"
+      ],
+      "blocks": [
+        "F-008-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-008-UI",
+      "featureId": "F-008",
+      "kind": "ui",
+      "name": "AI Concierge Overview - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-008-API"
+      ],
+      "blocks": [
+        "F-008-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-008-INTEGRATION",
+      "featureId": "F-008",
+      "kind": "integration",
+      "name": "AI Concierge Overview - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-008-UI"
+      ],
+      "blocks": [
+        "F-008-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-008-REVIEW",
+      "featureId": "F-008",
+      "kind": "review",
+      "name": "AI Concierge Overview - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-008-INTEGRATION"
+      ],
+      "blocks": [
+        "F-008-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-008-TEST",
+      "featureId": "F-008",
+      "kind": "test",
+      "name": "AI Concierge Overview - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-008-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-009-DB",
+      "featureId": "F-009",
+      "kind": "db",
+      "name": "AI Knowledge Base - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-009-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-009-API",
+      "featureId": "F-009",
+      "kind": "api",
+      "name": "AI Knowledge Base - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-009-DB"
+      ],
+      "blocks": [
+        "F-009-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-009-UI",
+      "featureId": "F-009",
+      "kind": "ui",
+      "name": "AI Knowledge Base - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-009-API"
+      ],
+      "blocks": [
+        "F-009-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-009-INTEGRATION",
+      "featureId": "F-009",
+      "kind": "integration",
+      "name": "AI Knowledge Base - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-009-UI"
+      ],
+      "blocks": [
+        "F-009-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-009-REVIEW",
+      "featureId": "F-009",
+      "kind": "review",
+      "name": "AI Knowledge Base - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-009-INTEGRATION"
+      ],
+      "blocks": [
+        "F-009-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-009-TEST",
+      "featureId": "F-009",
+      "kind": "test",
+      "name": "AI Knowledge Base - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-009-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-011-DB",
+      "featureId": "F-011",
+      "kind": "db",
+      "name": "AI Character Settings - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-011-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-011-API",
+      "featureId": "F-011",
+      "kind": "api",
+      "name": "AI Character Settings - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-011-DB"
+      ],
+      "blocks": [
+        "F-011-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-011-UI",
+      "featureId": "F-011",
+      "kind": "ui",
+      "name": "AI Character Settings - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-011-API"
+      ],
+      "blocks": [
+        "F-011-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-011-INTEGRATION",
+      "featureId": "F-011",
+      "kind": "integration",
+      "name": "AI Character Settings - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-011-UI"
+      ],
+      "blocks": [
+        "F-011-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-011-REVIEW",
+      "featureId": "F-011",
+      "kind": "review",
+      "name": "AI Character Settings - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-011-INTEGRATION"
+      ],
+      "blocks": [
+        "F-011-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-011-TEST",
+      "featureId": "F-011",
+      "kind": "test",
+      "name": "AI Character Settings - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-011-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-012-DB",
+      "featureId": "F-012",
+      "kind": "db",
+      "name": "AI Concierge Database - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-012-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-012-API",
+      "featureId": "F-012",
+      "kind": "api",
+      "name": "AI Concierge Database - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-012-DB"
+      ],
+      "blocks": [
+        "F-012-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-012-UI",
+      "featureId": "F-012",
+      "kind": "ui",
+      "name": "AI Concierge Database - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-012-API"
+      ],
+      "blocks": [
+        "F-012-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-012-INTEGRATION",
+      "featureId": "F-012",
+      "kind": "integration",
+      "name": "AI Concierge Database - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-012-UI"
+      ],
+      "blocks": [
+        "F-012-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-012-REVIEW",
+      "featureId": "F-012",
+      "kind": "review",
+      "name": "AI Concierge Database - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-012-INTEGRATION"
+      ],
+      "blocks": [
+        "F-012-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-012-TEST",
+      "featureId": "F-012",
+      "kind": "test",
+      "name": "AI Concierge Database - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-012-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-013-DB",
+      "featureId": "F-013",
+      "kind": "db",
+      "name": "Statistics Core - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-013-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-013-API",
+      "featureId": "F-013",
+      "kind": "api",
+      "name": "Statistics Core - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-013-DB"
+      ],
+      "blocks": [
+        "F-013-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-013-UI",
+      "featureId": "F-013",
+      "kind": "ui",
+      "name": "Statistics Core - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-013-API"
+      ],
+      "blocks": [
+        "F-013-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-013-INTEGRATION",
+      "featureId": "F-013",
+      "kind": "integration",
+      "name": "Statistics Core - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-013-UI"
+      ],
+      "blocks": [
+        "F-013-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-013-REVIEW",
+      "featureId": "F-013",
+      "kind": "review",
+      "name": "Statistics Core - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-013-INTEGRATION"
+      ],
+      "blocks": [
+        "F-013-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-013-TEST",
+      "featureId": "F-013",
+      "kind": "test",
+      "name": "Statistics Core - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-013-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-016-DB",
+      "featureId": "F-016",
+      "kind": "db",
+      "name": "Admin UI Design / Layout - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-016-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-016-API",
+      "featureId": "F-016",
+      "kind": "api",
+      "name": "Admin UI Design / Layout - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-016-DB"
+      ],
+      "blocks": [
+        "F-016-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-016-UI",
+      "featureId": "F-016",
+      "kind": "ui",
+      "name": "Admin UI Design / Layout - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-016-API"
+      ],
+      "blocks": [
+        "F-016-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-016-INTEGRATION",
+      "featureId": "F-016",
+      "kind": "integration",
+      "name": "Admin UI Design / Layout - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-016-UI"
+      ],
+      "blocks": [
+        "F-016-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-016-REVIEW",
+      "featureId": "F-016",
+      "kind": "review",
+      "name": "Admin UI Design / Layout - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-016-INTEGRATION"
+      ],
+      "blocks": [
+        "F-016-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-016-TEST",
+      "featureId": "F-016",
+      "kind": "test",
+      "name": "Admin UI Design / Layout - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-016-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-017-DB",
+      "featureId": "F-017",
+      "kind": "db",
+      "name": "System Logs - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-017-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-017-API",
+      "featureId": "F-017",
+      "kind": "api",
+      "name": "System Logs - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-017-DB"
+      ],
+      "blocks": [
+        "F-017-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-017-UI",
+      "featureId": "F-017",
+      "kind": "ui",
+      "name": "System Logs - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-017-API"
+      ],
+      "blocks": [
+        "F-017-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-017-INTEGRATION",
+      "featureId": "F-017",
+      "kind": "integration",
+      "name": "System Logs - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-017-UI"
+      ],
+      "blocks": [
+        "F-017-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-017-REVIEW",
+      "featureId": "F-017",
+      "kind": "review",
+      "name": "System Logs - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-017-INTEGRATION"
+      ],
+      "blocks": [
+        "F-017-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-017-TEST",
+      "featureId": "F-017",
+      "kind": "test",
+      "name": "System Logs - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-017-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-018-DB",
+      "featureId": "F-018",
+      "kind": "db",
+      "name": "Billing - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-018-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-018-API",
+      "featureId": "F-018",
+      "kind": "api",
+      "name": "Billing - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-018-DB"
+      ],
+      "blocks": [
+        "F-018-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-018-UI",
+      "featureId": "F-018",
+      "kind": "ui",
+      "name": "Billing - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-018-API"
+      ],
+      "blocks": [
+        "F-018-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-018-INTEGRATION",
+      "featureId": "F-018",
+      "kind": "integration",
+      "name": "Billing - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-018-UI"
+      ],
+      "blocks": [
+        "F-018-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-018-REVIEW",
+      "featureId": "F-018",
+      "kind": "review",
+      "name": "Billing - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-018-INTEGRATION"
+      ],
+      "blocks": [
+        "F-018-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-018-TEST",
+      "featureId": "F-018",
+      "kind": "test",
+      "name": "Billing - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-018-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-019-DB",
+      "featureId": "F-019",
+      "kind": "db",
+      "name": "Super Admin - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-019-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-019-API",
+      "featureId": "F-019",
+      "kind": "api",
+      "name": "Super Admin - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-019-DB"
+      ],
+      "blocks": [
+        "F-019-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-019-UI",
+      "featureId": "F-019",
+      "kind": "ui",
+      "name": "Super Admin - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-019-API"
+      ],
+      "blocks": [
+        "F-019-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-019-INTEGRATION",
+      "featureId": "F-019",
+      "kind": "integration",
+      "name": "Super Admin - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-019-UI"
+      ],
+      "blocks": [
+        "F-019-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-019-REVIEW",
+      "featureId": "F-019",
+      "kind": "review",
+      "name": "Super Admin - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-019-INTEGRATION"
+      ],
+      "blocks": [
+        "F-019-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-019-TEST",
+      "featureId": "F-019",
+      "kind": "test",
+      "name": "Super Admin - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-019-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-005-DB",
+      "featureId": "G-005",
+      "kind": "db",
+      "name": "Campaign View - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-005-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-005-API",
+      "featureId": "G-005",
+      "kind": "api",
+      "name": "Campaign View - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-005-DB"
+      ],
+      "blocks": [
+        "G-005-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-005-UI",
+      "featureId": "G-005",
+      "kind": "ui",
+      "name": "Campaign View - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-005-API"
+      ],
+      "blocks": [
+        "G-005-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-005-INTEGRATION",
+      "featureId": "G-005",
+      "kind": "integration",
+      "name": "Campaign View - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-005-UI"
+      ],
+      "blocks": [
+        "G-005-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-005-REVIEW",
+      "featureId": "G-005",
+      "kind": "review",
+      "name": "Campaign View - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-005-INTEGRATION"
+      ],
+      "blocks": [
+        "G-005-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-005-TEST",
+      "featureId": "G-005",
+      "kind": "test",
+      "name": "Campaign View - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-005-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-006-DB",
+      "featureId": "G-006",
+      "kind": "db",
+      "name": "Info Portal - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-006-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-006-API",
+      "featureId": "G-006",
+      "kind": "api",
+      "name": "Info Portal - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-006-DB"
+      ],
+      "blocks": [
+        "G-006-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-006-UI",
+      "featureId": "G-006",
+      "kind": "ui",
+      "name": "Info Portal - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-006-API"
+      ],
+      "blocks": [
+        "G-006-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-006-INTEGRATION",
+      "featureId": "G-006",
+      "kind": "integration",
+      "name": "Info Portal - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-006-UI"
+      ],
+      "blocks": [
+        "G-006-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-006-REVIEW",
+      "featureId": "G-006",
+      "kind": "review",
+      "name": "Info Portal - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-006-INTEGRATION"
+      ],
+      "blocks": [
+        "G-006-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-006-TEST",
+      "featureId": "G-006",
+      "kind": "test",
+      "name": "Info Portal - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-006-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-007-DB",
+      "featureId": "G-007",
+      "kind": "db",
+      "name": "AI Chat - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-007-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-007-API",
+      "featureId": "G-007",
+      "kind": "api",
+      "name": "AI Chat - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-007-DB"
+      ],
+      "blocks": [
+        "G-007-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-007-UI",
+      "featureId": "G-007",
+      "kind": "ui",
+      "name": "AI Chat - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-007-API"
+      ],
+      "blocks": [
+        "G-007-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-007-INTEGRATION",
+      "featureId": "G-007",
+      "kind": "integration",
+      "name": "AI Chat - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-007-UI"
+      ],
+      "blocks": [
+        "G-007-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-007-REVIEW",
+      "featureId": "G-007",
+      "kind": "review",
+      "name": "AI Chat - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-007-INTEGRATION"
+      ],
+      "blocks": [
+        "G-007-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-007-TEST",
+      "featureId": "G-007",
+      "kind": "test",
+      "name": "AI Chat - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-007-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "C-015-DB",
+      "featureId": "C-015",
+      "kind": "db",
+      "name": "World-class UI Design Principles - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "C-015-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-015-API",
+      "featureId": "C-015",
+      "kind": "api",
+      "name": "World-class UI Design Principles - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "C-015-DB"
+      ],
+      "blocks": [
+        "C-015-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-015-UI",
+      "featureId": "C-015",
+      "kind": "ui",
+      "name": "World-class UI Design Principles - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "C-015-API"
+      ],
+      "blocks": [
+        "C-015-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-015-INTEGRATION",
+      "featureId": "C-015",
+      "kind": "integration",
+      "name": "World-class UI Design Principles - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "C-015-UI"
+      ],
+      "blocks": [
+        "C-015-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "C-015-REVIEW",
+      "featureId": "C-015",
+      "kind": "review",
+      "name": "World-class UI Design Principles - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "C-015-INTEGRATION"
+      ],
+      "blocks": [
+        "C-015-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "C-015-TEST",
+      "featureId": "C-015",
+      "kind": "test",
+      "name": "World-class UI Design Principles - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "C-015-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-014-DB",
+      "featureId": "F-014",
+      "kind": "db",
+      "name": "Statistics AI - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-014-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-014-API",
+      "featureId": "F-014",
+      "kind": "api",
+      "name": "Statistics AI - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-014-DB"
+      ],
+      "blocks": [
+        "F-014-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-014-UI",
+      "featureId": "F-014",
+      "kind": "ui",
+      "name": "Statistics AI - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-014-API"
+      ],
+      "blocks": [
+        "F-014-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-014-INTEGRATION",
+      "featureId": "F-014",
+      "kind": "integration",
+      "name": "Statistics AI - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-014-UI"
+      ],
+      "blocks": [
+        "F-014-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-014-REVIEW",
+      "featureId": "F-014",
+      "kind": "review",
+      "name": "Statistics AI - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-014-INTEGRATION"
+      ],
+      "blocks": [
+        "F-014-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-014-TEST",
+      "featureId": "F-014",
+      "kind": "test",
+      "name": "Statistics AI - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-014-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-015-DB",
+      "featureId": "F-015",
+      "kind": "db",
+      "name": "Statistics Delivery / A/B Test - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-015-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-015-API",
+      "featureId": "F-015",
+      "kind": "api",
+      "name": "Statistics Delivery / A/B Test - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-015-DB"
+      ],
+      "blocks": [
+        "F-015-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-015-UI",
+      "featureId": "F-015",
+      "kind": "ui",
+      "name": "Statistics Delivery / A/B Test - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-015-API"
+      ],
+      "blocks": [
+        "F-015-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-015-INTEGRATION",
+      "featureId": "F-015",
+      "kind": "integration",
+      "name": "Statistics Delivery / A/B Test - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-015-UI"
+      ],
+      "blocks": [
+        "F-015-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-015-REVIEW",
+      "featureId": "F-015",
+      "kind": "review",
+      "name": "Statistics Delivery / A/B Test - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-015-INTEGRATION"
+      ],
+      "blocks": [
+        "F-015-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-015-TEST",
+      "featureId": "F-015",
+      "kind": "test",
+      "name": "Statistics Delivery / A/B Test - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-015-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "F-020-DB",
+      "featureId": "F-020",
+      "kind": "db",
+      "name": "AI Settings - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "F-020-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-020-API",
+      "featureId": "F-020",
+      "kind": "api",
+      "name": "AI Settings - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "F-020-DB"
+      ],
+      "blocks": [
+        "F-020-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-020-UI",
+      "featureId": "F-020",
+      "kind": "ui",
+      "name": "AI Settings - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "F-020-API"
+      ],
+      "blocks": [
+        "F-020-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-020-INTEGRATION",
+      "featureId": "F-020",
+      "kind": "integration",
+      "name": "AI Settings - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "F-020-UI"
+      ],
+      "blocks": [
+        "F-020-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "F-020-REVIEW",
+      "featureId": "F-020",
+      "kind": "review",
+      "name": "AI Settings - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "F-020-INTEGRATION"
+      ],
+      "blocks": [
+        "F-020-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "F-020-TEST",
+      "featureId": "F-020",
+      "kind": "test",
+      "name": "AI Settings - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "F-020-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-008-DB",
+      "featureId": "G-008",
+      "kind": "db",
+      "name": "App Launcher - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-008-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-008-API",
+      "featureId": "G-008",
+      "kind": "api",
+      "name": "App Launcher - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-008-DB"
+      ],
+      "blocks": [
+        "G-008-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-008-UI",
+      "featureId": "G-008",
+      "kind": "ui",
+      "name": "App Launcher - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-008-API"
+      ],
+      "blocks": [
+        "G-008-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-008-INTEGRATION",
+      "featureId": "G-008",
+      "kind": "integration",
+      "name": "App Launcher - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-008-UI"
+      ],
+      "blocks": [
+        "G-008-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-008-REVIEW",
+      "featureId": "G-008",
+      "kind": "review",
+      "name": "App Launcher - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-008-INTEGRATION"
+      ],
+      "blocks": [
+        "G-008-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-008-TEST",
+      "featureId": "G-008",
+      "kind": "test",
+      "name": "App Launcher - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-008-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-009-DB",
+      "featureId": "G-009",
+      "kind": "db",
+      "name": "Page Routing / Navigation - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-009-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-009-API",
+      "featureId": "G-009",
+      "kind": "api",
+      "name": "Page Routing / Navigation - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-009-DB"
+      ],
+      "blocks": [
+        "G-009-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-009-UI",
+      "featureId": "G-009",
+      "kind": "ui",
+      "name": "Page Routing / Navigation - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-009-API"
+      ],
+      "blocks": [
+        "G-009-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-009-INTEGRATION",
+      "featureId": "G-009",
+      "kind": "integration",
+      "name": "Page Routing / Navigation - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-009-UI"
+      ],
+      "blocks": [
+        "G-009-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-009-REVIEW",
+      "featureId": "G-009",
+      "kind": "review",
+      "name": "Page Routing / Navigation - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-009-INTEGRATION"
+      ],
+      "blocks": [
+        "G-009-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-009-TEST",
+      "featureId": "G-009",
+      "kind": "test",
+      "name": "Page Routing / Navigation - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-009-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    },
+    {
+      "id": "G-010-DB",
+      "featureId": "G-010",
+      "kind": "db",
+      "name": "Device Reset / Maintenance - Database",
+      "references": [
+        "§4"
+      ],
+      "blockedBy": [],
+      "blocks": [
+        "G-010-API"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-010-API",
+      "featureId": "G-010",
+      "kind": "api",
+      "name": "Device Reset / Maintenance - API",
+      "references": [
+        "§5",
+        "§7",
+        "§9"
+      ],
+      "blockedBy": [
+        "G-010-DB"
+      ],
+      "blocks": [
+        "G-010-UI"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-010-UI",
+      "featureId": "G-010",
+      "kind": "ui",
+      "name": "Device Reset / Maintenance - UI",
+      "references": [
+        "§6"
+      ],
+      "blockedBy": [
+        "G-010-API"
+      ],
+      "blocks": [
+        "G-010-INTEGRATION"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-010-INTEGRATION",
+      "featureId": "G-010",
+      "kind": "integration",
+      "name": "Device Reset / Maintenance - Integration",
+      "references": [
+        "§5",
+        "§6"
+      ],
+      "blockedBy": [
+        "G-010-UI"
+      ],
+      "blocks": [
+        "G-010-REVIEW"
+      ],
+      "size": "M"
+    },
+    {
+      "id": "G-010-REVIEW",
+      "featureId": "G-010",
+      "kind": "review",
+      "name": "Device Reset / Maintenance - Code Audit",
+      "references": [
+        "All"
+      ],
+      "blockedBy": [
+        "G-010-INTEGRATION"
+      ],
+      "blocks": [
+        "G-010-TEST"
+      ],
+      "size": "S"
+    },
+    {
+      "id": "G-010-TEST",
+      "featureId": "G-010",
+      "kind": "test",
+      "name": "Device Reset / Maintenance - Testing",
+      "references": [
+        "§10"
+      ],
+      "blockedBy": [
+        "G-010-REVIEW"
+      ],
+      "blocks": [],
+      "size": "M"
+    }
+  ],
+  "circularDependencies": []
+}

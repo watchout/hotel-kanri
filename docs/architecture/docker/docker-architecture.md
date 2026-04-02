@@ -1,12 +1,22 @@
-# Docker化アーキテクチャ設計書
+# Docker化アーキテクチャ設計書（旧版）
+
+<!-- 
+🚨 このドキュメントは2025年1月18日より非推奨です
+新しい統合Docker構造については以下を参照してください：
+docs/architecture/docker/unified-docker-architecture-2025.md
+-->
 
 **日付**: 2023年8月18日
 **作成者**: hotel-kanri
-**バージョン**: 1.0
+**バージョン**: 1.0 ⚠️ **DEPRECATED**
 
-## 1. 概要
+## 1. 概要 ⚠️ **旧構造 - 非推奨**
 
+<!-- 
 本ドキュメントでは、omotenasuai.comプロジェクトのDocker化アーキテクチャについて定義します。PM2ベースの直接デプロイから、Dockerベースのコンテナ化デプロイへの移行を目的としています。まずはhotel-saasを対象に実装し、成功後に他のサービスにも展開します。
+
+⚠️ 注意: この構造は段階的に廃止され、統合Docker構造に移行中です。
+-->
 
 ## 2. アーキテクチャの目標
 
@@ -216,7 +226,7 @@ services:
   # hotel-common - 共通基盤
   hotel-common:
     build:
-      context: ../hotel-common
+      context: /Users/kaneko/hotel-common
       dockerfile: Dockerfile
     image: ${DOCKER_REGISTRY}/hotel-common:${COMMON_VERSION:-latest}
     container_name: omotenasuai-common
@@ -254,7 +264,7 @@ services:
   # hotel-saas - AIコンシェルジュ
   hotel-saas:
     build:
-      context: ../hotel-saas
+      context: /Users/kaneko/hotel-saas
       dockerfile: Dockerfile
     image: ${DOCKER_REGISTRY}/hotel-saas:${SAAS_VERSION:-latest}
     container_name: omotenasuai-saas
