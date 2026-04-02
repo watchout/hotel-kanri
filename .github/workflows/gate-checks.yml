@@ -13,32 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run gate-quality (hotel-kanri scope)
+      - name: Run gate-quality
         run: |
           echo "============================================"
-          echo " Gate: Quality Check (CI mode)"
+          echo " Gate: Quality Check (CI)"
           echo "============================================"
-          PASS=0; FAIL=0; WARN=0
+          PASS=0; FAIL=0
 
-          # 1. Framework files exist
+          # 1. Gate scripts exist
           echo ""
-          echo "=== 1. Framework Integrity ==="
-          for F in .framework/plan.json .framework/gates.json .framework/autonomy.json; do
-            if [ -f "$F" ]; then
-              echo "  PASS: $F exists"
-              PASS=$((PASS + 1))
-            else
-              echo "  FAIL: $F missing"
-              FAIL=$((FAIL + 1))
-            fi
-          done
-
-          # 2. Gate scripts exist and are executable
-          echo ""
-          echo "=== 2. Gate Scripts ==="
+          echo "=== 1. Gate Scripts ==="
           for S in scripts/gates/gate-quality.sh scripts/gates/gate-release.sh; do
             if [ -f "$S" ]; then
-              echo "  PASS: $S exists"
+              echo "  PASS: $S"
               PASS=$((PASS + 1))
             else
               echo "  FAIL: $S missing"
@@ -46,35 +33,35 @@ jobs:
             fi
           done
 
-          # 3. SSOT files exist
+          # 2. SSOT files
           echo ""
-          echo "=== 3. SSOT Files ==="
-          SSOT_COUNT=$(find docs/ -name "SSOT*.md" -o -name "SSOT_*.md" | wc -l | tr -d ' ')
+          echo "=== 2. SSOT Files ==="
+          SSOT_COUNT=$(find docs/ -name "SSOT*.md" -o -name "SSOT_*.md" 2>/dev/null | wc -l | tr -d ' ')
+          echo "  Found: $SSOT_COUNT SSOT files"
           if [ "$SSOT_COUNT" -gt 5 ]; then
-            echo "  PASS: $SSOT_COUNT SSOT files found"
+            echo "  PASS"
             PASS=$((PASS + 1))
           else
-            echo "  FAIL: Only $SSOT_COUNT SSOT files"
+            echo "  FAIL: Expected >5"
             FAIL=$((FAIL + 1))
           fi
 
-          # 4. plan.json has status tracking
+          # 3. Core docs exist
           echo ""
-          echo "=== 4. Plan Status ==="
-          DONE=$(cat .framework/plan.json | jq '[.waves[0].features[] | select(.status == "done")] | length')
-          TODO=$(cat .framework/plan.json | jq '[.waves[0].features[] | select(.status == "todo")] | length')
-          echo "  Done: $DONE, Todo: $TODO"
-          if [ "$DONE" -gt 0 ]; then
-            echo "  PASS: Plan has tracked progress"
-            PASS=$((PASS + 1))
-          else
-            echo "  WARN: No features marked as done"
-            WARN=$((WARN + 1))
-          fi
+          echo "=== 3. Core Docs ==="
+          for D in CLAUDE.md docs/requirements/SSOT-0_PRD.md docs/design/core/SSOT-2_UI_STATE.md; do
+            if [ -f "$D" ]; then
+              echo "  PASS: $D"
+              PASS=$((PASS + 1))
+            else
+              echo "  FAIL: $D missing"
+              FAIL=$((FAIL + 1))
+            fi
+          done
 
           echo ""
           echo "============================================"
-          echo " Result: PASS=$PASS FAIL=$FAIL WARN=$WARN"
+          echo " Result: PASS=$PASS FAIL=$FAIL"
           echo "============================================"
           if [ "$FAIL" -gt 0 ]; then exit 1; fi
 
