@@ -1,8 +1,9 @@
 # SSOT-7: AI Concierge — Guest Room TV System Design
 
 **Doc-ID**: SSOT-7
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Created**: 2026-04-03
+**Updated**: 2026-04-03
 **Status**: Approved (CEO)
 **Author**: 金子裕司 (CEO, IYASAKA)
 **Source**: hotel-ai-concierge-design-v1.docx
@@ -52,8 +53,8 @@ VOD」で止まっている。本システムは以下の点で差別化する:
   ----------------------------------------------------------------------------
   **レイヤー**            **役割**                     **技術**
   ----------------------- ---------------------------- -----------------------
-  デバイス層              Google                       Android TV App (Kotlin)
-                          TV端末のキオスクアプリ       or PWA
+  デバイス層              Google                       Capacitor (Android TV)
+                          TV端末のネイティブアプリ     Nuxt/Vue資産をNative化
 
   アプリケーション層      UIレンダリング・状態管理     Vue/Nuxt + WebSocket
 
@@ -299,6 +300,10 @@ TVではチャットアプリ的な会話スクロールは行わない。最新
   音声出力（TTS）                     Edge TTS or Google TTS
 
   リアルタイム通信                    WebSocket
+
+  ベクトル検索（RAG）                 pgvector (PostgreSQL拡張)
+
+  ナレッジベース                      FAQ/施設情報のベクトル化 + 類似検索
   -----------------------------------------------------------------------
 
 6\. アプリランチャー
@@ -690,14 +695,16 @@ TVは「発見の場」、スマホは「持ち出す場」という役割分担
   --------------------------------------------------------------------------------
   **カテゴリ**            **技術**                **備考**
   ----------------------- ----------------------- --------------------------------
-  ランチャー本体          Android TV App (Kotlin) 開発速度重視ならPWA
-                          or PWA (Chrome Kiosk)   
+  ランチャー本体          Capacitor (Android TV)  Nuxt/Vue資産をNative化
+                                                  ※Kotlin/PWA方式から変更
 
-  UIフレームワーク        Vue / Nuxt              既存hotel-saasと整合
+  UIフレームワーク        Vue / Nuxt + Vuetify    既存hotel-saasと整合
 
   リアルタイム通信        WebSocket               プッシュ通知・アンビエント更新
 
   AI会話                  Claude API              コンシェルジュ + UI生成
+
+  ベクトル検索 (RAG)      pgvector                ナレッジベース類似検索
 
   音声認識 (STT)          Whisper API or Google   多言語対応
                           STT                     
@@ -707,7 +714,9 @@ TVは「発見の場」、スマホは「持ち出す場」という役割分担
   デバイス管理            Android Enterprise /    Zero-Touch Enrollment
                           Google Endpoint Mgmt    
 
-  DB                      PostgreSQL              hotel-saas共用
+  DB                      PostgreSQL + pgvector   hotel-saas共用
+
+  課金方式                PMS連携決済             ※独自決済から変更
 
   ホスティング            ConoHa VPS + Nginx      既存インフラ活用
 
