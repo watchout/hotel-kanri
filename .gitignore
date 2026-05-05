@@ -28,3 +28,6 @@ docs/audits/
 .framework/
 *.local
 *.tmp
+
+# SEC-PAT-001: per-developer Claude Code settings (may contain PAT/secrets)
+.claude/settings.json
